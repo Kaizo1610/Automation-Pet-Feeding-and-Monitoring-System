@@ -11,11 +11,11 @@ export default function EditJohn() {
 
   const router=useRouter();
 
-  const [name, setName] = useState('');
-  const [gender, setGender] = useState('');
-  const [weight, setWeight] = useState('');
-  const [appointment, setAppointment] = useState('');
-  const [date, setDate] = useState('');
+  const [name, setName] = useState('John');
+  const [gender, setGender] = useState('Female');
+  const [weight, setWeight] = useState('5.2');
+  const [appointment, setAppointment] = useState('Dentistry');
+  const [date, setDate] = useState('16 August 2024');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [imageUri, setImageUri] = useState(null); // State to store the selected image
   const [isGenderDropdownVisible, setIsGenderDropdownVisible] = useState(false); // Track gender dropdown visibility

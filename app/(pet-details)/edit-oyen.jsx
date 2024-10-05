@@ -11,11 +11,11 @@ export default function EditOyen() {
 
   const router=useRouter();
 
-  const [name, setName] = useState('');
-  const [gender, setGender] = useState('');
-  const [weight, setWeight] = useState('');
-  const [appointment, setAppointment] = useState('');
-  const [date, setDate] = useState('');
+  const [name, setName] = useState('Oyen');
+  const [gender, setGender] = useState('Male');
+  const [weight, setWeight] = useState('4.6');
+  const [appointment, setAppointment] = useState('Rabbies Vaccination');
+  const [date, setDate] = useState('24 June 2024');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [imageUri, setImageUri] = useState(null); // State to store the selected image
   const [isGenderDropdownVisible, setIsGenderDropdownVisible] = useState(false); // Track gender dropdown visibility

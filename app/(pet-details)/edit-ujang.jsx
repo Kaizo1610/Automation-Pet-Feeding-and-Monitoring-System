@@ -11,11 +11,11 @@ export default function EditUjang() {
 
   const router=useRouter();
 
-  const [name, setName] = useState('');
-  const [gender, setGender] = useState('');
-  const [weight, setWeight] = useState('');
-  const [appointment, setAppointment] = useState('');
-  const [date, setDate] = useState('');
+  const [name, setName] = useState('Ujang');
+  const [gender, setGender] = useState('Male');
+  const [weight, setWeight] = useState('7.1');
+  const [appointment, setAppointment] = useState('Nutrition');
+  const [date, setDate] = useState('7 October 2024');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [imageUri, setImageUri] = useState(null); // State to store the selected image
   const [isGenderDropdownVisible, setIsGenderDropdownVisible] = useState(false); // Track gender dropdown visibility
