@@ -7,7 +7,7 @@ import moment from 'moment';
 import * as ImagePicker from 'expo-image-picker'; // Import image picker
 import { useRouter } from 'expo-router';
 
-export default function EditOyen() {
+export default function EditJohn() {
 
   const router=useRouter();
 
@@ -70,7 +70,7 @@ export default function EditOyen() {
         {imageUri ? (
           <Image source={{ uri: imageUri }} style={styles.profileImage} />
         ) : (
-          <Image source={require('./../../assets/images/oyen.png')} style={styles.profileImage} />
+          <Image source={require('./../../assets/images/john.png')} style={styles.profileImage} />
         )}
         <TouchableOpacity style={styles.editIcon} onPress={pickImage}>
           <Ionicons name="pencil" size={16} color="white" />

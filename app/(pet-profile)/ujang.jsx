@@ -4,7 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from './../../constants/Colors';
 import { useRouter } from 'expo-router';
 
-export default function OyenPetDetails() {
+export default function UjangPetDetails() {
   const router = useRouter();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -39,7 +39,7 @@ export default function OyenPetDetails() {
         />
         {/* Edit (Pencil) Icon */}
         <TouchableOpacity style={styles.editIcon}>
-          <Ionicons name="pencil" size={18} color="white" />
+          <Ionicons name="pencil" size={18} color="white" onPress={()=>router.push('(pet-details)/edit-ujang')}/>
         </TouchableOpacity>
         {/* Trash Icon */}
         <TouchableOpacity style={styles.deleteIcon} onPress={handleDeletePress}>
