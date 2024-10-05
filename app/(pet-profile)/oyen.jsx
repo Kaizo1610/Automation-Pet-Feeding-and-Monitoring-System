@@ -38,7 +38,7 @@ export default function OyenPetDetails() {
           style={styles.catImage}
         />
         {/* Edit (Pencil) Icon */}
-        <TouchableOpacity style={styles.editIcon}>
+        <TouchableOpacity style={styles.editIcon} onPress={()=>router.push('(pet-details)/edit-oyen')}>
           <Ionicons name="pencil" size={18} color="white" />
         </TouchableOpacity>
         {/* Trash Icon */}
