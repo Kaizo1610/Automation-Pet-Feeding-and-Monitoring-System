@@ -17,10 +17,10 @@ export default function FAQ() {
   };
 
   const faqs = [
-    { question: 'What is PawTector?', answer: 'PawTector is ...' },
-    { question: 'What PawTector can do?', answer: 'PawTector can ...' },
-    { question: 'Why use PawTector?', answer: 'PawTector is useful because ...' },
-    { question: 'How to connect PawTector with smart pet feeder?', answer: 'To connect ...' },
+    { question: 'What is PawTector?', answer: 'PawTector is IoT-based pet feeding and monitoring system.' },
+    { question: 'What PawTector can do?', answer: 'PawTector can monitor and control food, water levels remotely.' },
+    { question: 'Why use PawTector?', answer: 'PawTector is useful because can do automation feeding, ensures pets needs are met.' },
+    { question: 'How to connect PawTector with smart pet feeder?', answer: 'To connect via mobile app using IoT-enabled devices.' },
   ];
 
   return (
