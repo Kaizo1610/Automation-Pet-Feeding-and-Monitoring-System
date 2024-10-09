@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ToastAndroid } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from './../../../constants/Colors'
 import { useRouter } from 'expo-router';
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { auth } from './../../../configs/FirebaseConfig'
 
 export default function SignUp() {
 
@@ -23,6 +25,27 @@ export default function SignUp() {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  const onCreateAccount=()=>{
+
+    if(!username || !email || !password || !confirmPassword)
+    {
+      ToastAndroid.show('Please enter all the details', ToastAndroid.BOTTOM);
+    }
+
+    createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed up 
+    const user = userCredential.user;
+    ToastAndroid.show('Your account successfully been created', ToastAndroid.BOTTOM);
+    console.log(user);
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorMessage,errorCode);
+  });
+  }
+
   return (
     <View style={styles.container}>
       {/* Logo */}
@@ -38,14 +61,14 @@ export default function SignUp() {
         style={styles.input}
         placeholder="Username"
         value={username}
-        onChangeText={setUsername}
+        onChangeText={(value)=>setUsername(value)}
       />
 
       <TextInput
         style={styles.input}
         placeholder="Email Address"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(value)=>setEmail(value)}
         keyboardType="email-address"
       />
 
@@ -54,7 +77,7 @@ export default function SignUp() {
           style={styles.inputPassword}
           placeholder="Password"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(value)=>setPassword(value)}
           secureTextEntry={!showPassword}
         />
         <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon1}>
@@ -67,7 +90,7 @@ export default function SignUp() {
           style={styles.inputPassword}
           placeholder="Confirm Password"
           value={confirmPassword}
-          onChangeText={setConfirmPassword}
+          onChangeText={(value)=>setConfirmPassword(value)}
           secureTextEntry={!showConfirmPassword}
         />
         <TouchableOpacity onPress={toggleConfirmPasswordVisibility} style={styles.icon2}>
@@ -75,7 +98,7 @@ export default function SignUp() {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={() => router.push('auth/sign-in')}>
+      <TouchableOpacity style={styles.button} onPress={onCreateAccount}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
       </View>
@@ -124,7 +147,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     marginBottom: 15,
-    backgroundColor: Colors.WHITE
+    backgroundColor: Colors.WHITE,
+    fontFamily:'outfit'
   },
   passwordContainer: {
     flexDirection: 'row',
@@ -139,8 +163,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     backgroundColor: Colors.WHITE,
-    width:'100%'
-    
+    width:'100%',
+    fontFamily:'outfit'
   },
   icon1: {
     paddingHorizontal:5,

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ToastAndroid } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from './../../../constants/Colors'
 import { useRouter } from 'expo-router';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './../../../configs/FirebaseConfig'
 
 export default function SignIn() {
 
@@ -16,9 +18,30 @@ export default function SignIn() {
     setShowPassword(!showPassword);
   };
 
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
+  const onSignIn=()=>{
+
+    if(!email && !password)
+    {
+      ToastAndroid.show('Please Enter Email and Password!', ToastAndroid.LONG);
+    }
+
+    signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    router.replace('(tabs)/homepage')
+    console.log(user);
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorCode, errorMessage);
+    if(errorCode=='auth/invalid-email')
+    {
+      ToastAndroid.show('Invalid Credentials', ToastAndroid.LONG)
+    }
+  });
+  }
 
   return (
     <View style={styles.container}>
@@ -35,7 +58,7 @@ export default function SignIn() {
         style={styles.input}
         placeholder="Email Address"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(value)=>setEmail(value)}
         keyboardType="email-address"
       />
 
@@ -44,7 +67,7 @@ export default function SignIn() {
           style={styles.inputPassword}
           placeholder="Password"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(value)=>setPassword(value)}
           secureTextEntry={!showPassword}
         />
         <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon1}>
@@ -58,7 +81,7 @@ export default function SignIn() {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={() => router.push('/homepage')}>
+      <TouchableOpacity style={styles.button} onPress={onSignIn}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       </View>
@@ -123,6 +146,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 15,
     backgroundColor: Colors.WHITE,
+    fontFamily:'outfit'
   },
   passwordContainer: {
     flexDirection: 'row',
@@ -137,8 +161,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     backgroundColor: Colors.WHITE,
-    width:'100%'
-    
+    width:'100%',
+    fontFamily:'outfit'
   },
   icon1: {
     paddingHorizontal:5,
