@@ -127,7 +127,7 @@ export default function Homepage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'Colors.WHITE',
     alignItems: 'center',
     paddingTop: 50,
   },
@@ -135,11 +135,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '90%',
-    marginBottom: 50,
+    marginBottom: 20,
   },
   title: {
     fontFamily:'outfit-bold',
-    fontSize: 30
+    fontSize: 28,
+    marginBottom: 20,
+    borderBottomWidth: 2,
+    borderBottomColor: Colors.PRIMARY
   },
   icon1: {
     paddingLeft: 2
@@ -157,7 +160,8 @@ const styles = StyleSheet.create({
   levelTitle: {
     fontSize: 25,
     fontFamily: 'oufit-medium',
-    marginBottom: 25,
+    marginBottom: 20,
+    color: Colors.BLACK,
   },
   waterCircle: {
     width: 200,
