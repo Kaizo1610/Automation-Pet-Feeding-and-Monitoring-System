@@ -75,6 +75,12 @@ export default function Homepage() {
         </TouchableOpacity>
       </View>
 
+      <View>
+        <Text style={styles.title}>
+            Pawtector's Dashboard
+        </Text>
+      </View>
+
       {/* Water Level */}
       <View style={styles.levelContainer}>
         <Text style={styles.levelTitle}>Water Level</Text>
@@ -131,6 +137,10 @@ const styles = StyleSheet.create({
     width: '90%',
     marginBottom: 50,
   },
+  title: {
+    fontFamily:'outfit-bold',
+    fontSize: 30
+  },
   icon1: {
     paddingLeft: 2
   },
@@ -146,7 +156,7 @@ const styles = StyleSheet.create({
   },
   levelTitle: {
     fontSize: 25,
-    fontFamily: 'oufit-bold',
+    fontFamily: 'oufit-medium',
     marginBottom: 25,
   },
   waterCircle: {
