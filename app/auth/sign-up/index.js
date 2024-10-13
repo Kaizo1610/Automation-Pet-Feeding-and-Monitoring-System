@@ -32,7 +32,7 @@ export default function SignUp() {
       ToastAndroid.show('Please enter all the details', ToastAndroid.BOTTOM);
     }
 
-    createUserWithEmailAndPassword(auth, email, password)
+    createUserWithEmailAndPassword(auth, email, password, confirmPassword)
   .then((userCredential) => {
     // Signed up 
     const user = userCredential.user;
@@ -43,6 +43,14 @@ export default function SignUp() {
     const errorCode = error.code;
     const errorMessage = error.message;
     console.log(errorMessage,errorCode);
+    if(errorCode=='auth/weak-password')
+      {
+        ToastAndroid.show('Password need at least 6 characters', ToastAndroid.LONG)
+      }
+    if(errorCode=='auth/email-already-in-use')
+      {
+        ToastAndroid.show('Email already in use', ToastAndroid.LONG)
+      }
   });
   }
 
