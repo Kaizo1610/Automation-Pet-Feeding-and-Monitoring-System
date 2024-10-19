@@ -61,7 +61,7 @@ export default function EditSchedule() {
       <TouchableOpacity onPress={()=>router.back()} style={{marginTop:10}}>
       <Ionicons name="arrow-back" size={28} color="black" />    
       </TouchableOpacity>
-        <Text style={styles.headerText}>Set Feeding Schedule</Text>
+        <Text style={styles.headerText}>Set Watering Schedule</Text>
       </View>
 
       <View style={styles.container1}>

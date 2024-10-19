@@ -47,7 +47,7 @@ export default function DispenseSchedule() {
       <Text style={styles.scheduleText}>{item.time}</Text>
       <Text style={styles.portionText}>{item.portions}</Text>
       <TouchableOpacity style={styles.arrow}
-        onPress={() => navigation.navigate('(dispense-food)/edit-schedule', { scheduleId: item.id })}>
+        onPress={() => navigation.navigate(editScheduleRoute, { scheduleId: item.id })}>
         <Text style={styles.arrowText}>&gt;</Text>
       </TouchableOpacity>
     </View>
@@ -60,8 +60,7 @@ export default function DispenseSchedule() {
 
   const deleteScheduleRoute = selectedIcon === 'fish' ? '(dispense-food)/delete-schedule' : '(dispense-water)/delete-schedule';
   const addScheduleRoute = selectedIcon === 'fish' ? '(dispense-food)/add-schedule' : '(dispense-water)/add-schedule';
-  const manualDispenseRoute = selectedIcon === 'fish' ? '(dispense-food)/manual-dispense' : '(dispense-water)/manual-dispense';
-
+  const editScheduleRoute = selectedIcon === 'fish' ? '(dispense-food)/edit-schedule' : '(dispense-water)/edit-schedule';
 
   const [modalVisible, setModalVisible] = useState(false);
   const [portions, setPortions] = useState('');
