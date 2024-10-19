@@ -3,11 +3,13 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput } 
 import { Checkbox } from 'expo-checkbox';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from './../../constants/Colors';
-import { useRouter } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 
 export default function DispenseSchedule() {
 
   const router = useRouter();
+
+  const navigation = useNavigation();
 
   // State to track which section is selected
   const [selectedIcon, setSelectedIcon] = useState('fish');
@@ -44,7 +46,8 @@ export default function DispenseSchedule() {
       />
       <Text style={styles.scheduleText}>{item.time}</Text>
       <Text style={styles.portionText}>{item.portions}</Text>
-      <TouchableOpacity style={styles.arrow}>
+      <TouchableOpacity style={styles.arrow}
+        onPress={() => navigation.navigate('(dispense-food)/edit-schedule', { scheduleId: item.id })}>
         <Text style={styles.arrowText}>&gt;</Text>
       </TouchableOpacity>
     </View>
