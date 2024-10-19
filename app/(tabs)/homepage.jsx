@@ -77,6 +77,7 @@ export default function Homepage() {
       </View>
 
       {/* Water Level */}
+      <View style={styles.WaterBackground}>
       <View style={styles.levelContainer}>
         <Text style={styles.levelTitle}>Water Level</Text>
         <View style={styles.waterCircle}>
@@ -98,8 +99,10 @@ export default function Homepage() {
           thumbColor={waterToggleActive ? 'orange' : 'white'}
         />
       </View>
+      </View>
 
       {/* Food Level */}
+      <View style={styles.FoodBackground}>
       <View style={styles.levelContainer}>
         <Text style={styles.levelTitle}>Food Level</Text>
         <View style={styles.foodContainer}>
@@ -121,6 +124,7 @@ export default function Homepage() {
           thumbColor={foodToggleActive ? 'orange' : 'white'}
         />
       </View>
+    </View>
     </View>
   );
 }
