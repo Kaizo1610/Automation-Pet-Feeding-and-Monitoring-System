@@ -132,7 +132,7 @@ export default function Homepage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.PEACH,
     alignItems: 'center',
     paddingTop: 50,
   },
@@ -167,6 +167,8 @@ const styles = StyleSheet.create({
     fontFamily: 'outfit-medium',
     marginBottom: 20,
     color: Colors.BLACK,
+    backgroundColor: 'yellow',
+    padding: 3
   },
   waterCircle: {
     width: 200,
@@ -178,7 +180,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Center content vertically
     alignItems: 'center', // Center content horizontally
     marginBottom: 10,
-    backgroundColor: Colors.LIGHT_BLUE, // Add a light blue background
+    backgroundColor: Colors.WHITE,
   },
   waterFill: {
     position: 'absolute',
@@ -195,7 +197,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Center content vertically
     alignItems: 'center', // Center content horizontally
     marginBottom: 10,
-    backgroundColor: Colors.LIGHT_BROWN, // Add a light brown background
+    backgroundColor: Colors.WHITE, 
   },
   foodFill: {
     position: 'absolute',
