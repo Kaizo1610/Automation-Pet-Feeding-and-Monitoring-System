@@ -5,13 +5,14 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from './../../constants/Colors';
 import { TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Homepage() {  
 
   const router = useRouter();
 
   // Initial water and food levels
-  const [waterLevel, setWaterLevel] = useState(0.7); // Set to 70% initially
+  const [waterLevel, setWaterLevel] = useState(0.4); // Set to 40% initially
   const [foodLevel, setFoodLevel] = useState(0.4); // Set to 40% initially
 
   // To track whether the switch is being held (for both water and food)
@@ -52,12 +53,6 @@ export default function Homepage() {
     clearInterval(foodIntervalRef.current); // Stop the increment
   };
 
-  // Helper function to calculate dynamic rgba color based on percentage
-  const getDynamicColor = (level, color) => {
-    const opacity = Math.round(level * 255); // Scale from 0 to 255
-    return `rgba(${color}, ${opacity / 255})`; // Adjust opacity based on level
-  };
-
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -86,10 +81,13 @@ export default function Homepage() {
         <Text style={styles.levelTitle}>Water Level</Text>
         <View style={styles.waterCircle}>
           {/* Water fill with dynamic opacity */}
-          <View style={[
-            styles.waterFill, 
-            { height: 200 * waterLevel, backgroundColor: getDynamicColor(waterLevel, '127,255,212') } // Dynamic color based on water level
-          ]} />
+          <LinearGradient
+            colors={['rgba(127,255,212,1)', 'rgba(127,255,212,0.5)']}
+            style={[
+              styles.waterFill, 
+              { height: 200 * waterLevel } // Dynamic height based on water level
+            ]}
+          />
           {/* Display percentage inside the container */}
           <Text style={styles.percentageText}>{`${Math.round(waterLevel * 100)}%`}</Text>
         </View>
@@ -106,10 +104,13 @@ export default function Homepage() {
         <Text style={styles.levelTitle}>Food Level</Text>
         <View style={styles.foodContainer}>
           {/* Food fill with dynamic opacity */}
-          <View style={[
-            styles.foodFill, 
-            { height: 150 * foodLevel, backgroundColor: getDynamicColor(foodLevel, '165,42,42') } // Dynamic color based on food level
-          ]} />
+          <LinearGradient
+            colors={['rgba(165,42,42,1)', 'rgba(165,42,42,0.5)']}
+            style={[
+              styles.foodFill, 
+              { height: 150 * foodLevel } // Dynamic height based on food level
+            ]}
+          />
           {/* Display percentage inside the container */}
           <Text style={styles.percentageText}>{`${Math.round(foodLevel * 100)}%`}</Text>
         </View>
@@ -127,7 +128,7 @@ export default function Homepage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'Colors.WHITE',
+    backgroundColor: Colors.WHITE,
     alignItems: 'center',
     paddingTop: 50,
   },
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontFamily:'outfit-bold',
+    fontFamily: 'outfit-bold',
     fontSize: 28,
     marginBottom: 20,
     borderBottomWidth: 2,
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
   },
   levelTitle: {
     fontSize: 25,
-    fontFamily: 'oufit-medium',
+    fontFamily: 'outfit-medium',
     marginBottom: 20,
     color: Colors.BLACK,
   },
@@ -173,6 +174,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Center content vertically
     alignItems: 'center', // Center content horizontally
     marginBottom: 10,
+    backgroundColor: Colors.LIGHT_BLUE, // Add a light blue background
   },
   waterFill: {
     position: 'absolute',
@@ -183,12 +185,13 @@ const styles = StyleSheet.create({
   },
   foodContainer: {
     width: 120,
-    height: 180,
+    height: 154,
     borderWidth: 2,
     borderColor: Colors.BLACK,
     justifyContent: 'center', // Center content vertically
     alignItems: 'center', // Center content horizontally
     marginBottom: 10,
+    backgroundColor: Colors.LIGHT_BROWN, // Add a light brown background
   },
   foodFill: {
     position: 'absolute',
