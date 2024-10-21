@@ -17,6 +17,7 @@ export const Colors = {
   PEACH:'#FEF7EF',
   LIGHTGRAY:'#D3D3D3',
   BROWN:'#964B00',
+  LIGHTRED: '#FF474C',
   
   light: {
     text: '#11181C',

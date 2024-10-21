@@ -18,98 +18,110 @@ export default function SignIn() {
     setShowPassword(!showPassword);
   };
 
-  const onSignIn=()=>{
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
-    if(!email && !password)
-    {
-      ToastAndroid.show('Please Enter Email and Password!', ToastAndroid.LONG);
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+    setTimeout(() => {
+      setAlertVisible(false);
+    }, 4000); // Hide the alert after 4 seconds
+  };
+
+  const onSignIn = () => {
+    if (!email && !password) {
+      showAlert('Please Enter The Correct Email and Password!');
+      return;
     }
-
+  
     signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    router.replace('(tabs)/homepage')
-    console.log(user);
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorCode, errorMessage);
-    if(errorCode=='auth/invalid-email')
-    {
-      ToastAndroid.show('Invalid Credentials', ToastAndroid.LONG)
-    }
-  });
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        router.replace('(tabs)/homepage');
+        console.log(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        if (errorCode == 'auth/invalid-email') {
+          showAlert('Invalid Credentials');
+        }
+      });
   }
 
   return (
     <View style={styles.container}>
+      {alertVisible && (
+        <View style={styles.alertContainer}>
+          <Text style={styles.alertText}>{alertMessage}</Text>
+        </View>
+      )}
       {/* Logo */}
       <Image
         source={require('./../../../assets/images/pawtectorLogo.png')} 
         style={styles.logo}
       />
-
+  
       <Text style={styles.title}>SIGN IN</Text>
-
-    <View style={styles.container2}>
-      <TextInput
-        style={styles.input}
-        placeholder="Email Address"
-        value={email}
-        onChangeText={(value)=>setEmail(value)}
-        keyboardType="email-address"
-      />
-
-      <View style={styles.passwordContainer}>
+  
+      <View style={styles.container2}>
         <TextInput
-          style={styles.inputPassword}
-          placeholder="Password"
-          value={password}
-          onChangeText={(value)=>setPassword(value)}
-          secureTextEntry={!showPassword}
+          style={styles.input}
+          placeholder="Email Address"
+          value={email}
+          onChangeText={(value) => setEmail(value)}
+          keyboardType="email-address"
         />
-        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon1}>
-          <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={24} color="black" />
+  
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.inputPassword}
+            placeholder="Password"
+            value={password}
+            onChangeText={(value) => setPassword(value)}
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon1}>
+            <Ionicons name={showPassword ? 'eye' : 'eye-off'} size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+  
+        <View>
+          <TouchableOpacity onPress={() => router.push('auth/forgot-password')}>
+            <Text style={styles.loginText1}>Forgot Password?</Text>
+          </TouchableOpacity>
+        </View>
+  
+        <TouchableOpacity style={styles.button} onPress={onSignIn}>
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
       </View>
-
-     <View>
-      <TouchableOpacity onPress={() => router.push('auth/forgot-password')}>
-          <Text style={styles.loginText1}>Forgot Password?</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity style={styles.button} onPress={onSignIn}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-      </View>
-
+  
       <View style={styles.footer}>
         <Text style={styles.joinText}>Don't have an account yet?</Text>
         <TouchableOpacity onPress={() => router.push('auth/sign-up')}>
           <Text style={styles.loginText2}>Register</Text>
         </TouchableOpacity>
       </View>
-
+  
       <View>
         <Text style={styles.loginText3}>--------------     Or Connect With     -------------</Text>
       </View>
-
-    <View style={styles.footer2}>
-      <TouchableOpacity style={styles.button1} onPress={() => router.push('/homepage')}>
-        <Text style={styles.buttonText1}>Login With Google</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button2} onPress={() => router.push('/homepage')}>
-        <Text style={styles.buttonText1}>Login With Facebook</Text>
-      </TouchableOpacity>
+  
+      <View style={styles.footer2}>
+        <TouchableOpacity style={styles.button1} onPress={() => router.push('/homepage')}>
+          <Text style={styles.buttonText1}>Login With Google</Text>
+        </TouchableOpacity>
+  
+        <TouchableOpacity style={styles.button2} onPress={() => router.push('/homepage')}>
+          <Text style={styles.buttonText1}>Login With Facebook</Text>
+        </TouchableOpacity>
+      </View>
     </View>
-
-    </View>
-  );
-}
+  )};
 
 const styles = StyleSheet.create({
   container: {
@@ -249,5 +261,24 @@ const styles = StyleSheet.create({
     paddingHorizontal:5,
     width:"85%",
     alignItems:'center'
+  },
+  alertContainer: {
+    position: 'absolute',
+    top: 55,
+    width: '80%',
+    backgroundColor: Colors. LIGHTRED,
+    padding: 5,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign:'center',
+    zIndex: 1,
+    borderWidth: 1,
+    borderColor: 'red'
+  },
+  alertText: {
+    fontFamily:'outfit-medium',
+    fontSize: 16,
+    color: Colors.WHITE
   }
 });
