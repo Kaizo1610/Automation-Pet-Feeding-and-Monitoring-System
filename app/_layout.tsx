@@ -1,6 +1,10 @@
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
-import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
+import React, { useCallback, useEffect } from 'react';
+import { View } from 'react-native';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -10,15 +14,29 @@ export default function RootLayout() {
     'kaushan': require('./../assets/fonts/KaushanScript-Regular.ttf'),
   });
 
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return null;
   }
 
   return (
-    <Stack screenOptions={{
-      headerShown: false
-    }}>
-      <Stack.Screen name="index" />
-    </Stack>
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+      <Stack screenOptions={{
+        headerShown: false
+      }}>
+        <Stack.Screen name="index" />
+      </Stack>
+    </View>
   );
 }
