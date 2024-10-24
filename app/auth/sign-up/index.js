@@ -25,37 +25,53 @@ export default function SignUp() {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const onCreateAccount=()=>{
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
 
-    if(!username || !email || !password || !confirmPassword)
-    {
-      ToastAndroid.show('Please enter all the details', ToastAndroid.BOTTOM);
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+    setTimeout(() => {
+      setAlertVisible(false);
+    }, 4000); // Hide the alert after 4 seconds
+  };
+
+  const onCreateAccount = () => {
+    if (!username || !email || !password || !confirmPassword) {
+      showAlert('Please enter all the details');
+      return;
     }
-
-    createUserWithEmailAndPassword(auth, email, password, confirmPassword)
-  .then((userCredential) => {
-    // Signed up 
-    const user = userCredential.user;
-    ToastAndroid.show('Your account successfully been created', ToastAndroid.BOTTOM);
-    console.log(user);
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorMessage,errorCode);
-    if(errorCode=='auth/weak-password')
-      {
-        ToastAndroid.show('Password need at least 6 characters', ToastAndroid.LONG)
-      }
-    if(errorCode=='auth/email-already-in-use')
-      {
-        ToastAndroid.show('Email already in use', ToastAndroid.LONG)
-      }
-  });
+  
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed up 
+        const user = userCredential.user;
+        showAlert('Your account has been successfully created');
+        console.log(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+        if (errorCode == 'auth/weak-password') {
+          showAlert('Password needs at least 6 characters');
+        }
+        if (errorCode == 'auth/email-already-in-use') {
+          showAlert('Email already in use');
+        }
+        if (errorCode == 'auth/invalid-email') {
+          showAlert('Invalid Email');
+        }
+      });
   }
 
   return (
     <View style={styles.container}>
+      {alertVisible && (
+        <View style={styles.alertContainer}>
+          <Text style={styles.alertText}>{alertMessage}</Text>
+        </View>
+      )}
       {/* Logo */}
       <Image
         source={require('./../../../assets/images/pawtectorLogo.png')} 
@@ -220,4 +236,23 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginTop:70
   },
+  alertContainer: {
+    position: 'absolute',
+    top: 55,
+    width: '80%',
+    backgroundColor: Colors.RED,
+    padding: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign:'center',
+    zIndex: 1,
+    borderWidth: 1,
+    borderColor: 'red'
+  },
+  alertText: {
+    fontFamily:'outfit-medium',
+    fontSize: 15,
+    color: Colors.BLACK
+  }
 });

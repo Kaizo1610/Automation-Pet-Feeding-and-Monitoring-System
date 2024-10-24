@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 55,
     width: '80%',
-    backgroundColor: Colors. LIGHTRED,
+    backgroundColor: Colors.RED,
     padding: 5,
     borderRadius: 5,
     alignItems: 'center',
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   },
   alertText: {
     fontFamily:'outfit-medium',
-    fontSize: 16,
+    fontSize: 15,
     color: Colors.BLACK
   }
 });
