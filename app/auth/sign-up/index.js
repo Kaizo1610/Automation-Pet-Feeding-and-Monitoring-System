@@ -27,10 +27,21 @@ export default function SignUp() {
 
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('error'); // 'error' or 'success'
 
   const showAlert = (message) => {
     setAlertMessage(message);
     setAlertVisible(true);
+    setAlertType('error');
+    setTimeout(() => {
+      setAlertVisible(false);
+    }, 4000); // Hide the alert after 4 seconds
+  };
+
+  const showSuccess = (message) => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+    setAlertType('success');
     setTimeout(() => {
       setAlertVisible(false);
     }, 4000); // Hide the alert after 4 seconds
@@ -46,8 +57,14 @@ export default function SignUp() {
       .then((userCredential) => {
         // Signed up 
         const user = userCredential.user;
-        showAlert('Your account has been successfully created');
+        showSuccess('Your account has been successfully created');
         console.log(user);
+  
+        // Clear input fields
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -68,7 +85,7 @@ export default function SignUp() {
   return (
     <View style={styles.container}>
       {alertVisible && (
-        <View style={styles.alertContainer}>
+        <View style={[styles.alertContainer, alertType === 'success' ? styles.successAlert : styles.errorAlert]}>
           <Text style={styles.alertText}>{alertMessage}</Text>
         </View>
       )}
@@ -240,18 +257,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 55,
     width: '80%',
-    backgroundColor: Colors.RED,
     padding: 5,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    textAlign:'center',
+    textAlign: 'center',
     zIndex: 1,
     borderWidth: 1,
+  },
+  errorAlert: {
+    backgroundColor: Colors.RED,
     borderColor: 'red'
   },
+  successAlert: {
+    backgroundColor: Colors.GREEN,
+    borderColor: 'green'
+  },
   alertText: {
-    fontFamily:'outfit-medium',
+    fontFamily: 'outfit-medium',
     fontSize: 15,
     color: Colors.BLACK
   }
