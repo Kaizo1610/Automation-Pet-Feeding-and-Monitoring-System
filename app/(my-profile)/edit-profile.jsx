@@ -24,7 +24,7 @@ export default function EditProfile() {
     // Add your logic to save the profile data
   };
 
-  // Handle image picking (update the temporary image)
+  // Handle image picking (update the profile image directly)
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
@@ -40,6 +40,7 @@ export default function EditProfile() {
     });
 
     if (!result.canceled) {
+      setProfileImage(result.uri); // Set profile image directly
       setTempProfileImage(result.uri); // Set temporary image for preview
     }
   };
@@ -160,4 +161,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'outfit-bold',
   },
-});
+}); 
