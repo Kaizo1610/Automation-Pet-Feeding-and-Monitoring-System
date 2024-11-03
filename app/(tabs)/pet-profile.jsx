@@ -16,7 +16,7 @@ export default function PetProfile() {
     <View style={styles.container}>
       <Text style={styles.title}>Pet Profiles</Text>
       <Text style={styles.subtitle}>
-        Manage and store your pet information here.
+        Manage and store your <Text style={{color:'green'}}>pet information</Text> here.
       </Text>
 
       <View style={styles.container2}>
