@@ -59,6 +59,13 @@ export default function AddPetDetails() {
     setIsAppointmentDropdownVisible(false); // Close the dropdown
   };
 
+    // Handle save button (commit temp changes to actual profile state)
+    const handleSave = () => {
+      //setProfileImage(tempProfileImage); // Commit temporary image to permanent state
+      console.log("New Pet Profile saved:", { name, gender, weight, appointment, date, imageUri });
+      // Add your logic to save the profile data
+    };
+
   return (
     <View style={styles.container}>
       {/* Header Section */}
@@ -165,7 +172,7 @@ export default function AddPetDetails() {
       </View>
 
       {/* Save Button */}
-      <TouchableOpacity style={styles.saveButton}>
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>Save</Text>
       </TouchableOpacity>
     </View>
