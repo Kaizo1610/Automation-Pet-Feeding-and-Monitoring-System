@@ -167,7 +167,6 @@ const styles = StyleSheet.create({
     fontFamily: 'outfit-medium',
     marginBottom: 20,
     color: Colors.BLACK,
-    backgroundColor: 'yellow',
     padding: 3
   },
   waterCircle: {
