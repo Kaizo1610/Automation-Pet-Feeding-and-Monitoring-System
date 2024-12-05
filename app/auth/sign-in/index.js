@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ToastAndroid } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Colors } from './../../../constants/Colors'
 import { useRouter } from 'expo-router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -119,11 +120,11 @@ export default function SignIn() {
   
       <View style={styles.footer2}>
         <TouchableOpacity style={styles.button1} onPress={() => router.push('/homepage')}>
-          <Text style={styles.buttonText1}>Login With Google</Text>
+          <Text style={styles.buttonText1}><FontAwesome name="google" size={26} color="white"/> Login With Google</Text>
         </TouchableOpacity>
   
         <TouchableOpacity style={styles.button2} onPress={() => router.push('/homepage')}>
-          <Text style={styles.buttonText1}>Login With Facebook</Text>
+          <Text style={styles.buttonText1}><FontAwesome name="facebook-square" size={26} color="white" /> Login With Facebook</Text>
         </TouchableOpacity>
       </View>
     </View>
