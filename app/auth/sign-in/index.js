@@ -46,8 +46,14 @@ export default function SignIn() {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
-        if (errorCode == 'auth/invalid-email') {
+        if (errorCode == 'auth/invalid-credential') {
           showAlert('Invalid Credentials');
+        }
+        if (errorCode == 'auth/missing-password') {
+          showAlert('Password is Missing');
+        }
+        if (errorCode == 'auth/invalid-email') {
+          showAlert('Invalid Email Address');
         }
       });
   }
