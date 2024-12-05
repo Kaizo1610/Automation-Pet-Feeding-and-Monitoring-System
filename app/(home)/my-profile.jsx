@@ -1,14 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, BackHandler } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors'
+import { database } from './../../configs/FirebaseConfig';
+import { ref, get, child } from "firebase/database";
 
 export default function myProfile() {
 
   const router=useRouter();
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  const [username, setUsername] = useState('');
+  const [quotes, setQuotes] = useState('');
+
+  // Fetch existing profile data on component mount
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const dbRef = ref(database);
+        const snapshot = await get(child(dbRef, `users/1`)); // Assuming user ID is 1
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          console.log("Fetched profile data:", data); // Debug log
+          setUsername(data.username);
+          setQuotes(data.quotes);
+          setProfileImage(data.profileImage);
+        }
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   // Handle logout button press (show modal)
   const handleLogoutPress = () => {
@@ -39,11 +65,11 @@ export default function myProfile() {
 
       <View style={styles.profileContainer}>
         <Image
-          source={require('./../../assets/images/akim.jpg')} 
+          source={profileImage ? { uri: profileImage } : require('./../../assets/images/placeholderProfile.png')}
           style={styles.profileImage}
         />
-        <Text style={styles.profileName}>Aiman Akim</Text>
-        <Text style={styles.profileBio}>Always be positive</Text>
+        <Text style={styles.profileName}>{username || "Aiman Akim"}</Text>
+        <Text style={styles.profileBio}>{quotes || "Always be positive"}</Text>
         <TouchableOpacity style={styles.editButton} onPress={()=>router.push('(my-profile)/edit-profile')}>
           <Text style={styles.editButtonText}>Edit Profile</Text>
         </TouchableOpacity>
