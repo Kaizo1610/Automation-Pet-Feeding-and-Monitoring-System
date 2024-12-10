@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 24,
-    fontFamily: 'outfit-bold',
+    fontFamily: 'outfit-medium',
     textAlign: 'center',
   },
   title: {

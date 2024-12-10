@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Colors } from './../../constants/Colors';
 import { useRouter } from 'expo-router';
 
@@ -10,6 +10,7 @@ export default function PetProfile() {
     { name: 'Oyen', image: require('./../../assets/images/oyen.png') },
     { name: 'John', image: require('./../../assets/images/john.png') },
     { name: 'Ujang', image: require('./../../assets/images/ujang.png') },
+    { name: 'Kiko', image: require('./../../assets/images/kiko.jpeg') }, // Added Kiko
   ]);
 
   return (
@@ -22,18 +23,20 @@ export default function PetProfile() {
       <View style={styles.container2}>
         <Text style={styles.sectionTitle}>My Pet</Text>
 
-        {pets.map((pet) => (
-          <View key={pet.name} style={styles.petItem}>
-            <Image source={pet.image} style={styles.petImage} />
-            <Text style={styles.petName}>{pet.name}</Text>
-            <TouchableOpacity 
-              style={styles.arrow} 
-              onPress={() => router.push(`(pet-profile)/${pet.name.toLowerCase()}`)} // Navigate to the specific pet's detail page
-            >
-              <Text style={styles.arrowText}>&gt;</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
+        <ScrollView style={styles.scrollView}>
+          {pets.map((pet) => (
+            <View key={pet.name} style={styles.petItem}>
+              <Image source={pet.image} style={styles.petImage} />
+              <Text style={styles.petName}>{pet.name}</Text>
+              <TouchableOpacity 
+                style={styles.arrow} 
+                onPress={() => router.push(`(pet-profile)/${pet.name.toLowerCase()}`)} // Navigate to the specific pet's detail page
+              >
+                <Text style={styles.arrowText}>&gt;</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
 
         <TouchableOpacity 
           style={styles.addPetButton} 
@@ -92,7 +95,8 @@ const styles = StyleSheet.create({
   },
   arrow: {
     flex: 1,
-    alignItems: 'flex-end',
+    alignItems: 'flex-end', 
+    justifyContent: 'center', 
   },
   arrowText: {
     fontSize: 24,
@@ -108,5 +112,9 @@ const styles = StyleSheet.create({
     color: Colors.WHITE,
     fontSize: 18,
     fontFamily: 'outfit-bold',
+  },
+  scrollView: {
+    maxHeight: 400, // Adjust the height as needed
+    marginBottom: 20,
   },
 });
