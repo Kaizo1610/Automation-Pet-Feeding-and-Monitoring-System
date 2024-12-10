@@ -3,20 +3,55 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'reac
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from './../../../constants/Colors';
 import { useRouter } from 'expo-router';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from './../../../configs/FirebaseConfig';
 
 export default function ForgotPassword() {
   const router = useRouter();
   const [email, setEmail] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertType, setAlertType] = useState('error'); // 'error' or 'success'
 
   const handleSubmit = () => {
-    // Handle the process of sending verification code
-    console.log("Verification code sent to:", email);
-    // Navigate back or show verification step
-    router.back();
+    if (!email) {
+      showAlert('Please enter your email address', 'error');
+      return;
+    }
+
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        console.log("Password reset email sent to:", email);
+        showAlert('Password reset email sent. Please check your inbox.', 'success');
+      })
+      .catch((error) => {
+        console.log(error.code, error.message);
+        if (error.code === 'auth/user-not-found') {
+          showAlert('The email address is not registered.', 'error');
+        } else if (error.code === 'auth/invalid-email') {
+          showAlert('The email address is invalid.', 'error');
+        } else {
+          showAlert('Failed to send password reset email.', 'error');
+        }
+      });
+  };
+
+  const showAlert = (message, type) => {
+    setAlertMessage(message);
+    setAlertType(type);
+    setAlertVisible(true);
+    setTimeout(() => {
+      setAlertVisible(false);
+    }, 4000); // Hide the alert after 4 seconds
   };
 
   return (
     <View style={styles.container}>
+      {alertVisible && (
+        <View style={[styles.alertContainer, alertType === 'success' ? styles.successAlert : styles.errorAlert]}>
+          <Text style={styles.alertText}>{alertMessage}</Text>
+        </View>
+      )}
       <TouchableOpacity onPress={() => router.back()}>
         <Ionicons name="arrow-back" size={28} color="black" style={styles.arrowback}/>
       </TouchableOpacity>
@@ -28,7 +63,7 @@ export default function ForgotPassword() {
       />
       
       <Text style={styles.title}>FORGOT PASSWORD</Text>
-      <Text style={styles.subtitle}>Enter your email address, we will send you verification code.</Text>
+      <Text style={styles.subtitle}>Enter your email address, we will send you a verification code.</Text>
 
       {/* Email Input */}
       <View style={styles.inputContainer}>
@@ -40,12 +75,10 @@ export default function ForgotPassword() {
           keyboardType="email-address"
         />
       
-
-      {/* Submit Button */}
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>Submit</Text>
-      </TouchableOpacity>
-
+        {/* Submit Button */}
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.submitButtonText}>Submit</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -64,7 +97,7 @@ const styles = StyleSheet.create({
     marginLeft: 42
   },
   arrowback: {
-    marginTop:25
+    marginTop: 25
   },
   title: {
     fontSize: 30,
@@ -96,14 +129,14 @@ const styles = StyleSheet.create({
     borderColor: Colors.GRAY,
     width: '90%',
     marginLeft: 15,
-    fontFamily:'outfit'
+    fontFamily: 'outfit'
   },
   submitButton: {
     backgroundColor: Colors.BLACK,
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: 'center',
-    width:'90%',
+    width: '90%',
     marginLeft: 15,
     marginTop: 30
   },
@@ -112,4 +145,29 @@ const styles = StyleSheet.create({
     color: Colors.WHITE,
     fontFamily: 'outfit-bold',
   },
+  alertContainer: {
+    position: 'absolute',
+    top: 55,
+    width: '80%',
+    padding: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    zIndex: 1,
+    borderWidth: 1,
+  },
+  errorAlert: {
+    backgroundColor: Colors.RED,
+    borderColor: 'red'
+  },
+  successAlert: {
+    backgroundColor: Colors.GREEN,
+    borderColor: 'green'
+  },
+  alertText: {
+    fontFamily: 'outfit-medium',
+    fontSize: 15,
+    color: Colors.BLACK
+  }
 });

@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ToastAndroi
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from './../../../constants/Colors'
 import { useRouter } from 'expo-router';
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth'
 import { auth } from './../../../configs/FirebaseConfig'
 
 export default function SignUp() {
@@ -55,8 +55,15 @@ export default function SignUp() {
   
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed up 
         const user = userCredential.user;
+        sendEmailVerification(user)
+          .then(() => {
+            showSuccess('Verification email sent. Please check your inbox.');
+          })
+          .catch((error) => {
+            console.log(error.code, error.message);
+            showAlert('Failed to send verification email.');
+          });
         showSuccess('Your account has been successfully created');
         console.log(user);
   

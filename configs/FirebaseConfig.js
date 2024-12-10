@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 //import { getAnalytics } from "firebase/analytics";
-import { getAuth, initializeAuth, getReactNativePersistence } from "firebase/auth";
+import { getAuth, initializeAuth, getReactNativePersistence, sendEmailVerification } from "firebase/auth";
 import { getStorage } from "firebase/storage"; 
 import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database";

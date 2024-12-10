@@ -38,9 +38,12 @@ export default function SignIn() {
   
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in 
         const user = userCredential.user;
-        router.replace('(tabs)/homepage');
+        if (user.emailVerified) {
+          router.replace('(tabs)/homepage');
+        } else {
+          showAlert('Please verify your email before signing in.');
+        }
         console.log(user);
       })
       .catch((error) => {
@@ -119,12 +122,12 @@ export default function SignIn() {
       </View>
   
       <View style={styles.footer2}>
-        <TouchableOpacity style={styles.button1} onPress={() => router.push('/homepage')}>
-          <Text style={styles.buttonText1}><FontAwesome name="google" size={26} color="white"/> Login With Google</Text>
+        <TouchableOpacity style={[styles.buttonIcon, styles.googleButton]} onPress={() => router.push('/homepage')}>
+          <FontAwesome name="google" size={26} color="white" />
         </TouchableOpacity>
-  
-        <TouchableOpacity style={styles.button2} onPress={() => router.push('/homepage')}>
-          <Text style={styles.buttonText1}><FontAwesome name="facebook-square" size={26} color="white" /> Login With Facebook</Text>
+      
+        <TouchableOpacity style={[styles.buttonIcon, styles.facebookButton]} onPress={() => router.push('/homepage')}>
+          <FontAwesome name="facebook-square" size={26} color="white" />
         </TouchableOpacity>
       </View>
     </View>
@@ -237,37 +240,23 @@ const styles = StyleSheet.create({
     marginTop:20
   },
   footer2: {
-    paddingLeft:5,
-    alignItems:'center'
-  },
-  button1: {
-    backgroundColor: Colors.BLACK,
-    paddingVertical: 15,
-    paddingHorizontal: 60,
-    borderRadius: 10,
-    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     width: '80%',
-    height: 60,
     marginTop: 15
   },
-  button2: {
-    backgroundColor: Colors.BLACK,
+  buttonIcon: {
     paddingVertical: 15,
-    paddingHorizontal: 45,
+    paddingHorizontal: 30,
     borderRadius: 10,
-    marginBottom: 10,
-    width: '80%',
-    height: 60,
-    marginTop: 15
+    width: '45%',
+    alignItems: 'center'
   },
-  buttonText1: {
-    color: Colors.WHITE,
-    fontFamily:'outfit-bold',
-    fontSize: 22,
-    textAlign:'center',
-    paddingHorizontal:5,
-    width:"85%",
-    alignItems:'center'
+  googleButton: {
+    backgroundColor: '#DB4437'
+  },
+  facebookButton: {
+    backgroundColor: '#4267B2'
   },
   alertContainer: {
     position: 'absolute',
