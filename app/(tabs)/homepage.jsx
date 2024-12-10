@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Switch, TextInput, Button, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, Switch, TextInput, Button, ScrollView, Image, FlatList, Dimensions } from 'react-native';
 import Svg, { Circle, G, Text as SvgText } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -11,8 +11,13 @@ import { useWaterLevel } from '../(dashboard-logic)/waterData';
 
 export default function Homepage() {  
   const router = useRouter();
-
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const images = [
+    require('./../../assets/images/promote.png'),
+    require('./../../assets/images/playingcat.jpg'),
+    require('./../../assets/images/feedingcat.jpg')
+  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -21,6 +26,12 @@ export default function Homepage() {
 
     return () => clearInterval(timer);
   }, []);
+
+  const handleScroll = (event) => {
+    const slideSize = event.nativeEvent.layoutMeasurement.width;
+    const index = Math.floor(event.nativeEvent.contentOffset.x / slideSize);
+    setCurrentIndex(index);
+  };
 
   const {
     foodLevel,
@@ -55,17 +66,39 @@ export default function Homepage() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      {/* Promote Image */}
-      <Image
-        source={require('./../../assets/images/promote.png')}
-        style={styles.promoteImage}>
-      </Image>
+      {/* Image Carousel */}
+      <FlatList
+        data={images}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+        renderItem={({ item }) => (
+          <Image source={item} style={styles.promoteImage} />
+        )}
+        keyExtractor={(item, index) => index.toString()}
+      />
+      <View style={styles.pagination}>
+        {images.map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.paginationDot,
+              currentIndex === index && styles.paginationDotActive,
+            ]}
+          />
+        ))}
+      </View>
 
       {/*Real Time Digital*/}
-      <View style={styles.timeBox}>
-        <Text style={styles.timeText}>
-          {currentTime.toLocaleTimeString()}
-        </Text>
+      <View style={styles.timeContainer}>
+        <View style={styles.line} />
+        <View style={styles.timeBox}>
+          <Text style={styles.timeText}>
+            {currentTime.toLocaleTimeString()}
+          </Text>
+        </View>
+        <View style={styles.line} />
       </View>
 
       {/* Food Level Box */}
@@ -237,17 +270,45 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: Colors.SECONDARY,
     paddingVertical: 20,
   },
   promoteImage: {
-    width: 350,
-    height: 200,
+    width: Dimensions.get('window').width,
+    height: 250,
     marginBottom: 20,
-    borderRadius: 15
+    borderRadius: 15,
+  },
+  pagination: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#ccc',
+    marginHorizontal: 4,
+  },
+  paginationDotActive: {
+    backgroundColor: '#000',
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '85%',
+    marginBottom: 20,
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#000',
+    marginHorizontal: 10,
   },
   timeBox: {
-    backgroundColor: '#fff',
+    backgroundColor: 'lightblue',
     padding: 20,
     borderRadius: 10,
     shadowColor: '#000',
@@ -255,7 +316,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-    marginBottom: 5,
     alignItems: 'center',
   },
   timeText: {
