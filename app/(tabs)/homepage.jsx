@@ -1,57 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Switch } from 'react-native';
+import { View, Text, StyleSheet, Switch, TextInput, Button, ScrollView, Image } from 'react-native';
+import Svg, { Circle, G, Text as SvgText } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from './../../constants/Colors';
 import { TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useFoodLevel } from '../(dashboard-logic)/foodData';
+import { useWaterLevel } from '../(dashboard-logic)/waterData';
 
 export default function Homepage() {  
 
   const router = useRouter();
 
-  // Initial water and food levels
-  const [waterLevel, setWaterLevel] = useState(0.4); // Set to 40% initially
-  const [foodLevel, setFoodLevel] = useState(0.4); // Set to 40% initially
+  const {
+    foodLevel,
+    isServoOn,
+    timerValue,
+    setTimerValue,
+    toggleServo,
+    updateTimerValue,
+  } = useFoodLevel();
 
-  // To track whether the switch is being held (for both water and food)
-  const [waterToggleActive, setWaterToggleActive] = useState(false);
-  const [foodToggleActive, setFoodToggleActive] = useState(false);
-
-  // Interval references
-  const waterIntervalRef = useRef(null);
-  const foodIntervalRef = useRef(null);
-
-  // Handle water level increment by 1% every second
-  const startWaterIncrease = () => {
-    if (!waterToggleActive) {
-      setWaterToggleActive(true);
-      waterIntervalRef.current = setInterval(() => {
-        setWaterLevel(prevLevel => (prevLevel >= 1 ? 1 : prevLevel + 0.01)); // Increment by 1%
-      }, 1000);
-    }
-  };
-
-  const stopWaterIncrease = () => {
-    setWaterToggleActive(false);
-    clearInterval(waterIntervalRef.current); // Stop the increment
-  };
-
-  // Handle food level increment by 1% every second
-  const startFoodIncrease = () => {
-    if (!foodToggleActive) {
-      setFoodToggleActive(true);
-      foodIntervalRef.current = setInterval(() => {
-        setFoodLevel(prevLevel => (prevLevel >= 1 ? 1 : prevLevel + 0.01)); // Increment by 1%
-      }, 1000);
-    }
-  };
-
-  const stopFoodIncrease = () => {
-    setFoodToggleActive(false);
-    clearInterval(foodIntervalRef.current); // Stop the increment
-  };
+  const {
+    waterLevel,
+    isPumpOn,
+    togglePump,
+  } = useWaterLevel();
 
   return (
     <View style={styles.container}>
@@ -70,61 +46,141 @@ export default function Homepage() {
         </TouchableOpacity>
       </View>
 
-      <View>
-        <Text style={styles.title}>
-            Pawtector's Dashboard
-        </Text>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      {/* Promote Image */}
+      <Image
+        source={require('./../../assets/images/promote.png')}
+        style={styles.promoteImage}>
+      </Image>
+      {/* Food Level Box */}
+      <Text style={styles.title}>Food Level</Text>
+      <View style={styles.box}>
+        <Svg width={150} height={150} viewBox="0 0 100 100">
+          <G rotation="-90" origin="50, 50">
+            <Circle
+              cx="50"
+              cy="50"
+              r="40"
+              stroke="#E0E0E0"
+              strokeWidth="8"
+              fill="none"
+            />
+            <Circle
+              cx="50"
+              cy="50"
+              r="40"
+              stroke="#2196F3"
+              strokeWidth="8"
+              fill="none"
+              strokeDasharray={Math.PI * 2 * 40}
+              strokeDashoffset={Math.PI * 2 * 40 * (1 - foodLevel)}
+            />
+          </G>
+          <SvgText
+            x="45"
+            y="48"
+            textAnchor="middle"
+            fontSize="17"
+            fontWeight="bold"
+            fill="#2196F3"
+            dy="2"
+          >
+            {Math.round(foodLevel * 100)}%
+          </SvgText>
+          <SvgText
+    x="41"
+    y="47"
+    textAnchor="middle"
+    fontSize="7" // Font size for the "est." text
+    fill="#0a0a0a"
+    dy="16" // Adjusted vertical position for the second text
+  >
+    est.{Math.round(foodLevel*20)}g
+  </SvgText>
+        </Svg>
+        <View style={styles.toggleContainer}>
+          <Text style={styles.toggleLabel}>Servo Motor</Text>
+          <Switch
+            value={isServoOn}
+            onValueChange={toggleServo}
+            trackColor={{ false: '#ccc', true: '#4CAF50' }}
+            thumbColor={isServoOn ? '#FFFFFF' : '#888'}
+            ios_backgroundColor="#E0E0E0"
+            style={styles.toggleSwitch}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Set Timer (in minutes):</Text>
+          <TextInput
+            style={styles.textInput}
+            keyboardType="numeric"
+            value={timerValue}
+            onChangeText={setTimerValue}
+          />
+          <Button title="Set Timer" onPress={updateTimerValue} />
+        </View>
       </View>
 
-      {/* Water Level */}
-      <View style={styles.WaterBackground}>
-      <View style={styles.levelContainer}>
-        <Text style={styles.levelTitle}>Water Level</Text>
-        <View style={styles.waterCircle}>
-          {/* Water fill with dynamic opacity */}
-          <LinearGradient
-            colors={['rgba(127,255,212,1)', 'rgba(127,255,212,0.5)']}
-            style={[
-              styles.waterFill, 
-              { height: 200 * waterLevel } // Dynamic height based on water level
-            ]}
+      {/* Water Level Box */}
+      <Text style={styles.title}>Water Level</Text>
+      <View style={styles.box}>
+        <Svg width={150} height={150} viewBox="0 0 100 100">
+          <G rotation="-90" origin="50, 50">
+            <Circle
+              cx="50"
+              cy="50"
+              r="40"
+              stroke="#E0E0E0"
+              strokeWidth="8"
+              fill="none"
+            />
+            <Circle
+              cx="50"
+              cy="50"
+              r="40"
+              stroke="#4CAF50"
+              strokeWidth="8"
+              fill="none"
+              strokeDasharray={Math.PI * 2 * 40}
+              strokeDashoffset={Math.PI * 2 * 40 * (1 - waterLevel)}
+            />
+          </G>
+          <SvgText
+            x="45"
+            y="47"
+            textAnchor="middle"
+            fontSize="17"
+            fontWeight="bold"
+            fill="#4CAF50"
+            dy="2"
+          >
+            {Math.round(waterLevel*100)}%
+          </SvgText>
+          <SvgText
+    x="41"
+    y="47"
+    textAnchor="middle"
+    fontSize="7" // Font size for the "est." text
+    fill="#0a0a0a"
+    dy="16" // Adjusted vertical position for the second text
+  >
+    est.{Math.round(waterLevel*20)}ml
+  </SvgText>
+        </Svg>
+        <View style={styles.toggleContainer}>
+          <Text style={styles.toggleLabel}>Water Pump</Text>
+          <Switch
+            value={isPumpOn}
+            onValueChange={togglePump}
+            trackColor={{ false: '#ccc', true: '#2196F3' }}
+            thumbColor={isPumpOn ? '#FFFFFF' : '#888'}
+            ios_backgroundColor="#E0E0E0"
+            style={styles.toggleSwitch}
           />
-          {/* Display percentage inside the container */}
-          <Text style={styles.percentageText}>{`${Math.round(waterLevel * 100)}%`}</Text>
         </View>
-        <Switch
-          value={waterToggleActive} // Show the active state of the toggle
-          onValueChange={val => val ? startWaterIncrease() : stopWaterIncrease()} // Start or stop the water increment
-          trackColor={{ false: Colors.GRAY, true: Colors.BLACK }}
-          thumbColor={waterToggleActive ? 'orange' : 'white'}
-        />
       </View>
-      </View>
+    </ScrollView>
 
-      {/* Food Level */}
-      <View style={styles.FoodBackground}>
-      <View style={styles.levelContainer}>
-        <Text style={styles.levelTitle}>Food Level</Text>
-        <View style={styles.foodContainer}>
-          {/* Food fill with dynamic opacity */}
-          <LinearGradient
-            colors={['rgba(165,42,42,1)', 'rgba(165,42,42,0.5)']}
-            style={[
-              styles.foodFill, 
-              { height: 150 * foodLevel } // Dynamic height based on food level
-            ]}
-          />
-          {/* Display percentage inside the container */}
-          <Text style={styles.percentageText}>{`${Math.round(foodLevel * 100)}%`}</Text>
-        </View>
-        <Switch
-          value={foodToggleActive} // Show the active state of the toggle
-          onValueChange={val => val ? startFoodIncrease() : stopFoodIncrease()} // Start or stop the food increment
-          trackColor={{ false: Colors.GRAY, true: Colors.BLACK }}
-          thumbColor={foodToggleActive ? 'orange' : 'white'}
-        />
-      </View>
-    </View>
     </View>
   );
 }
@@ -142,13 +198,6 @@ const styles = StyleSheet.create({
     width: '90%',
     marginBottom: 20,
   },
-  title: {
-    fontFamily: 'outfit-bold',
-    fontSize: 28,
-    marginBottom: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: Colors.PRIMARY
-  },
   icon1: {
     paddingLeft: 2
   },
@@ -158,55 +207,76 @@ const styles = StyleSheet.create({
   icon3: {
     paddingRight: 2
   },
-  levelContainer: {
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 40,
+    backgroundColor: '#f5f5f5',
+    paddingVertical: 20,
   },
-  levelTitle: {
-    fontSize: 25,
-    fontFamily: 'outfit-medium',
-    marginBottom: 20,
-    color: Colors.BLACK,
-    padding: 3
-  },
-  waterCircle: {
-    width: 200,
+  promoteImage: {
+    width: 350,
     height: 200,
-    borderRadius: 100,
-    borderWidth: 2,
-    borderColor: Colors.BLACK,
-    overflow: 'hidden',
-    justifyContent: 'center', // Center content vertically
-    alignItems: 'center', // Center content horizontally
-    marginBottom: 10,
-    backgroundColor: Colors.WHITE,
+    marginBottom: 20,
+    borderRadius: 15
   },
-  waterFill: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    borderBottomLeftRadius: 100,
-    borderBottomRightRadius: 100,
-  },
-  foodContainer: {
-    width: 120,
-    height: 154,
-    borderWidth: 2,
-    borderColor: Colors.BLACK,
-    justifyContent: 'center', // Center content vertically
-    alignItems: 'center', // Center content horizontally
-    marginBottom: 10,
-    backgroundColor: Colors.WHITE, 
-  },
-  foodFill: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-  },
-  percentageText: {
-    fontSize: 20,
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+    marginTop:20,
     fontWeight: 'bold',
-    color: Colors.BLACK,
-    position: 'absolute', // Place it on top of the container
+    color: '#333',
+  },
+  box: {
+    width: '85%',
+    backgroundColor: '#fff',
+    padding: 20,
+    paddingBottom: 30,
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+    alignItems: 'center',
+    marginBottom: 20,
+    marginLeft: 20,
+    marginRight: 20
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+  toggleLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#555',
+  },
+  toggleSwitch: {
+    transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
+  },
+  inputContainer: {
+    marginTop: 10,
+  },
+  inputLabel: {
+    fontSize: 16,
+    marginBottom: 10,
+    fontWeight: '500',
+    color: '#555',
+  },
+  textInput: {
+    width: 80,
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingLeft: 10,
+    marginBottom: 10,
+    alignSelf: 'center',
+    textAlign: 'center',
   },
 });
