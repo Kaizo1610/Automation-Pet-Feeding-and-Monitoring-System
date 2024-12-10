@@ -68,8 +68,8 @@ export default function myProfile() {
           source={profileImage ? { uri: profileImage } : require('./../../assets/images/placeholderProfile.png')}
           style={styles.profileImage}
         />
-        <Text style={styles.profileName}>{username || "Aiman Akim"}</Text>
-        <Text style={styles.profileBio}>{quotes || "Always be positive"}</Text>
+        <Text style={styles.profileName}>{username || "Username"}</Text>
+        <Text style={styles.profileBio}>{quotes || "Your Quotes"}</Text>
         <TouchableOpacity style={styles.editButton} onPress={()=>router.push('(my-profile)/edit-profile')}>
           <Text style={styles.editButtonText}>Edit Profile</Text>
         </TouchableOpacity>
@@ -104,7 +104,7 @@ export default function myProfile() {
               <TouchableOpacity style={styles.cancelButton1} onPress={handleCancelLogout}>
                 <Text style={styles.cancelText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.logoutButton1} onPress={handleConfirmLogout}>
+              <TouchableOpacity style={styles.logoutButton1} onPress={()=>router.navigate('auth/sign-in')}>
                 <Text style={styles.logoutText}>Logout</Text>
               </TouchableOpacity>
             </View>
