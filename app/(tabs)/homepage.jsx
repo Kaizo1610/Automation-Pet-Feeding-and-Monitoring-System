@@ -66,179 +66,185 @@ export default function Homepage() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      {/* Image Carousel */}
-      <FlatList
-        data={images}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        renderItem={({ item }) => (
-          <Image source={item} style={styles.promoteImage} />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
-      <View style={styles.pagination}>
-        {images.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.paginationDot,
-              currentIndex === index && styles.paginationDotActive,
-            ]}
-          />
-        ))}
-      </View>
+        {/* Greeting */}
+        <Text style={styles.greeting}>HELLO PET LOVERS!!🤗</Text>
 
-      {/*Real Time Digital*/}
-      <View style={styles.timeContainer}>
-        <View style={styles.line} />
-        <View style={styles.timeBox}>
-          <Text style={styles.timeText}>
-            {currentTime.toLocaleTimeString()}
-          </Text>
+        {/* Image Carousel */}
+        <FlatList
+          data={images}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleScroll}
+          renderItem={({ item }) => (
+            <Image source={item} style={styles.promoteImage} />
+          )}
+          keyExtractor={(item, index) => index.toString()}
+        />
+        <View style={styles.pagination}>
+          {images.map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.paginationDot,
+                currentIndex === index && styles.paginationDotActive,
+              ]}
+            />
+          ))}
         </View>
-        <View style={styles.line} />
-      </View>
 
-      {/* Food Level Box */}
-      <Text style={styles.title}>Food Level</Text>
-      <View style={styles.box}>
-        <Svg width={150} height={150} viewBox="0 0 100 100">
-          <G rotation="-90" origin="50, 50">
-            <Circle
-              cx="50"
-              cy="50"
-              r="40"
-              stroke="#E0E0E0"
-              strokeWidth="8"
-              fill="none"
-            />
-            <Circle
-              cx="50"
-              cy="50"
-              r="40"
-              stroke="#2196F3"
-              strokeWidth="8"
-              fill="none"
-              strokeDasharray={Math.PI * 2 * 40}
-              strokeDashoffset={Math.PI * 2 * 40 * (1 - foodLevel)}
-            />
-          </G>
-          <SvgText
-            x="45"
-            y="48"
-            textAnchor="middle"
-            fontSize="17"
-            fontWeight="bold"
-            fill="#2196F3"
-            dy="2"
-          >
-            {Math.round(foodLevel * 100)}%
-          </SvgText>
-          <SvgText
-    x="41"
-    y="47"
-    textAnchor="middle"
-    fontSize="7" // Font size for the "est." text
-    fill="#0a0a0a"
-    dy="16" // Adjusted vertical position for the second text
-  >
-    est.{Math.round(foodLevel*20)}g
-  </SvgText>
-        </Svg>
-        <View style={styles.toggleContainer}>
-          <Text style={styles.toggleLabel}>Servo Motor</Text>
-          <Switch
-            value={isServoOn}
-            onValueChange={toggleServo}
-            trackColor={{ false: '#ccc', true: '#4CAF50' }}
-            thumbColor={isServoOn ? '#FFFFFF' : '#888'}
-            ios_backgroundColor="#E0E0E0"
-            style={styles.toggleSwitch}
-          />
+        {/*Real Time Digital*/}
+        <View style={styles.timeContainer}>
+          <View style={styles.line} />
+          <View style={styles.timeBox}>
+            <Text style={styles.timeText}>
+              {currentTime.toLocaleTimeString()}
+            </Text>
+          </View>
+          <View style={styles.line} />
         </View>
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Set Timer (in minutes):</Text>
-          <TextInput
-            style={styles.textInput}
-            keyboardType="numeric"
-            value={timerValue}
-            onChangeText={setTimerValue}
-          />
-          <Button title="Set Timer" onPress={updateTimerValue} />
-        </View>
-      </View>
 
-      {/* Water Level Box */}
-      <Text style={styles.title}>Water Level</Text>
-      <View style={styles.box}>
-        <Svg width={150} height={150} viewBox="0 0 100 100">
-          <G rotation="-90" origin="50, 50">
-            <Circle
-              cx="50"
-              cy="50"
-              r="40"
-              stroke="#E0E0E0"
-              strokeWidth="8"
-              fill="none"
-            />
-            <Circle
-              cx="50"
-              cy="50"
-              r="40"
-              stroke="#4CAF50"
-              strokeWidth="8"
-              fill="none"
-              strokeDasharray={Math.PI * 2 * 40}
-              strokeDashoffset={Math.PI * 2 * 40 * (1 - waterLevel)}
-            />
-          </G>
-          <SvgText
-            x="45"
-            y="47"
-            textAnchor="middle"
-            fontSize="17"
-            fontWeight="bold"
-            fill="#4CAF50"
-            dy="2"
-          >
-            {Math.round(waterLevel*100)}%
-          </SvgText>
-          <SvgText
-    x="41"
-    y="47"
-    textAnchor="middle"
-    fontSize="7" // Font size for the "est." text
-    fill="#0a0a0a"
-    dy="16" // Adjusted vertical position for the second text
-  >
-    est.{Math.round(waterLevel*20)}ml
-  </SvgText>
-        </Svg>
-        <View style={styles.toggleContainer}>
-          <Text style={styles.toggleLabel}>Water Pump</Text>
-          <Switch
-            value={isPumpOn}
-            onValueChange={togglePump}
-            trackColor={{ false: '#ccc', true: '#2196F3' }}
-            thumbColor={isPumpOn ? '#FFFFFF' : '#888'}
-            ios_backgroundColor="#E0E0E0"
-            style={styles.toggleSwitch}
-          />
+        {/* Levels Container */}
+        <View style={styles.levelsContainer}>
+          {/* Food Level Box */}
+          <View style={styles.box}>
+            <Text style={styles.title}>Food Level</Text>
+            <Svg width={150} height={150} viewBox="0 0 100 100">
+              <G rotation="-90" origin="50, 50">
+                <Circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  stroke="#E0E0E0"
+                  strokeWidth="8"
+                  fill="none"
+                />
+                <Circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  stroke="#2196F3"
+                  strokeWidth="8"
+                  fill="none"
+                  strokeDasharray={Math.PI * 2 * 40}
+                  strokeDashoffset={Math.PI * 2 * 40 * (1 - foodLevel)}
+                />
+              </G>
+              <SvgText
+                x="45"
+                y="48"
+                textAnchor="middle"
+                fontSize="17"
+                fontWeight="bold"
+                fill="#2196F3"
+                dy="2"
+              >
+                {Math.round(foodLevel * 100)}%
+              </SvgText>
+              <SvgText
+                x="41"
+                y="47"
+                textAnchor="middle"
+                fontSize="7"
+                fill="#0a0a0a"
+                dy="16"
+              >
+                est.{Math.round(foodLevel * 20)}g
+              </SvgText>
+            </Svg>
+            <View style={styles.toggleContainer}>
+              <Text style={styles.toggleLabel}>Servo Motor</Text>
+              <Switch
+                value={isServoOn}
+                onValueChange={toggleServo}
+                trackColor={{ false: '#ccc', true: '#4CAF50' }}
+                thumbColor={isServoOn ? '#FFFFFF' : '#888'}
+                ios_backgroundColor="#E0E0E0"
+                style={styles.toggleSwitch}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Set Timer(minutes):</Text>
+              <TextInput
+                style={styles.textInput}
+                keyboardType="numeric"
+                value={timerValue}
+                onChangeText={setTimerValue}
+              />
+              <Button title="Set Timer" onPress={updateTimerValue} />
+            </View>
+          </View>
+
+          {/* Water Level Box */}
+          <View style={styles.box}>
+            <Text style={styles.title}>Water Level</Text>
+            <Svg width={150} height={150} viewBox="0 0 100 100">
+              <G rotation="-90" origin="50, 50">
+                <Circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  stroke="#E0E0E0"
+                  strokeWidth="8"
+                  fill="none"
+                />
+                <Circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  stroke="#4CAF50"
+                  strokeWidth="8"
+                  fill="none"
+                  strokeDasharray={Math.PI * 2 * 40}
+                  strokeDashoffset={Math.PI * 2 * 40 * (1 - waterLevel)}
+                />
+              </G>
+              <SvgText
+                x="45"
+                y="47"
+                textAnchor="middle"
+                fontSize="17"
+                fontWeight="bold"
+                fill="#4CAF50"
+                dy="2"
+              >
+                {Math.round(waterLevel * 100)}%
+              </SvgText>
+              <SvgText
+                x="41"
+                y="47"
+                textAnchor="middle"
+                fontSize="7"
+                fill="#0a0a0a"
+                dy="16"
+              >
+                est.{Math.round(waterLevel * 20)}ml
+              </SvgText>
+            </Svg>
+            <View style={styles.toggleContainer}>
+              <Text style={styles.toggleLabel}>Water Pump</Text>
+              <Switch
+                value={isPumpOn}
+                onValueChange={togglePump}
+                trackColor={{ false: '#ccc', true: '#2196F3' }}
+                thumbColor={isPumpOn ? '#FFFFFF' : '#888'}
+                ios_backgroundColor="#E0E0E0"
+                style={styles.toggleSwitch}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Set Timer(minutes):</Text>
+              <TextInput
+                style={styles.textInput}
+                keyboardType="numeric"
+                value={timerValue}
+                onChangeText={setTimerValue}
+              />
+              <Button title="Set Timer" onPress={updateTimerValue} color="#4CAF50" />
+            </View>
+          </View>
         </View>
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Set Timer (in minutes):</Text>
-          <TextInput
-            style={styles.textInput}
-            keyboardType="numeric"
-            value={timerValue}
-            onChangeText={setTimerValue}
-          />
-          <Button title="Set Timer" onPress={updateTimerValue} />
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
 
     </View>
   );
@@ -255,7 +261,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '90%',
-    marginBottom: 20,
+    marginBottom: 5,
   },
   icon1: {
     paddingLeft: 2
@@ -330,8 +336,14 @@ const styles = StyleSheet.create({
     fontFamily: 'outfit-bold',
     color: 'black',
   },
+  levelsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '90%',
+    marginBottom: 20,
+  },
   box: {
-    width: '85%',
+    width: '48%',
     backgroundColor: '#fff',
     padding: 10,
     paddingBottom: 20,
@@ -342,9 +354,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     alignItems: 'center',
-    marginBottom: 20,
-    marginLeft: 20,
-    marginRight: 20
   },
   toggleContainer: {
     flexDirection: 'row',
@@ -382,5 +391,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignSelf: 'center',
     textAlign: 'center',
+  },
+  greeting: {
+    fontSize: 26,
+    fontFamily: 'outfit-bold',
+    color: 'black',
+    marginBottom: 20,
+    textAlign: 'left',
+    width: '100%',
+    paddingLeft: 20,
   },
 });
