@@ -21,20 +21,21 @@ export default function PetProfile() {
       </Text>
 
       <View style={styles.container2}>
-        <Text style={styles.sectionTitle}>My Pet</Text>
+        <Text style={styles.sectionTitle}>My Pet(s)</Text>
 
         <ScrollView style={styles.scrollView}>
           {pets.map((pet) => (
-            <View key={pet.name} style={styles.petItem}>
-              <Image source={pet.image} style={styles.petImage} />
-              <Text style={styles.petName}>{pet.name}</Text>
-              <TouchableOpacity 
-                style={styles.arrow} 
-                onPress={() => router.push(`(pet-profile)/${pet.name.toLowerCase()}`)} // Navigate to the specific pet's detail page
-              >
-                <Text style={styles.arrowText}>&gt;</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity 
+              key={pet.name} 
+              style={styles.petItem} 
+              onPress={() => router.push(`(pet-profile)/${pet.name.toLowerCase()}`)} // Navigate to the specific pet's detail page
+            >
+              <View style={styles.petBox}>
+                <Image source={pet.image} style={styles.petImage} />
+                <Text style={styles.petName}>{pet.name}</Text>
+                <Text style={styles.arrowText}>🔖</Text>
+              </View>
+            </TouchableOpacity>
           ))}
         </ScrollView>
 
@@ -76,12 +77,21 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 25,
     fontFamily: 'outfit-bold',
-    marginBottom: 50,
+    marginBottom: 30,
+    textAlign: 'center'
   },
   petItem: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 50,
+  },
+  petBox: {
+    backgroundColor: 'lightblue',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    flexDirection: 'row',
+    width: '100%',
   },
   petImage: {
     width: 100,
@@ -92,9 +102,10 @@ const styles = StyleSheet.create({
   petName: {
     fontSize: 20,
     fontFamily: 'outfit-medium',
+    marginRight: 15,
+    flex: 1,
   },
   arrow: {
-    flex: 1,
     alignItems: 'flex-end', 
     justifyContent: 'center', 
   },
@@ -105,7 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.PRIMARY, // Orange color
     padding: 15,
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 10,
     alignItems: 'center',
   },
   addPetButtonText: {
@@ -114,7 +125,7 @@ const styles = StyleSheet.create({
     fontFamily: 'outfit-bold',
   },
   scrollView: {
-    maxHeight: 400, // Adjust the height as needed
-    marginBottom: 20,
+    maxHeight: 480, // Adjust the height as needed
+    marginBottom: 10,
   },
 });
