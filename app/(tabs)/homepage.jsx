@@ -11,8 +11,17 @@ import { useFoodLevel } from '../(dashboard-logic)/foodData';
 import { useWaterLevel } from '../(dashboard-logic)/waterData';
 
 export default function Homepage() {  
-
   const router = useRouter();
+
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const {
     foodLevel,
@@ -52,6 +61,14 @@ export default function Homepage() {
         source={require('./../../assets/images/promote.png')}
         style={styles.promoteImage}>
       </Image>
+
+      {/*Real Time Digital*/}
+      <View style={styles.timeBox}>
+        <Text style={styles.timeText}>
+          {currentTime.toLocaleTimeString()}
+        </Text>
+      </View>
+
       {/* Food Level Box */}
       <Text style={styles.title}>Food Level</Text>
       <View style={styles.box}>
@@ -178,6 +195,16 @@ export default function Homepage() {
             style={styles.toggleSwitch}
           />
         </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Set Timer (in minutes):</Text>
+          <TextInput
+            style={styles.textInput}
+            keyboardType="numeric"
+            value={timerValue}
+            onChangeText={setTimerValue}
+          />
+          <Button title="Set Timer" onPress={updateTimerValue} />
+        </View>
       </View>
     </ScrollView>
 
@@ -220,18 +247,35 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 15
   },
+  timeBox: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+    marginBottom: 5,
+    alignItems: 'center',
+  },
+  timeText: {
+    fontSize: 24,
+    fontFamily: 'outfit-bold',
+    textAlign: 'center',
+  },
   title: {
     fontSize: 24,
     marginBottom: 20,
     marginTop:20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontFamily: 'outfit-bold',
+    color: 'black',
   },
   box: {
     width: '85%',
     backgroundColor: '#fff',
-    padding: 20,
-    paddingBottom: 30,
+    padding: 10,
+    paddingBottom: 20,
     borderRadius: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -254,6 +298,7 @@ const styles = StyleSheet.create({
   toggleLabel: {
     fontSize: 16,
     fontWeight: '500',
+    fontFamily: 'outfit-medium',
     color: '#555',
   },
   toggleSwitch: {
@@ -265,7 +310,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 16,
     marginBottom: 10,
-    fontWeight: '500',
+    fontFamily: 'outfit-medium',
     color: '#555',
   },
   textInput: {
