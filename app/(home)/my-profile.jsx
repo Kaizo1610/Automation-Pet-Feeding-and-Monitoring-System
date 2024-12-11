@@ -3,8 +3,9 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, BackHandler } f
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors'
-import { database } from './../../configs/FirebaseConfig';
+import { database, firestore } from './../../configs/FirebaseConfig';
 import { ref, get, child } from "firebase/database";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function myProfile() {
 
@@ -19,10 +20,10 @@ export default function myProfile() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const dbRef = ref(database);
-        const snapshot = await get(child(dbRef, `users/1`)); // Assuming user ID is 1
-        if (snapshot.exists()) {
-          const data = snapshot.val();
+        const docRef = doc(firestore, "users", "1"); // Assuming user ID is 1
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
           console.log("Fetched profile data:", data); // Debug log
           setUsername(data.username);
           setQuotes(data.quotes);

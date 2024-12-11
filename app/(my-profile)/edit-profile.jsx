@@ -4,9 +4,10 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors';
-import { database, storage } from './../../configs/FirebaseConfig';
+import { database, storage, firestore } from './../../configs/FirebaseConfig';
 import { ref, set, get, child } from "firebase/database";
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export default function EditProfile() {
   const router = useRouter();
@@ -30,10 +31,10 @@ export default function EditProfile() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const dbRef = ref(database);
-        const snapshot = await get(child(dbRef, `users/1`)); // Assuming user ID is 1
-        if (snapshot.exists()) {
-          const data = snapshot.val();
+        const docRef = doc(firestore, "users", "1"); // Assuming user ID is 1
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
           console.log("Fetched profile data:", data); // Debug log
           setUsername(data.username);
           setQuotes(data.quotes);
@@ -75,7 +76,7 @@ export default function EditProfile() {
     setProfileImage(finalProfileImage); // Commit temporary image to permanent state
     console.log("Profile saved:", { username, quotes, profileImage: finalProfileImage });
     try {
-      await set(ref(database, 'users/1'), { // Assuming user ID is 1
+      await setDoc(doc(firestore, "users", "1"), { // Assuming user ID is 1
         username,
         quotes,
         profileImage: finalProfileImage

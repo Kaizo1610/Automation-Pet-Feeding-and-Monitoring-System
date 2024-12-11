@@ -1,0 +1,70 @@
+// Project-level build.gradle (android/build.gradle)
+buildscript {
+    ext {
+        buildToolsVersion = "33.0.0"
+        minSdkVersion = 21
+        compileSdkVersion = 33
+        targetSdkVersion = 33
+
+        // Firebase version
+        firebaseBomVersion = "32.3.1"
+    }
+    
+    repositories {
+        google()
+        mavenCentral()
+    }
+    
+    dependencies {
+        classpath("com.android.tools.build:gradle:7.3.1")
+        classpath("com.google.gms:google-services:4.4.0")
+    }
+}
+
+// App-level build.gradle (android/app/build.gradle)
+apply plugin: "com.android.application"
+apply plugin: "com.google.gms.google-services"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    
+    defaultConfig {
+        applicationId "com.pawtector"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+    
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    
+    // React Native
+    implementation("com.facebook.react:react-android")
+    
+    // Firebase BOM (Bill of Materials)
+    implementation platform("com.google.firebase:firebase-bom:${firebaseBomVersion}")
+    
+    // Firebase Analytics
+    implementation "com.google.firebase:firebase-analytics"
+    
+    // Firebase Firestore
+    implementation "com.google.firebase:firebase-firestore"
+    
+    // Firebase Storage
+    implementation "com.google.firebase:firebase-storage"
+    
+    // Firebase Authentication (optional, but often used)
+    implementation "com.google.firebase:firebase-auth"
+}
+
+// Ensure Google Services plugin is applied at the end of the file
+apply plugin: "com.google.gms.google-services"
