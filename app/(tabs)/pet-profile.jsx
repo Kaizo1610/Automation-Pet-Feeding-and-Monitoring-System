@@ -35,7 +35,7 @@ export default function PetProfile() {
             <TouchableOpacity 
               key={pet.name} 
               style={styles.petItem} 
-              onPress={() => router.push(`(pet-profile)/${pet.name.toLowerCase()}`)} // Navigate to the specific pet's detail page
+              onPress={() => router.push(`(pet-profile)/${pet.name.toLowerCase() === 'oyen' ? 'oyen' : 'pets-info'}`)} // Navigate to the specific pet's detail page
             >
               <View style={styles.petBox}>
                 <Image source={{ uri: pet.image }} style={styles.petImage} />
