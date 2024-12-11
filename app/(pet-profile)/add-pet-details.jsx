@@ -6,6 +6,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import * as ImagePicker from 'expo-image-picker'; // Import image picker
 import { useRouter } from 'expo-router';
+import { addPet } from './../../configs/FirebaseConfig';
 
 export default function AddPetDetails() {
 
@@ -59,12 +60,20 @@ export default function AddPetDetails() {
     setIsAppointmentDropdownVisible(false); // Close the dropdown
   };
 
-    // Handle save button (commit temp changes to actual profile state)
-    const handleSave = () => {
-      //setProfileImage(tempProfileImage); // Commit temporary image to permanent state
-      console.log("New Pet Profile saved:", { name, gender, weight, appointment, date, imageUri });
-      // Add your logic to save the profile data
-    };
+  const handleSave = async () => {
+    if (!name || !gender || !weight || !appointment || !date || !imageUri) {
+      alert("Please fill in all the fields.");
+      return;
+    }
+
+    const newPet = { name, gender, weight, appointment, date, image: { uri: imageUri } };
+    try {
+      await addPet(newPet);
+      router.push('/(tabs)/pet-profile');
+    } catch (error) {
+      console.error("Error saving pet: ", error);
+    }
+  };
 
   return (
     <View style={styles.container}>

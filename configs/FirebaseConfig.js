@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 //import { getAnalytics } from "firebase/analytics";
 import { getAuth, initializeAuth, getReactNativePersistence, sendEmailVerification } from "firebase/auth";
 import { getStorage } from "firebase/storage"; 
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -37,3 +37,19 @@ export { auth };
 export const storage = getStorage(app); 
 export const firestore = getFirestore(app);
 export const database = getDatabase(app);
+
+export const getPetByName = async (name) => {
+  const querySnapshot = await getDocs(collection(firestore, "pets"));
+  const pet = querySnapshot.docs.find(doc => doc.data().name.toLowerCase() === name.toLowerCase());
+  return pet ? pet.data() : null;
+};
+
+export const addPet = async (pet) => {
+  try {
+    const docRef = await firestore.collection("pets").add(pet);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding pet: ", error);
+    throw error;
+  }
+};

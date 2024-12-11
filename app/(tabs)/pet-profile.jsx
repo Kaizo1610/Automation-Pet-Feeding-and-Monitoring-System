@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Colors } from './../../constants/Colors';
 import { useRouter } from 'expo-router';
+import { getDocs, collection } from "firebase/firestore";
+import { firestore } from './../../configs/FirebaseConfig';
 
 export default function PetProfile() {  
   const router = useRouter();
 
-  const [pets, setPets] = useState([
-    { name: 'Oyen', image: require('./../../assets/images/oyen.png') },
-    { name: 'John', image: require('./../../assets/images/john.png') },
-    { name: 'Ujang', image: require('./../../assets/images/ujang.png') },
-    { name: 'Kiko', image: require('./../../assets/images/kiko.jpeg') }, // Added Kiko
-  ]);
+  const [pets, setPets] = useState([]);
+
+  useEffect(() => {
+    const fetchPets = async () => {
+      const querySnapshot = await getDocs(collection(firestore, "pets"));
+      const petsData = querySnapshot.docs.map(doc => doc.data());
+      setPets(petsData);
+    };
+
+    fetchPets();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -31,7 +38,7 @@ export default function PetProfile() {
               onPress={() => router.push(`(pet-profile)/${pet.name.toLowerCase()}`)} // Navigate to the specific pet's detail page
             >
               <View style={styles.petBox}>
-                <Image source={pet.image} style={styles.petImage} />
+                <Image source={{ uri: pet.image }} style={styles.petImage} />
                 <Text style={styles.petName}>{pet.name}</Text>
                 <Text style={styles.arrowText}>🔖</Text>
               </View>
