@@ -83,16 +83,16 @@ export default function DispenseSchedule() {
       {/* Icon Row */}
       <View style={styles.iconRow}>
         <TouchableOpacity
-          style={[styles.icon1, selectedIcon === 'wave' && styles.activeIcon]}
-          onPress={() => setSelectedIcon('wave')}
-        >
-          <Ionicons name="water-sharp" size={30} color={selectedIcon === 'wave' ? Colors.BLACK : Colors.BLACK} />
-        </TouchableOpacity>
-        <TouchableOpacity
           style={[styles.icon2, selectedIcon === 'fish' && styles.activeIcon]}
           onPress={() => setSelectedIcon('fish')}
         >
           <Ionicons name="fish-sharp" size={30} color={selectedIcon === 'fish' ? Colors.BLACK : Colors.BLACK} style={{ marginLeft: 10 }} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.icon1, selectedIcon === 'wave' && styles.activeIcon]}
+          onPress={() => setSelectedIcon('wave')}
+        >
+          <Ionicons name="water-sharp" size={30} color={selectedIcon === 'wave' ? Colors.BLACK : Colors.BLACK} />
         </TouchableOpacity>
       </View>
 
