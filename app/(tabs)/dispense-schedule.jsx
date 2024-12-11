@@ -17,14 +17,14 @@ export default function DispenseSchedule() {
   // State to handle different schedules for feeding and watering
   const [feedingSchedules, setFeedingSchedules] = useState([
     { id: '1', time: '08:00', portions: '4 Portions (Approx. 20g)', enabled: true },
-    { id: '2', time: '12:00', portions: '8 Portions (Approx. 40g)', enabled: false },
+    { id: '2', time: '12:00', portions: '8 Portions (Approx. 40g)', enabled: true },
     { id: '3', time: '16:00', portions: '6 Portions (Approx. 30g)', enabled: false },
   ]);
 
   const [wateringSchedules, setWateringSchedules] = useState([
     { id: '1', time: '08:00', portions: '2 Portions (Approx. 10ml)', enabled: true },
     { id: '2', time: '12:00', portions: '3 Portions (Approx. 15ml)', enabled: false },
-    { id: '3', time: '16:00', portions: '4 Portions (Approx. 20ml)', enabled: false },
+    { id: '3', time: '16:00', portions: '4 Portions (Approx. 20ml)', enabled: true },
   ]);
 
   const toggleSchedule = (id) => {
