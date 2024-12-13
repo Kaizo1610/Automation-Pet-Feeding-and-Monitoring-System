@@ -38,15 +38,26 @@ export const storage = getStorage(app);
 export const firestore = getFirestore(app);
 export const database = getDatabase(app);
 
+export const getCurrentUserId = () => {
+  const user = auth.currentUser;
+  return user ? user.uid : null;
+};
+
 export const getPetByName = async (name) => {
-  const querySnapshot = await getDocs(collection(firestore, "pets"));
+  const userId = getCurrentUserId();
+  if (!userId) throw new Error("User not authenticated");
+
+  const querySnapshot = await getDocs(collection(firestore, `users/${userId}/pets`));
   const pet = querySnapshot.docs.find(doc => doc.data().name.toLowerCase() === name.toLowerCase());
   return pet ? pet.data() : null;
 };
 
 export const addPet = async (pet) => {
+  const userId = getCurrentUserId();
+  if (!userId) throw new Error("User not authenticated");
+
   try {
-    const docRef = await firestore.collection("pets").add(pet);
+    const docRef = await firestore.collection(`users/${userId}/pets`).add(pet);
     return docRef.id;
   } catch (error) {
     console.error("Error adding pet: ", error);

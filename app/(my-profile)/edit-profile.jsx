@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors';
-import { database, storage, firestore } from './../../configs/FirebaseConfig';
+import { database, storage, firestore, getCurrentUserId } from './../../configs/FirebaseConfig';
 import { ref, set, get, child } from "firebase/database";
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc, getDoc } from "firebase/firestore";
@@ -31,7 +31,10 @@ export default function EditProfile() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const docRef = doc(firestore, "users", "1"); // Assuming user ID is 1
+        const userId = getCurrentUserId();
+        if (!userId) throw new Error("User not authenticated");
+
+        const docRef = doc(firestore, "users", userId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
@@ -42,6 +45,14 @@ export default function EditProfile() {
           setTempProfileImage(data.profileImage);
           setOriginalUsername(data.username);
           setOriginalQuotes(data.quotes);
+        } else {
+          // Set default values if no profile data exists
+          setUsername("Username");
+          setQuotes("Your Quotes");
+          setProfileImage(null);
+          setTempProfileImage(null);
+          setOriginalUsername("Username");
+          setOriginalQuotes("Your Quotes");
         }
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -76,7 +87,10 @@ export default function EditProfile() {
     setProfileImage(finalProfileImage); // Commit temporary image to permanent state
     console.log("Profile saved:", { username, quotes, profileImage: finalProfileImage });
     try {
-      await setDoc(doc(firestore, "users", "1"), { // Assuming user ID is 1
+      const userId = getCurrentUserId();
+      if (!userId) throw new Error("User not authenticated");
+
+      await setDoc(doc(firestore, "users", userId), {
         username,
         quotes,
         profileImage: finalProfileImage

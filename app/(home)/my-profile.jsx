@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, BackHandler } f
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors'
-import { database, firestore } from './../../configs/FirebaseConfig';
+import { database, firestore, getCurrentUserId } from './../../configs/FirebaseConfig';
 import { ref, get, child } from "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
 
@@ -20,7 +20,10 @@ export default function myProfile() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const docRef = doc(firestore, "users", "1"); // Assuming user ID is 1
+        const userId = getCurrentUserId();
+        if (!userId) throw new Error("User not authenticated");
+
+        const docRef = doc(firestore, "users", userId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
@@ -28,6 +31,11 @@ export default function myProfile() {
           setUsername(data.username);
           setQuotes(data.quotes);
           setProfileImage(data.profileImage);
+        } else {
+          // Set default values if no profile data exists
+          setUsername("Username");
+          setQuotes("Your Quotes");
+          setProfileImage(null);
         }
       } catch (error) {
         console.error("Error fetching profile data:", error);
