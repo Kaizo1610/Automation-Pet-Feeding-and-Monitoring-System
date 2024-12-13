@@ -148,7 +148,8 @@ const styles = StyleSheet.create({
   alertContainer: {
     position: 'absolute',
     top: 55,
-    width: '80%',
+    left: '10%',
+    right: '10%',
     padding: 5,
     borderRadius: 5,
     alignItems: 'center',
