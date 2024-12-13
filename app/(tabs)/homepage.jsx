@@ -8,11 +8,14 @@ import { TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useFoodLevel } from '../(dashboard-logic)/foodData';
 import { useWaterLevel } from '../(dashboard-logic)/waterData';
+import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
+import { onSnapshot, doc } from "firebase/firestore";
 
 export default function Homepage() {  
   const router = useRouter();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [username, setUsername] = useState('');
   const images = [
     require('./../../assets/images/promote.png'),
     require('./../../assets/images/playingcat.jpg'),
@@ -25,6 +28,27 @@ export default function Homepage() {
     }, 1000);
 
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const userId = getCurrentUserId();
+        if (!userId) throw new Error("User not authenticated");
+
+        const userDocRef = doc(firestore, 'users', userId);
+        const unsubscribe = onSnapshot(userDocRef, (doc) => {
+          const data = doc.data();
+          setUsername(data && data.username ? data.username.toUpperCase() : 'PET LOVERS');
+        });
+
+        return () => unsubscribe();
+      } catch (error) {
+        console.error("Failed to fetch username:", error);
+      }
+    };
+
+    fetchUsername();
   }, []);
 
   const handleScroll = (event) => {
@@ -67,7 +91,7 @@ export default function Homepage() {
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Greeting */}
-        <Text style={styles.greeting}>HELLO PET LOVERS!!🤗</Text>
+        <Text style={styles.greeting}>HELLO {username}!!🤗</Text>
 
         {/* Image Carousel */}
         <FlatList

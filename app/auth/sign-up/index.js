@@ -5,6 +5,7 @@ import { Colors } from './../../../constants/Colors'
 import { useRouter } from 'expo-router';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth'
 import { auth } from './../../../configs/FirebaseConfig'
+import { saveUsername } from './../../../configs/FirebaseConfig'
 
 export default function SignUp() {
 
@@ -54,8 +55,9 @@ export default function SignUp() {
     }
   
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         const user = userCredential.user;
+        await saveUsername(user.uid, username);
         sendEmailVerification(user)
           .then(() => {
             showSuccess('Verification email sent. Please check your inbox.');

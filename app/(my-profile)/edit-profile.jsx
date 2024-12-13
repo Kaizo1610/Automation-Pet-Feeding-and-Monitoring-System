@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors';
-import { database, storage, firestore, getCurrentUserId } from './../../configs/FirebaseConfig';
+import { database, storage, getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
 import { ref, set, get, child } from "firebase/database";
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc, getDoc } from "firebase/firestore";

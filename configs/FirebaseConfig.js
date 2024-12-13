@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 //import { getAnalytics } from "firebase/analytics";
 import { getAuth, initializeAuth, getReactNativePersistence, sendEmailVerification } from "firebase/auth";
 import { getStorage } from "firebase/storage"; 
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -63,4 +63,16 @@ export const addPet = async (pet) => {
     console.error("Error adding pet: ", error);
     throw error;
   }
+};
+
+export const getCurrentUsername = async () => {
+  const userId = getCurrentUserId();
+  if (!userId) throw new Error("User not authenticated");
+
+  const userDoc = await getDoc(doc(firestore, 'users', userId));
+  return userDoc.exists() ? userDoc.data().username : null;
+};
+
+export const saveUsername = async (userId, username) => {
+  await setDoc(doc(firestore, 'users', userId), { username });
 };
