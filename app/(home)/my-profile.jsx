@@ -6,6 +6,7 @@ import { Colors } from './../../constants/Colors'
 import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
 import { ref, get, child } from "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
+import { signOut } from "firebase/auth";
 
 export default function myProfile() {
 
@@ -56,11 +57,14 @@ export default function myProfile() {
   };
 
   // Handle confirm logout (implement logout logic here)
-  const handleConfirmLogout = () => {
-    setModalVisible(false);
-
-  // Exit the app and navigate to the home screen
-  BackHandler.exitApp();
+  const handleConfirmLogout = async () => {
+    try {
+      await signOut(auth);
+      setModalVisible(false);
+      router.replace('auth/sign-in'); // Navigate to the sign-in screen
+    } catch (error) {
+      console.error("Error logging out: ", error);
+    }
   };
 
   return (
@@ -102,7 +106,7 @@ export default function myProfile() {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          setModalVisible(false);
         }}
       >
         <View style={styles.modalOverlay}>

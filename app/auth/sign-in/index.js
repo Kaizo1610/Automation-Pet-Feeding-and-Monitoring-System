@@ -41,7 +41,7 @@ export default function SignIn() {
       .then((userCredential) => {
         const user = userCredential.user;
         if (user.emailVerified) {
-          router.replace('(tabs)/homepage');
+          router.replace('(tabs)/homepage'); // Navigate to the homepage
         } else {
           showAlert('Please verify your email before signing in.');
         }
