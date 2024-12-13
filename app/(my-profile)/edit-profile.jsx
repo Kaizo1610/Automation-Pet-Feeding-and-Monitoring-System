@@ -73,7 +73,7 @@ export default function EditProfile() {
 
   // Handle save button (commit temp changes to actual profile state)
   const handleSave = async () => {
-    let finalProfileImage = tempProfileImage || profileImage || ''; // Ensure profileImage is not undefined
+    let finalProfileImage = profileImage; // Use the existing profile image if no new image is selected
 
     if (tempProfileImage) {
       // Upload image to Firebase Storage
@@ -92,8 +92,8 @@ export default function EditProfile() {
 
       await setDoc(doc(firestore, "users", userId), {
         username,
-        quotes,
-        profileImage: finalProfileImage
+        quotes: quotes || "Your Quotes", // Ensure quotes is not an empty string
+        profileImage: finalProfileImage || null // Ensure profileImage is not an empty string
       });
       showAlert('Profile saved successfully!');
       setTempProfileImage(null); // Reset temporary image state

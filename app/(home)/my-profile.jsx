@@ -30,7 +30,7 @@ export default function myProfile() {
           console.log("Fetched profile data:", data); // Debug log
           setUsername(data.username);
           setQuotes(data.quotes);
-          setProfileImage(data.profileImage);
+          setProfileImage(data.profileImage || null); // Use default image if no profile image is set
         } else {
           // Set default values if no profile data exists
           setUsername("Username");
