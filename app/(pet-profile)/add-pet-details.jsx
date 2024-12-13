@@ -6,7 +6,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import * as ImagePicker from 'expo-image-picker'; // Import image picker
 import { useRouter } from 'expo-router';
-import { addPet } from './../../configs/FirebaseConfig';
+import { addPet, storage } from './../../configs/FirebaseConfig';
 
 export default function AddPetDetails() {
 
@@ -61,12 +61,12 @@ export default function AddPetDetails() {
   };
 
   const handleSave = async () => {
-    if (!name || !gender || !weight || !appointment || !date || !imageUri) {
-      alert("Please fill in all the fields.");
+    if (!name || !gender || !weight || !appointment || !date) {
+      alert("Please fill in all the mandatory fields.");
       return;
     }
 
-    const newPet = { name, gender, weight, appointment, date, image: { uri: imageUri } };
+    const newPet = { name, gender, weight, appointment, date, image: imageUri ? { uri: imageUri } : null };
     try {
       await addPet(newPet);
       router.push('/(tabs)/pet-profile');

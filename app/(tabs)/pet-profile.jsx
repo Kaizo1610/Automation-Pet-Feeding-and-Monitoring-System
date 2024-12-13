@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import { Colors } from './../../constants/Colors';
 import { useRouter } from 'expo-router';
 import { getDocs, collection } from "firebase/firestore";
-import { firestore } from './../../configs/FirebaseConfig';
+import { firestore, getCurrentUserId } from './../../configs/FirebaseConfig';
 
 export default function PetProfile() {  
   const router = useRouter();
@@ -12,7 +12,10 @@ export default function PetProfile() {
 
   useEffect(() => {
     const fetchPets = async () => {
-      const querySnapshot = await getDocs(collection(firestore, "pets"));
+      const userId = getCurrentUserId();
+      if (!userId) throw new Error("User not authenticated");
+
+      const querySnapshot = await getDocs(collection(firestore, `users/${userId}/pets`));
       const petsData = querySnapshot.docs.map(doc => doc.data());
       setPets(petsData);
     };

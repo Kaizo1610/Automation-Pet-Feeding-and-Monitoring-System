@@ -1,8 +1,8 @@
 import { initializeApp } from "firebase/app";
 //import { getAnalytics } from "firebase/analytics";
 import { getAuth, initializeAuth, getReactNativePersistence, sendEmailVerification } from "firebase/auth";
-import { getStorage } from "firebase/storage"; 
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"; 
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -57,7 +57,19 @@ export const addPet = async (pet) => {
   if (!userId) throw new Error("User not authenticated");
 
   try {
-    const docRef = await firestore.collection(`users/${userId}/pets`).add(pet);
+    let imageUrl = null;
+    if (pet.image && pet.image.uri) {
+      // Upload image to Firebase Storage
+      const response = await fetch(pet.image.uri);
+      const blob = await response.blob();
+      const storageRef = ref(storage, `users/${userId}/pets/${pet.name}`);
+      await uploadBytes(storageRef, blob);
+      imageUrl = await getDownloadURL(storageRef);
+    }
+
+    // Save pet data with image URL to Firestore
+    const petData = { ...pet, image: imageUrl };
+    const docRef = await addDoc(collection(firestore, `users/${userId}/pets`), petData);
     return docRef.id;
   } catch (error) {
     console.error("Error adding pet: ", error);
