@@ -6,6 +6,7 @@ import { Colors } from './../../../constants/Colors'
 import { useRouter } from 'expo-router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './../../../configs/FirebaseConfig'
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function SignIn() {
 
@@ -61,6 +62,10 @@ export default function SignIn() {
         }
       });
   }
+
+  const onGuestLogin = () => {
+    router.replace('(tabs)/homepage');
+  };
 
   return (
     <View style={styles.container}>
@@ -122,12 +127,9 @@ export default function SignIn() {
       </View>
   
       <View style={styles.footer2}>
-        <TouchableOpacity style={[styles.buttonIcon, styles.googleButton]} onPress={() => router.push('/homepage')}>
-          <FontAwesome name="google" size={26} color="white" />
-        </TouchableOpacity>
-      
-        <TouchableOpacity style={[styles.buttonIcon, styles.facebookButton]} onPress={() => router.push('/homepage')}>
-          <FontAwesome name="facebook-square" size={26} color="white" />
+        <TouchableOpacity style={styles.guestButton} onPress={onGuestLogin}>
+          <MaterialIcons name="person-outline" size={26} color="white" />
+          <Text style={styles.guestButtonText}>Login as Guest</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -241,22 +243,25 @@ const styles = StyleSheet.create({
   },
   footer2: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     width: '80%',
     marginTop: 15
   },
-  buttonIcon: {
+  guestButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#4267B2',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
-    width: '45%',
-    alignItems: 'center'
+    width: '100%',
+    justifyContent: 'center'
   },
-  googleButton: {
-    backgroundColor: '#DB4437'
-  },
-  facebookButton: {
-    backgroundColor: '#4267B2'
+  guestButtonText: {
+    color: 'white',
+    fontFamily: 'outfit-bold',
+    fontSize: 18,
+    marginLeft: 10
   },
   alertContainer: {
     position: 'absolute',
