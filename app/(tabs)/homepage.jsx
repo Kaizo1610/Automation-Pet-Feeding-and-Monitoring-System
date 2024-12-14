@@ -277,7 +277,7 @@ export default function Homepage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.SECONDARY,
+    backgroundColor: 'white',
     alignItems: 'center',
   },
   header: {
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.SECONDARY,
+    backgroundColor: 'white',
     paddingVertical: 20,
   },
   promoteImage: {
