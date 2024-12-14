@@ -23,6 +23,11 @@ export default function DeleteSchedule() {
       try {
         const querySnapshot = await getDocs(collection(firestore, `users/${userId}/wateringSchedules`));
         const fetchedSchedules = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        fetchedSchedules.sort((a, b) => {
+          const [aHours, aMinutes] = a.time.split(':').map(Number);
+          const [bHours, bMinutes] = b.time.split(':').map(Number);
+          return aHours - bHours || aMinutes - bMinutes;
+        });
         setScheduleData(fetchedSchedules);
       } catch (error) {
         console.error("Error fetching schedules: ", error);
