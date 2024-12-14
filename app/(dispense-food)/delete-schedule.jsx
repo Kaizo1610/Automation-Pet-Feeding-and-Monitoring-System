@@ -1,21 +1,36 @@
 import Checkbox from 'expo-checkbox';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, Modal } from 'react-native';
-import { Colors } from './../../constants/Colors'
+import { Colors } from './../../constants/Colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
- 
-const data = [
-  { id: '1', time: '08:00', portions: '4 Portions (Approx. 20g)', checked: false },
-  { id: '2', time: '12:00', portions: '8 Portions (Approx. 40g)', checked: false },
-  { id: '3', time: '16:00', portions: '6 Portions (Approx. 30g)', checked: false },
-];
+import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
+import { collection, getDocs } from 'firebase/firestore';
 
 export default function DeleteSchedule() {
+  const router = useRouter();
+  const [scheduleData, setScheduleData] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const router=useRouter();
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      const userId = getCurrentUserId();
+      if (!userId) {
+        console.error("User not authenticated");
+        return;
+      }
 
-  const [scheduleData, setScheduleData] = useState(data);
+      try {
+        const querySnapshot = await getDocs(collection(firestore, `users/${userId}/feedingSchedules`));
+        const fetchedSchedules = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setScheduleData(fetchedSchedules);
+      } catch (error) {
+        console.error("Error fetching schedules: ", error);
+      }
+    };
+
+    fetchSchedules();
+  }, []);
 
   const handleCheckBox = (id) => {
     setScheduleData(prevData =>
@@ -32,88 +47,76 @@ export default function DeleteSchedule() {
       <Checkbox
         value={item.checked}
         onValueChange={() => handleCheckBox(item.id)}
-        tintColors={{ true: '#F79C34', false: '#ccc' }} // Custom color for checked/unchecked state
-        boxType="circle" // Use this on iOS if you prefer circle checkboxes
-        style={styles.checkbox} // Added for better spacing and appearance control
+        tintColors={{ true: '#F79C34', false: '#ccc' }}
+        boxType="circle"
+        style={styles.checkbox}
       />
     </View>
   );
 
-  const [modalVisible, setModalVisible] = useState(false);
-
-  // Handle delete icon press (show modal)
   const handleDeletePress = () => {
     setModalVisible(true);
   };
 
-  // Handle cancel button press (hide modal)
   const handleCancelDelete = () => {
     setModalVisible(false);
   };
 
-  // Handle confirm delete (implement delete logic here)
   const handleConfirmDelete = () => {
     setModalVisible(false);
-
+    // Implement delete logic here
   };
 
   return (
-
     <View style={styles.container}>
-
-    <View style={styles.header}>
-      <TouchableOpacity onPress={()=>router.back()} style={{marginTop:10}}>
-      <Ionicons name="arrow-back" size={28} color="black" />    
-      </TouchableOpacity>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 10 }}>
+          <Ionicons name="arrow-back" size={28} color="black" />
+        </TouchableOpacity>
         <Text style={styles.headerText}>Delete Feeding Schedule</Text>
       </View>
 
       <View style={styles.container1}>
-
-      <View style={styles.row1}>
-        <Text style={styles.text1}>Time</Text>
-        <Text style={styles.text2}>Portions</Text>
-      </View>
-
-      <FlatList
-        data={scheduleData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
-
+        <View style={styles.row1}>
+          <Text style={styles.text1}>Time</Text>
+          <Text style={styles.text2}>Portions</Text>
+        </View>
+        <FlatList
+          data={scheduleData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
       </View>
 
       <View style={styles.container2}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.modalOverlay1}>
-          <View style={styles.modalView1}>
-            <Text style={styles.modalTitle1}>Delete?</Text>
-            <Text style={styles.modalMessage1}>Are you sure you want to delete?</Text>
-            <View style={styles.modalButtons1}>
-              <TouchableOpacity style={styles.cancelButton1} onPress={handleCancelDelete}>
-                <Text style={styles.cancelText1}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteButton1} onPress={handleConfirmDelete}>
-                <Text style={styles.deleteText1}>Delete</Text>
-              </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.modalOverlay1}>
+            <View style={styles.modalView1}>
+              <Text style={styles.modalTitle1}>Delete?</Text>
+              <Text style={styles.modalMessage1}>Are you sure you want to delete?</Text>
+              <View style={styles.modalButtons1}>
+                <TouchableOpacity style={styles.cancelButton1} onPress={handleCancelDelete}>
+                  <Text style={styles.cancelText1}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.deleteButton1} onPress={handleConfirmDelete}>
+                  <Text style={styles.deleteText1}>Delete</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
 
-      <TouchableOpacity style={styles.deleteButton} onPress={handleDeletePress}>
-        <Text style={styles.deleteButtonText}>Delete</Text>
-      </TouchableOpacity>
-
+        <TouchableOpacity style={styles.deleteButton} onPress={handleDeletePress}>
+          <Text style={styles.deleteButtonText}>Delete</Text>
+        </TouchableOpacity>
       </View>
-
     </View>
   );
 }
