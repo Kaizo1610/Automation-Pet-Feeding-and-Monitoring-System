@@ -4,7 +4,7 @@ import { Colors } from './../../constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 
 export default function AddSchedule() {
 
@@ -54,17 +54,23 @@ export default function AddSchedule() {
       console.error("User not authenticated");
       return;
     }
-  
-    const dispenseTime = `${hours}:${minutes}`;
-    const portionValue = parseInt(portion, 10);
-    const approxVolume = portionValue * 5; // Calculate approximate volume
-    const newSchedule = {
-      time: dispenseTime,
-      portions: `${portion} Portions (Approx. ${approxVolume}ml)`,
-      enabled: true,
-    };
-  
+
     try {
+      const querySnapshot = await getDocs(collection(firestore, `users/${userId}/wateringSchedules`));
+      if (querySnapshot.size >= 5) {
+        Alert.alert("Limit Reached", "You can only add up to 5 watering schedules.");
+        return;
+      }
+
+      const dispenseTime = `${hours}:${minutes}`;
+      const portionValue = parseInt(portion, 10);
+      const approxVolume = portionValue * 5; // Calculate approximate volume
+      const newSchedule = {
+        time: dispenseTime,
+        portions: `${portion} Portions (Approx. ${approxVolume}ml)`,
+        enabled: true,
+      };
+
       await addDoc(collection(firestore, `users/${userId}/wateringSchedules`), newSchedule);
       console.log('Schedule added:', newSchedule);
       Alert.alert("Success", "New watering schedule has been added");

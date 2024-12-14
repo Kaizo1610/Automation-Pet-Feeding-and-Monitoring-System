@@ -4,7 +4,7 @@ import { Colors } from './../../constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 
 export default function AddSchedule() {
 
@@ -54,17 +54,23 @@ export default function AddSchedule() {
       console.error("User not authenticated");
       return;
     }
-  
-    const dispenseTime = `${hours}:${minutes}`;
-    const portionValue = parseInt(portion, 10);
-    const approxWeight = portionValue * 5; // Calculate approximate weight
-    const newSchedule = {
-      time: dispenseTime,
-      portions: `${portion} Portions (Approx. ${approxWeight}g)`,
-      enabled: true,
-    };
-  
+
     try {
+      const querySnapshot = await getDocs(collection(firestore, `users/${userId}/feedingSchedules`));
+      if (querySnapshot.size >= 5) {
+        Alert.alert("Limit Reached", "You can only add up to 5 feeding schedules.");
+        return;
+      }
+
+      const dispenseTime = `${hours}:${minutes}`;
+      const portionValue = parseInt(portion, 10);
+      const approxWeight = portionValue * 5; // Calculate approximate weight
+      const newSchedule = {
+        time: dispenseTime,
+        portions: `${portion} Portions (Approx. ${approxWeight}g)`,
+        enabled: true,
+      };
+
       await addDoc(collection(firestore, `users/${userId}/feedingSchedules`), newSchedule);
       console.log('Schedule added:', newSchedule);
       Alert.alert("Success", "New feeding schedule has been added");
