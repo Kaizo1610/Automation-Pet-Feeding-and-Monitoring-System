@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, Alert } from 'react-native';
 import { Colors } from './../../constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
+import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
+import { collection, addDoc } from 'firebase/firestore';
 
 export default function AddSchedule() {
 
@@ -46,11 +48,30 @@ export default function AddSchedule() {
     }
   };
 
-  const handleSave = () => {
-    // Implement save logic here
+  const handleSave = async () => {
+    const userId = getCurrentUserId();
+    if (!userId) {
+      console.error("User not authenticated");
+      return;
+    }
+  
     const dispenseTime = `${hours}:${minutes}`;
-    console.log('Dispense Time:', dispenseTime);
-    console.log('Portion:', portion);
+    const portionValue = parseInt(portion, 10);
+    const approxWeight = portionValue * 5; // Calculate approximate weight
+    const newSchedule = {
+      time: dispenseTime,
+      portions: `${portion} Portions (Approx. ${approxWeight}g)`,
+      enabled: true,
+    };
+  
+    try {
+      await addDoc(collection(firestore, `users/${userId}/feedingSchedules`), newSchedule);
+      console.log('Schedule added:', newSchedule);
+      Alert.alert("Success", "New feeding schedule has been added");
+      router.back(); // Navigate back to the previous screen
+    } catch (error) {
+      console.error("Error adding schedule: ", error);
+    }
   };
 
   return (

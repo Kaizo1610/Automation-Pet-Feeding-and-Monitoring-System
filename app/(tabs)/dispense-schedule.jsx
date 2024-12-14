@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { Checkbox } from 'expo-checkbox';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from './../../constants/Colors';
 import { useNavigation, useRouter } from 'expo-router';
+import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
+import { collection, getDocs } from 'firebase/firestore';
 
 export default function DispenseSchedule() {
 
@@ -15,17 +17,39 @@ export default function DispenseSchedule() {
   const [selectedIcon, setSelectedIcon] = useState('fish');
 
   // State to handle different schedules for feeding and watering
-  const [feedingSchedules, setFeedingSchedules] = useState([
-    { id: '1', time: '08:00', portions: '4 Portions (Approx. 20g)', enabled: true },
-    { id: '2', time: '12:00', portions: '8 Portions (Approx. 40g)', enabled: true },
-    { id: '3', time: '16:00', portions: '6 Portions (Approx. 30g)', enabled: false },
-  ]);
+  const [feedingSchedules, setFeedingSchedules] = useState([]);
 
-  const [wateringSchedules, setWateringSchedules] = useState([
-    { id: '1', time: '08:00', portions: '2 Portions (Approx. 10ml)', enabled: true },
-    { id: '2', time: '12:00', portions: '3 Portions (Approx. 15ml)', enabled: false },
-    { id: '3', time: '16:00', portions: '4 Portions (Approx. 20ml)', enabled: true },
-  ]);
+  const [wateringSchedules, setWateringSchedules] = useState([]);
+
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      const userId = getCurrentUserId();
+      if (!userId) {
+        console.error("User not authenticated");
+        return;
+      }
+  
+      try {
+        const collectionName = selectedIcon === 'fish' ? 'feedingSchedules' : 'wateringSchedules';
+        const querySnapshot = await getDocs(collection(firestore, `users/${userId}/${collectionName}`));
+        const fetchedSchedules = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        fetchedSchedules.sort((a, b) => {
+          const [aHours, aMinutes] = a.time.split(':').map(Number);
+          const [bHours, bMinutes] = b.time.split(':').map(Number);
+          return aHours - bHours || aMinutes - bMinutes;
+        }); // Sort schedules by time in 24-hour format
+        if (selectedIcon === 'fish') {
+          setFeedingSchedules(fetchedSchedules);
+        } else {
+          setWateringSchedules(fetchedSchedules);
+        }
+      } catch (error) {
+        console.error("Error fetching schedules: ", error);
+      }
+    };
+  
+    fetchSchedules();
+  }, [selectedIcon]);
 
   const toggleSchedule = (id) => {
     const toggleFunc = selectedIcon === 'fish' ? setFeedingSchedules : setWateringSchedules;
