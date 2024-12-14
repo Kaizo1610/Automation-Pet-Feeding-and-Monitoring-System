@@ -277,24 +277,25 @@ export default function Homepage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.PEACH,
+    backgroundColor: Colors.SECONDARY,
     alignItems: 'center',
-    paddingTop: 50,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '90%',
-    marginBottom: 5,
+    width: '95%',
   },
   icon1: {
-    paddingLeft: 2
+    paddingLeft: 5,
+    paddingTop: 60
   },
   icon2: {
-    paddingLeft: 225
+    paddingLeft: 250,
+    paddingTop: 60
   },
   icon3: {
-    paddingRight: 2
+    paddingRight: 5,
+    paddingTop: 60
   },
   scrollContainer: {
     flexGrow: 1,
