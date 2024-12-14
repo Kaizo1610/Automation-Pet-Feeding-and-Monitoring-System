@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Animated, Image } from 'react-native';
 import { Checkbox } from 'expo-checkbox';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from './../../constants/Colors';
@@ -20,6 +20,12 @@ export default function DispenseSchedule() {
   const [feedingSchedules, setFeedingSchedules] = useState([]);
 
   const [wateringSchedules, setWateringSchedules] = useState([]);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [portions, setPortions] = useState('');
+  const [animationVisible, setAnimationVisible] = useState(false);
+  const [animationValue] = useState(new Animated.Value(0));
+  const [currentPortion, setCurrentPortion] = useState(0);
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -86,17 +92,34 @@ export default function DispenseSchedule() {
   const addScheduleRoute = selectedIcon === 'fish' ? '(dispense-food)/add-schedule' : '(dispense-water)/add-schedule';
   const editScheduleRoute = selectedIcon === 'fish' ? '(dispense-food)/edit-schedule' : '(dispense-water)/edit-schedule';
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [portions, setPortions] = useState('');
-
   const handleSave = () => {
-    console.log(`Selected Portions: ${portions} portions`);
-    setModalVisible(false); 
+    setModalVisible(false);
+    setAnimationVisible(true);
+    setCurrentPortion(0);
+    Animated.timing(animationValue, {
+      toValue: 1,
+      duration: portions * 2000, // 2 seconds per portion
+      useNativeDriver: true,
+    }).start(() => {
+      setAnimationVisible(false);
+      animationValue.setValue(0);
+    });
+
+    const interval = setInterval(() => {
+      setCurrentPortion((prev) => {
+        if (prev < portions) {
+          return prev + 1;
+        } else {
+          clearInterval(interval);
+          return prev;
+        }
+      });
+    }, 2000);
   };
 
   const handleCancel = () => {
     setPortions('');   // Reset values
-    setModalVisible(false);  
+    setModalVisible(false);
   };
 
   return (
@@ -171,6 +194,15 @@ export default function DispenseSchedule() {
               </TouchableOpacity>
             </View>
           </View>
+        </View>
+      </Modal>
+
+      <Modal visible={animationVisible} transparent={true} animationType="fade">
+        <View style={styles.animationModalContainer}>
+          <Animated.View style={[styles.animationContainer, { opacity: animationValue }]}>
+            <Text style={styles.animationText}>Dispensing {currentPortion} of {portions} portions...</Text>
+            <Image source={require('./../../assets/images/oyen.png')} style={styles.dispenseMachine} />
+          </Animated.View>
         </View>
       </Modal>
 
@@ -369,5 +401,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
     fontFamily:'outfit-bold'
+  },
+  animationModalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  animationContainer: {
+    backgroundColor: 'lightblue',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  animationText: {
+    color: Colors.WHITE,
+    fontSize: 22,
+    fontFamily: 'outfit-bold',
+  },
+  dispenseMachine: {
+    width: 100,
+    height: 100,
   },
 });
