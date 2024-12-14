@@ -114,7 +114,7 @@ export default function AddSchedule() {
       </View>
 
       <TouchableOpacity style={styles.row2}>
-        <Text style={styles.label2}>Portions:</Text>
+        <Text style={styles.label2}>Number of Portions:</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter portions"
@@ -124,6 +124,10 @@ export default function AddSchedule() {
           onChangeText={handlePortionChange} // Handle portion input
         />
       </TouchableOpacity>
+
+      <View>
+        <Text style={styles.limit}>Maximum: 20portions</Text>
+      </View>
 
       </View>
 
@@ -162,7 +166,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   row2: {
-    flexDirection: 'column',
+    flexDirection: 'Column',
+    alignItems: 'center',
   },
   label1: {
     marginBottom: 10,
@@ -181,7 +186,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 8,
     width: '40%',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   inputHour: {
     fontFamily:'outfit',
@@ -220,4 +225,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily:'outfit-bold',
   },
+  limit: {
+    fontFamily: 'outfit',
+    fontSize: 12,
+    color: Colors.GRAY,
+    marginTop: 10,
+  }
 });
