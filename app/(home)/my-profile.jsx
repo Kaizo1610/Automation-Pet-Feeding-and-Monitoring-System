@@ -31,12 +31,12 @@ export default function myProfile() {
           console.log("Fetched profile data:", data); // Debug log
           setUsername(data.username);
           setQuotes(data.quotes);
-          setProfileImage(data.profileImage || null); // Use default image if no profile image is set
+          setProfileImage(data.profileImage || ""); // Ensure profileImage is a string
         } else {
           // Set default values if no profile data exists
           setUsername("Username");
           setQuotes("Your Quotes");
-          setProfileImage(null);
+          setProfileImage("");
         }
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -117,7 +117,7 @@ export default function myProfile() {
               <TouchableOpacity style={styles.cancelButton1} onPress={handleCancelLogout}>
                 <Text style={styles.cancelText}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.logoutButton1} onPress={()=>router.navigate('auth/sign-in')}>
+              <TouchableOpacity style={styles.logoutButton1} onPress={handleConfirmLogout}>
                 <Text style={styles.logoutText}>Logout</Text>
               </TouchableOpacity>
             </View>

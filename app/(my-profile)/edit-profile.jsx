@@ -4,9 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors';
-import { database, storage, getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
-import { ref, set, get, child } from "firebase/database";
-import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export default function EditProfile() {
@@ -41,8 +39,8 @@ export default function EditProfile() {
           console.log("Fetched profile data:", data); // Debug log
           setUsername(data.username);
           setQuotes(data.quotes);
-          setProfileImage(data.profileImage);
-          setTempProfileImage(data.profileImage);
+          setProfileImage(data.profileImage || ""); // Ensure profileImage is a string
+          setTempProfileImage(data.profileImage || ""); // Ensure profileImage is a string
           setOriginalUsername(data.username);
           setOriginalQuotes(data.quotes);
         } else {
@@ -73,19 +71,6 @@ export default function EditProfile() {
 
   // Handle save button (commit temp changes to actual profile state)
   const handleSave = async () => {
-    let finalProfileImage = profileImage; // Use the existing profile image if no new image is selected
-
-    if (tempProfileImage) {
-      // Upload image to Firebase Storage
-      const response = await fetch(tempProfileImage);
-      const blob = await response.blob();
-      const storageReference = storageRef(storage, `profileImages/${Date.now()}`);
-      await uploadBytes(storageReference, blob);
-      finalProfileImage = await getDownloadURL(storageReference);
-    }
-
-    setProfileImage(finalProfileImage); // Commit temporary image to permanent state
-    console.log("Profile saved:", { username, quotes, profileImage: finalProfileImage });
     try {
       const userId = getCurrentUserId();
       if (!userId) throw new Error("User not authenticated");
@@ -93,10 +78,11 @@ export default function EditProfile() {
       await setDoc(doc(firestore, "users", userId), {
         username,
         quotes: quotes || "Your Quotes", // Ensure quotes is not an empty string
-        profileImage: finalProfileImage || null // Ensure profileImage is not an empty string
+        profileImage: tempProfileImage || "" // Ensure profileImage is a string
       });
       showAlert('Profile saved successfully!');
-      setTempProfileImage(null); // Reset temporary image state
+      setProfileImage(tempProfileImage); // Commit temporary image to permanent state
+      setTempProfileImage(""); // Reset temporary image state
       setOriginalUsername(username); // Reset original username to the saved username
       setOriginalQuotes(quotes); // Reset original quotes to the saved quotes
       router.back(); // Navigate back after saving
@@ -123,7 +109,6 @@ export default function EditProfile() {
 
     if (!result.canceled) {
       setTempProfileImage(result.uri); // Set temporary image for preview
-      setProfileImage(result.uri); // Set profile image directly to reflect the change immediately
     }
   };
 
