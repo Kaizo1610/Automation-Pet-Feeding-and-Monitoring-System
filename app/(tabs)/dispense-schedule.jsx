@@ -201,7 +201,11 @@ export default function DispenseSchedule() {
         <View style={styles.animationModalContainer}>
           <Animated.View style={[styles.animationContainer, { opacity: animationValue }]}>
             <Text style={styles.animationText}>Dispensing {currentPortion} of {portions} portions...</Text>
-            <Image source={require('./../../assets/images/oyen.png')} style={styles.dispenseMachine} />
+            {selectedIcon === 'fish' ? (
+              <Image source={require('./../../assets/images/oyen.png')} style={styles.dispenseMachine} />
+            ) : (
+              <Image source={require('./../../assets/images/john.png')} style={styles.dispenseMachine} />
+            )}
           </Animated.View>
         </View>
       </Modal>
