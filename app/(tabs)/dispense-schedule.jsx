@@ -199,14 +199,14 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   icon1: {
-    backgroundColor: Colors.LIGHTGRAY,
+    backgroundColor: 'lightblue',
     height: 40,
     width: '12%',
     justifyContent: 'center',
     paddingLeft: 8,
   },
   icon2: {
-    backgroundColor: Colors.LIGHTGRAY,
+    backgroundColor: 'lightblue',
     height: 40,
     width: '12%',
     justifyContent: 'center',
