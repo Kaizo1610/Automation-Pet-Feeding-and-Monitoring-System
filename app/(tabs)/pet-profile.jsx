@@ -35,17 +35,18 @@ export default function PetProfile() {
 
         <ScrollView style={styles.scrollView}>
           {pets.map((pet) => (
-            <TouchableOpacity 
-              key={pet.name} 
-              style={styles.petItem} 
-              onPress={() => router.push(`(pet-profile)/${pet.name.toLowerCase() === 'oyen' ? 'oyen' : 'pets-info'}`)} // Navigate to the specific pet's detail page
-            >
-              <View style={styles.petBox}>
-                <Image source={{ uri: pet.image }} style={styles.petImage} />
-                <Text style={styles.petName}>{pet.name}</Text>
-                <Text style={styles.arrowText}>🔖</Text>
-              </View>
-            </TouchableOpacity>
+              <TouchableOpacity 
+                  key={pet.name} 
+                  style={styles.petItem} 
+                  onPress={() => router.push({ pathname: '(pet-profile)/pets-info', params: { petId: pet.id } })} // Pass petId as a parameter
+>
+                <View style={styles.petBox}>
+                  <Image source={{ uri: pet.image }} style={styles.petImage} />
+                  <Text style={styles.petName}>{pet.name}</Text>
+                  <Text style={styles.arrowText}>🔖</Text>
+                </View>
+              </TouchableOpacity>
+
           ))}
         </ScrollView>
 

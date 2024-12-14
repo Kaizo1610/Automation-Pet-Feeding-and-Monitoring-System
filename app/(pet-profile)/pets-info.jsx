@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from './../../constants/Colors';
 import { useRouter } from 'expo-router';
+import { getCurrentUserId, firestore } from '../../configs/FirebaseConfig';
+import { collection, getDocs } from 'firebase/firestore';
 
 export default function PetsInfo() {
   const router = useRouter();
@@ -24,6 +26,21 @@ export default function PetsInfo() {
     setModalVisible(false);
 
   };
+
+    const [pets, setPets] = useState([]);
+  
+    useEffect(() => {
+      const fetchPets = async () => {
+        const userId = getCurrentUserId();
+        if (!userId) throw new Error("User not authenticated");
+  
+        const querySnapshot = await getDocs(collection(firestore, `users/${userId}/pets`));
+        const petsData = querySnapshot.docs.map(doc => doc.data());
+        setPets(petsData);
+      };
+  
+      fetchPets();
+    }, []);
 
   return (
     <View style={styles.container}>
@@ -48,21 +65,22 @@ export default function PetsInfo() {
       </View>
 
       {/* Pet Details Section */}
+      {pets.map((pet) => (
       <View style={styles.detailCard}>
-        <Text style={styles.petName}>Oyen's Detail</Text>
+        <Text style={styles.petName}>{pet.name}'s Detail</Text>
         <Text style={styles.label}>Gender</Text>
-        <Text style={styles.info}>Male</Text>
+        <Text style={styles.info}>{pet.gender}</Text>
         <Text style={styles.label}>Weight</Text>
-        <Text style={styles.info}>4.6 Kg</Text>
+        <Text style={styles.info}>{pet.weight}</Text>
 
         {/* Health Information */}
         <Text style={styles.healthHeader}>Health Information</Text>
         <Text style={styles.label}>Appointment</Text>
-        <Text style={styles.info}>Rabies Vaccination</Text>
+        <Text style={styles.info}>{pet.appointment}</Text>
         <Text style={styles.label}>Date</Text>
-        <Text style={styles.info}>24 June 2024</Text>
+        <Text style={styles.info}>{pet.date}</Text>
       </View>
-
+      ))}
 
     <View style={styles.container1}>
       <Modal
