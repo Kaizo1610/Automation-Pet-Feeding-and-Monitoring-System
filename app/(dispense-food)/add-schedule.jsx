@@ -43,7 +43,7 @@ export default function AddSchedule() {
   const handlePortionChange = (input) => {
     const numericValue = parseInt(input, 10); // Convert to a number
     // Update portion if it's a valid number or allow empty input
-    if (!isNaN(numericValue) || input === '') {
+    if ((!isNaN(numericValue) && numericValue <= 20) || input === '') {
       setPortion(input);
     }
   };
