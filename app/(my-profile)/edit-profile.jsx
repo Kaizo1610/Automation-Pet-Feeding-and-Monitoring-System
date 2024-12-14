@@ -13,10 +13,10 @@ export default function EditProfile() {
   const router = useRouter();
   
   // Permanent profile image state (only updates when Save is pressed)
-  const [profileImage, setProfileImage] = useState(null);
+  const [profileImage, setProfileImage] = useState("");
   
   // Temporary profile image state (used for live preview before saving)
-  const [tempProfileImage, setTempProfileImage] = useState(null);
+  const [tempProfileImage, setTempProfileImage] = useState("");
 
   const [username, setUsername] = useState('');
   const [quotes, setQuotes] = useState('');
@@ -49,8 +49,8 @@ export default function EditProfile() {
           // Set default values if no profile data exists
           setUsername("Username");
           setQuotes("Your Quotes");
-          setProfileImage(null);
-          setTempProfileImage(null);
+          setProfileImage("");
+          setTempProfileImage("");
           setOriginalUsername("Username");
           setOriginalQuotes("Your Quotes");
         }
