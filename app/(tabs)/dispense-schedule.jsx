@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     color: '#888',
   },
   addScheduleButton: {
-    backgroundColor: '#F0F0F0',
+    backgroundColor: 'lightblue',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     marginLeft:20
   },
   addScheduleText: {
-    color: Colors.PRIMARY,
+    color: Colors.BLACK,
     fontFamily: 'outfit-bold',
     fontSize: 18,
   },
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 10,
     width:'80%',
     marginLeft: 40
   },
