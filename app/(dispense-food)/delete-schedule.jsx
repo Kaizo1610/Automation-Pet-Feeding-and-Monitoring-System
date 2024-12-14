@@ -1,11 +1,11 @@
 import Checkbox from 'expo-checkbox';
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, Alert } from 'react-native';
 import { Colors } from './../../constants/Colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
 export default function DeleteSchedule() {
   const router = useRouter();
@@ -62,9 +62,25 @@ export default function DeleteSchedule() {
     setModalVisible(false);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
+    const userId = getCurrentUserId();
+    if (!userId) {
+      console.error("User not authenticated");
+      return;
+    }
+
+    try {
+      const itemsToDelete = scheduleData.filter(item => item.checked);
+      for (const item of itemsToDelete) {
+        await deleteDoc(doc(firestore, `users/${userId}/feedingSchedules`, item.id));
+      }
+      setScheduleData(prevData => prevData.filter(item => !item.checked));
+      Alert.alert("Success", "The chosen schedule has been deleted");
+    } catch (error) {
+      console.error("Error deleting schedules: ", error);
+    }
+
     setModalVisible(false);
-    // Implement delete logic here
   };
 
   return (
