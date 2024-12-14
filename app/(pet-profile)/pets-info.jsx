@@ -35,7 +35,7 @@ export default function PetsInfo() {
         if (!userId) throw new Error("User not authenticated");
   
         const querySnapshot = await getDocs(collection(firestore, `users/${userId}/pets`));
-        const petsData = querySnapshot.docs.map(doc => doc.data());
+        const petsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setPets(petsData);
       };
   
@@ -66,7 +66,7 @@ export default function PetsInfo() {
 
       {/* Pet Details Section */}
       {pets.map((pet) => (
-      <View style={styles.detailCard}>
+      <View key={pet.id} style={styles.detailCard}>
         <Text style={styles.petName}>{pet.name}'s Detail</Text>
         <Text style={styles.label}>Gender</Text>
         <Text style={styles.info}>{pet.gender}</Text>
