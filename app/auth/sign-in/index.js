@@ -265,8 +265,9 @@ const styles = StyleSheet.create({
   },
   alertContainer: {
     position: 'absolute',
-    top: 55,
-    width: '80%',
+    top: 20,
+    left: '10%',
+    right: '10%',
     backgroundColor: Colors.RED,
     padding: 5,
     borderRadius: 5,

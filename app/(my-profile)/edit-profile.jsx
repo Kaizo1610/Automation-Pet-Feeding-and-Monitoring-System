@@ -25,6 +25,9 @@ export default function EditProfile() {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
+  const [successAlertVisible, setSuccessAlertVisible] = useState(false);
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
+
   // Fetch existing profile data on component mount
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -69,6 +72,15 @@ export default function EditProfile() {
     }, 4000); // Hide the alert after 4 seconds
   };
 
+  const showSuccessAlert = (message) => {
+    setSuccessAlertMessage(message);
+    setSuccessAlertVisible(true);
+    setTimeout(() => {
+      setSuccessAlertVisible(false);
+      router.back(); // Navigate back after the alert is hidden
+    }, 4000); // Hide the alert after 4 seconds
+  };
+
   // Handle save button (commit temp changes to actual profile state)
   const handleSave = async () => {
     try {
@@ -80,12 +92,11 @@ export default function EditProfile() {
         quotes: quotes || "Your Quotes", // Ensure quotes is not an empty string
         profileImage: tempProfileImage || "" // Ensure profileImage is a string
       });
-      showAlert('Profile saved successfully!');
+      showSuccessAlert('Profile saved successfully!');
       setProfileImage(tempProfileImage); // Commit temporary image to permanent state
       setTempProfileImage(""); // Reset temporary image state
       setOriginalUsername(username); // Reset original username to the saved username
       setOriginalQuotes(quotes); // Reset original quotes to the saved quotes
-      router.back(); // Navigate back after saving
     } catch (error) {
       console.error("Error saving profile data:", error);
       showAlert('Failed to save profile.');
@@ -117,7 +128,11 @@ export default function EditProfile() {
     setTempProfileImage(profileImage); // Reset to the last saved image on back
     setUsername(originalUsername); // Reset to the original username
     setQuotes(originalQuotes); // Reset to the original quotes
-    router.back(); // Navigate back
+    if (router.canGoBack()) {
+      router.back(); // Navigate back if possible
+    } else {
+      router.replace('(tabs)/homepage'); // Navigate to homepage if no previous screen
+    }
   };
 
   return (
@@ -125,6 +140,11 @@ export default function EditProfile() {
       {alertVisible && (
         <View style={styles.alertContainer}>
           <Text style={styles.alertText}>{alertMessage}</Text>
+        </View>
+      )}
+      {successAlertVisible && (
+        <View style={styles.successAlertContainer}>
+          <Text style={styles.successAlertText}>{successAlertMessage}</Text>
         </View>
       )}
       {/* Back Button */}
@@ -237,8 +257,9 @@ const styles = StyleSheet.create({
   },
   alertContainer: {
     position: 'absolute',
-    top: 55,
-    width: '80%',
+    top: 20,
+    left: '10%',
+    right: '10%',
     backgroundColor: Colors.GREEN,
     padding: 5,
     borderRadius: 5,
@@ -250,6 +271,26 @@ const styles = StyleSheet.create({
     borderColor: 'green'
   },
   alertText: {
+    fontFamily:'outfit-medium',
+    fontSize: 15,
+    color: Colors.WHITE
+  },
+  successAlertContainer: {
+    position: 'absolute',
+    top: 20,
+    left: '10%',
+    right: '10%',
+    backgroundColor: Colors.GREEN,
+    padding: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign:'center',
+    zIndex: 1,
+    borderWidth: 1,
+    borderColor: 'green'
+  },
+  successAlertText: {
     fontFamily:'outfit-medium',
     fontSize: 15,
     color: Colors.WHITE

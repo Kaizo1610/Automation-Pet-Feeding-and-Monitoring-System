@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, BackHandler } f
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors'
-import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
+import { getCurrentUserId, firestore, auth } from './../../configs/FirebaseConfig';
 import { ref, get, child } from "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
