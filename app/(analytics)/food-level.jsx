@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Switch, TextInput, Button, ScrollView, Image, FlatList, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Switch, TextInput, Button } from 'react-native'
 import React from 'react'
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
@@ -7,9 +7,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Svg, { Circle, G, Text as SvgText } from 'react-native-svg';
 import { useFoodLevel } from '../(dashboard-logic)/foodData';
 
-export default function aboutUs() {
+export default function foodLevel() {
 
-  const router=useRouter();
+  const router = useRouter();
   const {
     foodLevel,
     isServoOn,
@@ -20,88 +20,86 @@ export default function aboutUs() {
   } = useFoodLevel();
 
   return (
-    
     <View style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={()=>router.back()}>
-          <Ionicons name="arrow-back" size={28} color="black" style={{marginTop:10}}/>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={28} color="black" style={{ marginTop: 10 }} />
         </TouchableOpacity>
         <Text style={styles.title}>Food Level</Text>
       </View>
 
-    <View style={styles.body}>
-      <View style={styles.levelsContainer}>
-        <View style={styles.box}>
-          <Text style={styles.title}>Food Level</Text>
-          <Svg width={150} height={150} viewBox="0 0 100 100">
-            <G rotation="-90" origin="50, 50">
-              <Circle
-                cx="50"
-                cy="50"
-                r="40"
-                stroke="#E0E0E0"
-                strokeWidth="8"
-                fill="none"
+      <View style={styles.body}>
+        <View style={styles.levelsContainer}>
+          <View style={styles.box}>
+            <Text style={styles.title}>Food Level</Text>
+            <Svg width={150} height={150} viewBox="0 0 100 100">
+              <G rotation="-90" origin="50, 50">
+                <Circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  stroke="#E0E0E0"
+                  strokeWidth="8"
+                  fill="none"
+                />
+                <Circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  stroke="#2196F3"
+                  strokeWidth="8"
+                  fill="none"
+                  strokeDasharray={Math.PI * 2 * 40}
+                  strokeDashoffset={Math.PI * 2 * 40 * (1 - foodLevel)}
+                />
+              </G>
+              <SvgText
+                x="45"
+                y="48"
+                textAnchor="middle"
+                fontSize="17"
+                fontWeight="bold"
+                fill="#2196F3"
+                dy="2"
+              >
+                {Math.round(foodLevel * 100)}%
+              </SvgText>
+              <SvgText
+                x="41"
+                y="47"
+                textAnchor="middle"
+                fontSize="7"
+                fill="#0a0a0a"
+                dy="16"
+              >
+                est.{Math.round(foodLevel * 20)}g
+              </SvgText>
+            </Svg>
+            <View style={styles.toggleContainer}>
+              <Text style={styles.toggleLabel}>Servo Motor</Text>
+              <Switch
+                value={isServoOn}
+                onValueChange={toggleServo}
+                trackColor={{ false: '#ccc', true: '#4CAF50' }}
+                thumbColor={isServoOn ? '#FFFFFF' : '#888'}
+                ios_backgroundColor="#E0E0E0"
+                style={styles.toggleSwitch}
               />
-              <Circle
-                cx="50"
-                cy="50"
-                r="40"
-                stroke="#2196F3"
-                strokeWidth="8"
-                fill="none"
-                strokeDasharray={Math.PI * 2 * 40}
-                strokeDashoffset={Math.PI * 2 * 40 * (1 - foodLevel)}
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Set Timer(minutes):</Text>
+              <TextInput
+                style={styles.textInput}
+                keyboardType="numeric"
+                value={timerValue}
+                onChangeText={setTimerValue}
               />
-            </G>
-            <SvgText
-              x="45"
-              y="48"
-              textAnchor="middle"
-              fontSize="17"
-              fontWeight="bold"
-              fill="#2196F3"
-              dy="2"
-            >
-              {Math.round(foodLevel * 100)}%
-            </SvgText>
-            <SvgText
-              x="41"
-              y="47"
-              textAnchor="middle"
-              fontSize="7"
-              fill="#0a0a0a"
-              dy="16"
-            >
-              est.{Math.round(foodLevel * 20)}g
-            </SvgText>
-          </Svg>
-          <View style={styles.toggleContainer}>
-            <Text style={styles.toggleLabel}>Servo Motor</Text>
-            <Switch
-              value={isServoOn}
-              onValueChange={toggleServo}
-              trackColor={{ false: '#ccc', true: '#4CAF50' }}
-              thumbColor={isServoOn ? '#FFFFFF' : '#888'}
-              ios_backgroundColor="#E0E0E0"
-              style={styles.toggleSwitch}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Set Timer(minutes):</Text>
-            <TextInput
-              style={styles.textInput}
-              keyboardType="numeric"
-              value={timerValue}
-              onChangeText={setTimerValue}
-            />
-            <Button title="Set Timer" onPress={updateTimerValue} />
+              <Button title="Set Timer" onPress={updateTimerValue} />
+            </View>
           </View>
         </View>
       </View>
-    </View>
-
     </View>
   )
 }
@@ -109,7 +107,7 @@ export default function aboutUs() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.WHITE, 
+    backgroundColor: Colors.WHITE,
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
@@ -120,21 +118,21 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 25,
-    fontFamily:'outfit-bold',
+    fontFamily: 'outfit-bold',
     marginBottom: 10,
-    textAlign:'center',
+    textAlign: 'center',
     marginTop: 90,
     marginLeft: 100,
-    alignContent:'center'
+    alignContent: 'center'
   },
   body: {
     marginTop: 30,
     padding: 15
   },
   subtitle: {
-    fontFamily:'outfit',
-    fontSize:18,
-    textAlign:'center'
+    fontFamily: 'outfit',
+    fontSize: 18,
+    textAlign: 'center'
   },
   levelsContainer: {
     flexDirection: 'row',

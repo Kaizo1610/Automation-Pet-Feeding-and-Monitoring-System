@@ -8,7 +8,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MapView, { Marker } from 'react-native-maps';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function aboutUs() {
+export default function explore() {
 
   const router = useRouter();
 

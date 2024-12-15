@@ -5,7 +5,7 @@ import { Colors } from '../../constants/Colors';
 import { TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-export default function aboutUs() {
+export default function waterLevel() {
 
   const router=useRouter();
 
