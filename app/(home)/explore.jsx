@@ -42,8 +42,14 @@ export default function aboutUs() {
         <View style={styles.horizontalLine} />
         <Text style={styles.collaboratedText}>Collaborated With:</Text>
         <View style={styles.iconContainer}>
-          <FontAwesome5 name="tiktok" size={30} color="black" />
-          <FontAwesome name="shopping-cart" size={30} color="orange" />
+          <View style={styles.iconWithText}>
+            <FontAwesome5 name="tiktok" size={30} color="black" />
+            <Text style={styles.iconText}>Tiktok</Text>
+          </View>
+          <View style={styles.iconWithText}>
+            <FontAwesome name="shopping-cart" size={30} color="orange" />
+            <Text style={styles.iconText}>Shopee</Text>
+          </View>
         </View>
       </View>
     </View>
@@ -107,5 +113,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 10,
+  },
+  iconWithText: {
+    alignItems: 'center',
+  },
+  iconText: {
+    marginTop: 5,
+    fontSize: 18,
+    fontFamily: 'outfit',
   },
 });
