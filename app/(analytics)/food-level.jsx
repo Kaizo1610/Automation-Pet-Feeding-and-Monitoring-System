@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Switch, TextInput, Button } from 'react-native'
+import { View, Text, StyleSheet, Switch, TextInput, Button, ScrollView } from 'react-native'
 import React from 'react'
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
@@ -10,6 +10,7 @@ import { useFoodLevel } from '../(dashboard-logic)/foodData';
 export default function foodLevel() {
 
   const router = useRouter();
+  
   const {
     foodLevel,
     isServoOn,
@@ -20,7 +21,7 @@ export default function foodLevel() {
   } = useFoodLevel();
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()}>
@@ -32,15 +33,14 @@ export default function foodLevel() {
       <View style={styles.body}>
         <View style={styles.levelsContainer}>
           <View style={styles.box}>
-            <Text style={styles.title}>Food Level</Text>
-            <Svg width={150} height={150} viewBox="0 0 100 100">
+            <Svg width={200} height={200} viewBox="0 0 100 100">
               <G rotation="-90" origin="50, 50">
                 <Circle
                   cx="50"
                   cy="50"
                   r="40"
                   stroke="#E0E0E0"
-                  strokeWidth="8"
+                  strokeWidth="10"
                   fill="none"
                 />
                 <Circle
@@ -73,7 +73,7 @@ export default function foodLevel() {
                 fill="#0a0a0a"
                 dy="16"
               >
-                est.{Math.round(foodLevel * 20)}g
+                approx.{Math.round(foodLevel * 20)}g
               </SvgText>
             </Svg>
             <View style={styles.toggleContainer}>
@@ -99,14 +99,16 @@ export default function foodLevel() {
             </View>
           </View>
         </View>
+        <View style={styles.horizontalLine} />
+        <Text style={styles.summaryText}>Summary Graph</Text>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: Colors.WHITE,
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -114,7 +116,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 5,
   },
   title: {
     fontSize: 25,
@@ -126,7 +128,7 @@ const styles = StyleSheet.create({
     alignContent: 'center'
   },
   body: {
-    marginTop: 30,
+    marginTop: 5,
     padding: 15
   },
   subtitle: {
@@ -189,5 +191,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignSelf: 'center',
     textAlign: 'center',
+  },
+  horizontalLine: {
+    borderBottomColor: 'black',
+    borderBottomWidth: 2, // Increase the width to make it more visible
+    marginVertical: 20,
+    width: '100%', // Ensure it spans the full width
+  },
+  summaryText: {
+    fontFamily: 'outfit-bold',
+    fontSize: 22,
+    textAlign: 'center',
+    marginTop: 5,
   },
 });

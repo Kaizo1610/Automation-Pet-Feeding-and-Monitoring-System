@@ -189,7 +189,7 @@ export default function Homepage() {
                 fill="#0a0a0a"
                 dy="16"
               >
-                est.{Math.round(foodLevel * 20)}g
+                approx.{Math.round(foodLevel * 20)}g
               </SvgText>
             </Svg>
           </TouchableOpacity>
@@ -237,7 +237,7 @@ export default function Homepage() {
                 fill="#0a0a0a"
                 dy="16"
               >
-                est.{Math.round(waterLevel * 20)}ml
+                approx.{Math.round(waterLevel * 20)}ml
               </SvgText>
             </Svg>
           </TouchableOpacity>
