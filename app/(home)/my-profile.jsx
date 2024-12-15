@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   editButton: {
-    backgroundColor: Colors.PRIMARY,
+    backgroundColor: 'lightblue',
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 10,
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     marginLeft:15
   },
   editButtonText: {
-    color: Colors.WHITE,
+    color: Colors.BLACK,
     fontFamily:'outfit-bold',
     fontSize:20,
     textAlign:'center'
