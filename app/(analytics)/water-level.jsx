@@ -70,7 +70,7 @@ export default function waterLevel() {
                 fill="#0a0a0a"
                 dy="16"
               >
-                approx.{Math.round(waterLevel * 20)} ml
+                approx.{Math.round(waterLevel * 20)}ml
               </SvgText>
             </Svg>
             <View style={styles.toggleContainer}>
