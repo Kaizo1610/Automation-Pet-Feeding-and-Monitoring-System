@@ -17,7 +17,7 @@ export default function aboutUs() {
         <TouchableOpacity onPress={()=>router.back()}>
           <Ionicons name="arrow-back" size={28} color="black" style={{marginTop:10}}/>
         </TouchableOpacity>
-        <Text style={styles.title}>Food Level</Text>
+        <Text style={styles.title}>Our Products</Text>
       </View>
 
     <View style={styles.body}>
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     textAlign:'center',
     marginTop: 90,
     marginLeft: 100,
-    alignContent:'center'
+    alignContent:'center',
   },
   body: {
     marginTop: 30,

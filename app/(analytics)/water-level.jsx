@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { useRouter } from 'expo-router';
+import { Colors } from '../../constants/Colors';
 import { TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -20,7 +21,7 @@ export default function aboutUs() {
       </View>
 
     <View style={styles.body}>
-      
+
     </View>
 
     </View>
@@ -30,7 +31,7 @@ export default function aboutUs() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fef9f4', // Light beige background
+    backgroundColor: Colors.WHITE, 
     paddingHorizontal: 20,
     paddingVertical: 10,
   },

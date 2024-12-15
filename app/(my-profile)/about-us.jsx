@@ -33,7 +33,7 @@ export default function aboutUs() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.WHITE, // Light beige background
+    backgroundColor: Colors.WHITE, 
     paddingHorizontal: 20,
     paddingVertical: 10,
   },

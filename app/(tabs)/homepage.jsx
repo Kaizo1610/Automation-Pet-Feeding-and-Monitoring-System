@@ -124,7 +124,7 @@ export default function Homepage() {
             <View style={styles.carouselItem}>
               <Image source={item} style={styles.promoteImage} />
               {index === 0 && (
-                <TouchableOpacity style={styles.exploreButton} onPress={() => router.push('(home)/explore-more')}>
+                <TouchableOpacity style={styles.exploreButton} onPress={() => router.push('(home)/explore')}>
                   <Text style={styles.exploreButtonText}>Explore More</Text>
                 </TouchableOpacity>
               )}
