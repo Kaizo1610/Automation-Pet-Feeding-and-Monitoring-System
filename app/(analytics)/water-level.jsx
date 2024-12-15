@@ -87,7 +87,7 @@ export default function waterLevel() {
           </View>
         </View>
         <View style={styles.horizontalLine} />
-        <Text style={styles.summaryText}>Summary Graph</Text>
+        <Text style={styles.summaryText}>Graph Summary</Text>
       </View>
     </ScrollView>
   )
