@@ -20,9 +20,7 @@ export default function aboutUs() {
       </View>
 
     <View style={styles.body}>
-      <Text style={styles.subtitle}>
-      PawTector is an IoT mobile application solution to cater the common problem faced by pet's owner with traditional method of feeding pets. The mobile applications act as a remote controller where users can monitor the food and water level measurement through the monitoring dashboard including dispense food automatically.
-      </Text>
+
     </View>
 
     </View>
