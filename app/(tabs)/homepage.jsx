@@ -397,7 +397,8 @@ const styles = StyleSheet.create({
     elevation: 5,
     alignItems: 'center',
     marginBottom: 20,
-    marginTop: 10
+    marginTop: 10,
+    alignSelf: 'center', // Center the box
   },
   dashboardContent: {
     flexDirection: 'row',
