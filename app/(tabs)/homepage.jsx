@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 import { useFoodLevel } from '../(dashboard-logic)/foodData';
 import { useWaterLevel } from '../(dashboard-logic)/waterData';
 import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
-import { onSnapshot, doc } from "firebase/firestore";
+import { onSnapshot, doc, getDocs, collection } from "firebase/firestore";
 
 export default function Homepage() {  
   const router = useRouter();
@@ -60,13 +60,9 @@ export default function Homepage() {
         const userId = getCurrentUserId();
         if (!userId) throw new Error("User not authenticated");
 
-        const userDocRef = doc(firestore, 'users', userId);
-        const unsubscribe = onSnapshot(userDocRef, (doc) => {
-          const data = doc.data();
-          setPetsCount(data && data.pets ? data.pets.length : 0);
-        });
-
-        return () => unsubscribe();
+        const petsCollectionRef = collection(firestore, `users/${userId}/pets`);
+        const querySnapshot = await getDocs(petsCollectionRef);
+        setPetsCount(querySnapshot.size);
       } catch (error) {
         console.error("Failed to fetch pets count:", error);
       }
@@ -124,8 +120,15 @@ export default function Homepage() {
           pagingEnabled
           showsHorizontalScrollIndicator={false}
           onScroll={handleScroll}
-          renderItem={({ item }) => (
-            <Image source={item} style={styles.promoteImage} />
+          renderItem={({ item, index }) => (
+            <View style={styles.carouselItem}>
+              <Image source={item} style={styles.promoteImage} />
+              {index === 0 && (
+                <TouchableOpacity style={styles.exploreButton} onPress={() => router.push('(home)/explore-more')}>
+                  <Text style={styles.exploreButtonText}>Explore More</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           )}
           keyExtractor={(item, index) => index.toString()}
         />
@@ -419,5 +422,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'outfit-medium',
     color: '#555',
+  },
+  carouselItem: {
+    position: 'relative',
+  },
+  exploreButton: {
+    position: 'absolute',
+    top: 10,
+    right: 5,
+    backgroundColor: Colors.PRIMARY,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+  },
+  exploreButtonText: {
+    color: Colors.BLACK,
+    fontSize: 20,
+    fontFamily: 'outfit-bold',
   },
 });
