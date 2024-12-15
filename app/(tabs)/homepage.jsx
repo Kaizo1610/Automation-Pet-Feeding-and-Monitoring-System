@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Switch, TextInput, Button, ScrollView, Image, F
 import Svg, { Circle, G, Text as SvgText } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { Colors } from './../../constants/Colors';
 import { TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -16,6 +18,7 @@ export default function Homepage() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [currentIndex, setCurrentIndex] = useState(0);
   const [username, setUsername] = useState('');
+  const [petsCount, setPetsCount] = useState(0);
   const images = [
     require('./../../assets/images/promote.png'),
     require('./../../assets/images/playingcat.jpg'),
@@ -49,6 +52,27 @@ export default function Homepage() {
     };
 
     fetchUsername();
+  }, []);
+
+  useEffect(() => {
+    const fetchPetsCount = async () => {
+      try {
+        const userId = getCurrentUserId();
+        if (!userId) throw new Error("User not authenticated");
+
+        const userDocRef = doc(firestore, 'users', userId);
+        const unsubscribe = onSnapshot(userDocRef, (doc) => {
+          const data = doc.data();
+          setPetsCount(data && data.pets ? data.pets.length : 0);
+        });
+
+        return () => unsubscribe();
+      } catch (error) {
+        console.error("Failed to fetch pets count:", error);
+      }
+    };
+
+    fetchPetsCount();
   }, []);
 
   const handleScroll = (event) => {
@@ -117,17 +141,6 @@ export default function Homepage() {
           ))}
         </View>
 
-        {/*Real Time Digital*/}
-        <View style={styles.timeContainer}>
-          <View style={styles.line} />
-          <View style={styles.timeBox}>
-            <Text style={styles.timeText}>
-              {currentTime.toLocaleTimeString()}
-            </Text>
-          </View>
-          <View style={styles.line} />
-        </View>
-
         {/* Levels Container */}
         <View style={styles.levelsContainer}>
           {/* Food Level Box */}
@@ -176,27 +189,6 @@ export default function Homepage() {
                 est.{Math.round(foodLevel * 20)}g
               </SvgText>
             </Svg>
-            <View style={styles.toggleContainer}>
-              <Text style={styles.toggleLabel}>Servo Motor</Text>
-              <Switch
-                value={isServoOn}
-                onValueChange={toggleServo}
-                trackColor={{ false: '#ccc', true: '#4CAF50' }}
-                thumbColor={isServoOn ? '#FFFFFF' : '#888'}
-                ios_backgroundColor="#E0E0E0"
-                style={styles.toggleSwitch}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Set Timer(minutes):</Text>
-              <TextInput
-                style={styles.textInput}
-                keyboardType="numeric"
-                value={timerValue}
-                onChangeText={setTimerValue}
-              />
-              <Button title="Set Timer" onPress={updateTimerValue} />
-            </View>
           </View>
 
           {/* Water Level Box */}
@@ -245,26 +237,20 @@ export default function Homepage() {
                 est.{Math.round(waterLevel * 20)}ml
               </SvgText>
             </Svg>
-            <View style={styles.toggleContainer}>
-              <Text style={styles.toggleLabel}>Water Pump</Text>
-              <Switch
-                value={isPumpOn}
-                onValueChange={togglePump}
-                trackColor={{ false: '#ccc', true: '#2196F3' }}
-                thumbColor={isPumpOn ? '#FFFFFF' : '#888'}
-                ios_backgroundColor="#E0E0E0"
-                style={styles.toggleSwitch}
-              />
+          </View>
+        </View>
+
+        {/* Dashboard Box */}
+        <View style={styles.dashboardBox}>
+          <View style={styles.dashboardContent}>
+            <View style={styles.dashboardItem}>
+              <FontAwesome name="paw" size={28} color="black" />
+              <Text style={styles.dashboardNumber}>{petsCount}</Text>
             </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Set Timer(minutes):</Text>
-              <TextInput
-                style={styles.textInput}
-                keyboardType="numeric"
-                value={timerValue}
-                onChangeText={setTimerValue}
-              />
-              <Button title="Set Timer" onPress={updateTimerValue} color="#4CAF50" />
+            <View style={styles.dashboardGap} />
+            <View style={styles.dashboardItem}>
+              <AntDesign name="clockcircle" size={28} color="black" />
+              <Text style={styles.dashboardNumber}>{currentTime.toLocaleTimeString()}</Text>
             </View>
           </View>
         </View>
@@ -324,35 +310,6 @@ const styles = StyleSheet.create({
   },
   paginationDotActive: {
     backgroundColor: '#000',
-  },
-  timeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '85%',
-    marginBottom: 20,
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#000',
-    marginHorizontal: 10,
-  },
-  timeBox: {
-    backgroundColor: 'lightblue',
-    padding: 20,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-    alignItems: 'center',
-  },
-  timeText: {
-    fontSize: 24,
-    fontFamily: 'outfit-medium',
-    textAlign: 'center',
   },
   title: {
     fontSize: 24,
@@ -418,12 +375,49 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   greeting: {
-    fontSize: 26,
+    fontSize: 25,
     fontFamily: 'outfit-bold',
     color: 'black',
     marginBottom: 20,
-    textAlign: 'left',
+    textAlign: 'center', // Center the text
     width: '100%',
-    paddingLeft: 20,
+  },
+  dashboardBox: {
+    width: '90%',
+    backgroundColor: 'lightblue',
+    padding: 20,
+    borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+    alignItems: 'center',
+    marginBottom: 20,
+    marginTop: 10
+  },
+  dashboardContent: {
+    flexDirection: 'row',
+    justifyContent: 'center', // Center the content
+    width: '100%',
+  },
+  dashboardItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 10, // Add margin to space out items
+  },
+  dashboardGap: {
+    width: 30, // Add a gap between items
+  },
+  dashboardNumber: {
+    fontSize: 20,
+    fontFamily: 'outfit-medium',
+    color: Colors.BLACK,
+    marginLeft: 10,
+  },
+  dashboardText: {
+    fontSize: 18,
+    fontFamily: 'outfit-medium',
+    color: '#555',
   },
 });
