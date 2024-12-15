@@ -24,6 +24,14 @@ export default function aboutUs() {
       <Text style={styles.subtitle}>
       PawTector is an IoT mobile application solution to cater the common problem faced by pet's owner with traditional method of feeding pets. The mobile applications act as a remote controller where users can monitor the food and water level measurement through the monitoring dashboard including dispense food automatically.
       </Text>
+      <View style={styles.horizontalLine} />
+      <Text style={styles.contactText}>
+        Feel free to contact us:
+      </Text>
+      <View style={styles.contactDetails}>
+        <Ionicons name="mail" size={20} color="black" />
+        <Text style={styles.contactInfo}>info@pawtector.com</Text>
+      </View>
     </View>
 
     </View>
@@ -58,5 +66,28 @@ const styles = StyleSheet.create({
     fontFamily:'outfit',
     fontSize:18,
     textAlign:'center'
+  },
+  horizontalLine: {
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+    marginVertical: 20,
+    marginTop: 40,
+    marginBottom: 40
+  },
+  contactText: {
+    fontFamily: 'outfit-bold',
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  contactDetails: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  contactInfo: {
+    fontFamily: 'outfit',
+    fontSize: 16,
+    marginLeft: 10,
   }
 });
