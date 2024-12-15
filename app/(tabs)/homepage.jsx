@@ -141,10 +141,10 @@ export default function Homepage() {
           ))}
         </View>
 
-        {/* Levels Container */}
+        {/* Food Level Container */}
         <View style={styles.levelsContainer}>
           {/* Food Level Box */}
-          <View style={styles.box}>
+          <TouchableOpacity style={styles.box} onPress={() => router.push('(analytics)/food-level')}>
             <Text style={styles.title}>Food Level</Text>
             <Svg width={150} height={150} viewBox="0 0 100 100">
               <G rotation="-90" origin="50, 50">
@@ -189,10 +189,10 @@ export default function Homepage() {
                 est.{Math.round(foodLevel * 20)}g
               </SvgText>
             </Svg>
-          </View>
+          </TouchableOpacity>
 
           {/* Water Level Box */}
-          <View style={styles.box}>
+          <TouchableOpacity style={styles.box} onPress={() => router.push('(analytics)/water-level')}>
             <Text style={styles.title}>Water Level</Text>
             <Svg width={150} height={150} viewBox="0 0 100 100">
               <G rotation="-90" origin="50, 50">
@@ -237,7 +237,7 @@ export default function Homepage() {
                 est.{Math.round(waterLevel * 20)}ml
               </SvgText>
             </Svg>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Dashboard Box */}
