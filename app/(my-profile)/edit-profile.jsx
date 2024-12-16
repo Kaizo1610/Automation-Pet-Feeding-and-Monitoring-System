@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors';
-import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
+import { getCurrentUserId, firestore, uploadProfileImage } from './../../configs/FirebaseConfig';
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export default function EditProfile() {
@@ -87,13 +87,19 @@ export default function EditProfile() {
       const userId = getCurrentUserId();
       if (!userId) throw new Error("User not authenticated");
 
+      let profileImageUrl = tempProfileImage;
+      if (tempProfileImage) {
+        profileImageUrl = await uploadProfileImage(userId, tempProfileImage);
+      }
+
       await setDoc(doc(firestore, "users", userId), {
         username,
-        quotes: quotes || "Your Quotes", // Ensure quotes is not an empty string
-        profileImage: tempProfileImage || "" // Ensure profileImage is a string
+        quotes: quotes || "Your Quotes",
+        profileImage: profileImageUrl || ""
       });
+
       showSuccessAlert('Profile saved successfully!');
-      setProfileImage(tempProfileImage); // Commit temporary image to permanent state
+      setProfileImage(profileImageUrl); // Commit temporary image to permanent state
       setTempProfileImage(""); // Reset temporary image state
       setOriginalUsername(username); // Reset original username to the saved username
       setOriginalQuotes(quotes); // Reset original quotes to the saved quotes

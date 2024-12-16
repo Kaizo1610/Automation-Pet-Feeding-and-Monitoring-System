@@ -88,3 +88,16 @@ export const getCurrentUsername = async () => {
 export const saveUsername = async (userId, username) => {
   await setDoc(doc(firestore, 'users', userId), { username });
 };
+
+export const uploadProfileImage = async (userId, imageUri) => {
+  try {
+    const response = await fetch(imageUri);
+    const blob = await response.blob();
+    const storageRef = ref(storage, `users/${userId}/profile.jpg`);
+    await uploadBytes(storageRef, blob);
+    return await getDownloadURL(storageRef);
+  } catch (error) {
+    console.error("Error uploading profile image: ", error);
+    throw error;
+  }
+};
