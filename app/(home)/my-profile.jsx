@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, BackHandler } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, Alert, ActivityIndicator } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import { Colors } from './../../constants/Colors'
-import { getCurrentUserId, firestore, auth } from './../../configs/FirebaseConfig';
-import { ref, get, child } from "firebase/database";
-import { doc, getDoc } from "firebase/firestore";
+import { Colors } from './../../constants/Colors';
+import { getCurrentUserId, firestore, auth, storage } from './../../configs/FirebaseConfig';
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
+import * as ImagePicker from 'expo-image-picker';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function myProfile() {
-
-  const router=useRouter();
+  const router = useRouter();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [username, setUsername] = useState('');
   const [quotes, setQuotes] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
 
   // Fetch existing profile data on component mount
   useEffect(() => {
@@ -67,70 +68,118 @@ export default function myProfile() {
     }
   };
 
+  // Handle image picker
+  const pickImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setProfileImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Image picker error:', error);
+    }
+  };
+
+  // Handle save profile image
+  const saveProfileImage = async () => {
+    setIsUploading(true);
+    try {
+      const userId = getCurrentUserId();
+      if (!userId) throw new Error("User not authenticated");
+
+      const response = await fetch(profileImage);
+      const blob = await response.blob();
+      const storageRef = ref(storage, `users/${userId}/profile.jpg`);
+      await uploadBytes(storageRef, blob);
+      const downloadUrl = await getDownloadURL(storageRef);
+
+      await setDoc(doc(firestore, 'users', userId), { profileImage: downloadUrl }, { merge: true });
+
+      Alert.alert('Success', 'Profile image updated successfully!');
+    } catch (error) {
+      console.error('Error saving profile image:', error);
+      Alert.alert('Error', `Failed to save profile image: ${error.message}`);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <TouchableOpacity onPress={()=>router.back()} style={{marginTop:10}}>
-      <Ionicons name="arrow-back" size={28} color="black" />    
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 10 }}>
+          <Ionicons name="arrow-back" size={28} color="black" />
+        </TouchableOpacity>
         <Text style={styles.headerText}>User Profile</Text>
-      </View>
+
+</View>
 
       <View style={styles.profileContainer}>
-        <Image
-          source={profileImage ? { uri: profileImage } : require('./../../assets/images/placeholderProfile.png')}
-          style={styles.profileImage}
-        />
+        <TouchableOpacity onPress={pickImage}>
+          <Image
+            source={profileImage ? { uri: profileImage } : require('./../../assets/images/placeholderProfile.png')}
+            style={styles.profileImage}
+          />
+          <Ionicons name="pencil" size={24} color="black" style={styles.editIcon} />
+        </TouchableOpacity>
         <Text style={styles.profileName}>{username || "Username"}</Text>
         <Text style={styles.profileBio}>{quotes || "Your Quotes"}</Text>
-        <TouchableOpacity style={styles.editButton} onPress={()=>router.push('(my-profile)/edit-profile')}>
+        <TouchableOpacity style={styles.saveButton} onPress={saveProfileImage} disabled={isUploading}>
+          {isUploading ? <ActivityIndicator color="white" /> : <Text style={styles.saveButtonText}>Save</Text>}
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.editButton} onPress={() => router.push('(my-profile)/edit-profile')}>
           <Text style={styles.editButtonText}>Edit Profile</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.optionsContainer}>
-        <TouchableOpacity style={styles.option} onPress={()=>router.push('(my-profile)/faq')}> 
+        <TouchableOpacity style={styles.option} onPress={() => router.push('(my-profile)/faq')}>
           <Text style={styles.optionText}>FAQ</Text>
           <Text style={styles.arrow}>&gt;</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option} onPress={()=>router.push('(my-profile)/about-us')}>
+        <TouchableOpacity style={styles.option} onPress={() => router.push('(my-profile)/about-us')}>
           <Text style={styles.optionText}>About US</Text>
           <Text style={styles.arrow}>&gt;</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.container1}>
-      {/* Modal for Logout Confirmation */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(false);
-        }}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Logout?</Text>
-            <Text style={styles.modalMessage}>Are you sure you want to logout?</Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity style={styles.cancelButton1} onPress={handleCancelLogout}>
-                <Text style={styles.cancelText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.logoutButton1} onPress={handleConfirmLogout}>
-                <Text style={styles.logoutText}>Logout</Text>
-              </TouchableOpacity>
+        {/* Modal for Logout Confirmation */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(false);
+          }}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitle}>Logout?</Text>
+              <Text style={styles.modalMessage}>Are you sure you want to logout?</Text>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity style={styles.cancelButton1} onPress={handleCancelLogout}>
+                  <Text style={styles.cancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.logoutButton1} onPress={handleConfirmLogout}>
+                  <Text style={styles.logoutText}>Logout</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
 
-      {/* Logout Button */}
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogoutPress}>
-        <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
-    </View>
-
+        {/* Logout Button */}
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogoutPress}>
+          <Text style={styles.logoutButtonText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -149,8 +198,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: 'outfit-bold',
     marginLeft: 85,
-    marginTop:80,
-    alignItems:'center'
+    marginTop: 80,
+    alignItems: 'center'
   },
   profileContainer: {
     alignItems: 'center',
@@ -162,31 +211,54 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 15,
   },
+  editIcon: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 5,
+  },
   profileName: {
     fontSize: 24,
-    fontFamily:'outfit-bold',
+    fontFamily: 'outfit-bold',
     marginBottom: 5,
   },
   profileBio: {
     fontSize: 16,
-    fontFamily:'outfit',
-    color:Colors.GRAY,
+    fontFamily: 'outfit',
+    color: Colors.GRAY,
     marginBottom: 20
+  },
+  saveButton: {
+    backgroundColor: Colors.PRIMARY,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginBottom: 20,
+    width: '55%',
+    marginLeft: 15
+  },
+  saveButtonText: {
+    color: Colors.WHITE,
+    fontFamily: 'outfit-bold',
+    fontSize: 20,
+    textAlign: 'center'
   },
   editButton: {
     backgroundColor: 'lightblue',
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 10,
-    marginBottom:40,
-    width:'55%',
-    marginLeft:15
+    marginBottom: 40,
+    width: '55%',
+    marginLeft: 15
   },
   editButtonText: {
     color: Colors.BLACK,
-    fontFamily:'outfit-bold',
-    fontSize:20,
-    textAlign:'center'
+    fontFamily: 'outfit-bold',
+    fontSize: 20,
+    textAlign: 'center'
   },
   optionsContainer: {
     marginBottom: 45
@@ -201,7 +273,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 20,
-    fontFamily:'outfit-medium'
+    fontFamily: 'outfit-medium'
   },
   arrow: {
     fontSize: 24,
@@ -218,9 +290,9 @@ const styles = StyleSheet.create({
   },
   logoutButtonText: {
     color: Colors.WHITE,
-    fontFamily:'outfit-bold',
+    fontFamily: 'outfit-bold',
     fontSize: 20,
-    textAlign:'center'
+    textAlign: 'center'
   },
   container1: {
     flex: 1,
@@ -243,12 +315,12 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 22,
-    fontFamily:'outfit-bold',
+    fontFamily: 'outfit-bold',
     marginBottom: 10,
   },
   modalMessage: {
     fontSize: 18,
-    fontFamily:'outfit-medium',
+    fontFamily: 'outfit-medium',
     textAlign: 'center',
     marginBottom: 30,
   },
@@ -269,12 +341,12 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     color: Colors.BLACK,
-    fontFamily:'outfit',
-    fontSize:15
+    fontFamily: 'outfit',
+    fontSize: 15
   },
   logoutText: {
     color: Colors.BLACK,
-    fontFamily:'outfit',
-    fontSize:15
+    fontFamily: 'outfit',
+    fontSize: 15
   }
 });
