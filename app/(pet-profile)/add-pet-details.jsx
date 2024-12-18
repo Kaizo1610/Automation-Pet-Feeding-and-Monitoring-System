@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, Alert, ActivityIndicator } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Colors } from './../../constants/Colors'
+import { Colors } from './../../constants/Colors';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
-import * as ImagePicker from 'expo-image-picker'; // Import image picker
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import { addPet, storage } from './../../configs/FirebaseConfig';
+import { addPet, storage, getCurrentUserId } from './../../configs/FirebaseConfig';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function AddPetDetails() {
 
-  const router=useRouter();
+  const router = useRouter();
 
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
@@ -18,21 +19,47 @@ export default function AddPetDetails() {
   const [appointment, setAppointment] = useState('');
   const [date, setDate] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [imageUri, setImageUri] = useState(null); // State to store the selected image
-  const [isGenderDropdownVisible, setIsGenderDropdownVisible] = useState(false); // Track gender dropdown visibility
-  const [isAppointmentDropdownVisible, setIsAppointmentDropdownVisible] = useState(false); // Track appointment dropdown visibility
+  const [imageUri, setImageUri] = useState(null);
+  const [isGenderDropdownVisible, setIsGenderDropdownVisible] = useState(false);
+  const [isAppointmentDropdownVisible, setIsAppointmentDropdownVisible] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
-  // Open the image picker to select a picture
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      setImageUri(result.uri);
+      if (!result.canceled) {
+        setImageUri(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Image picker error:', error);
+    }
+  };
+
+  const uploadImage = async () => {
+    setIsUploading(true);
+    try {
+      const userId = getCurrentUserId();
+      if (!userId) throw new Error("User not authenticated");
+
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      const storageRef = ref(storage, `users/${userId}/pets/${name}/petProfile.jpg`);
+      await uploadBytes(storageRef, blob);
+      const downloadUrl = await getDownloadURL(storageRef);
+
+      return downloadUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      Alert.alert('Error', `Failed to upload image: ${error.message}`);
+      return null;
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -52,12 +79,12 @@ export default function AddPetDetails() {
 
   const handleGenderSelect = (selectedGender) => {
     setGender(selectedGender);
-    setIsGenderDropdownVisible(false); // Close the dropdown
+    setIsGenderDropdownVisible(false);
   };
 
   const handleAppointmentSelect = (selectedAppointment) => {
     setAppointment(selectedAppointment);
-    setIsAppointmentDropdownVisible(false); // Close the dropdown
+    setIsAppointmentDropdownVisible(false);
   };
 
   const handleSave = async () => {
@@ -66,7 +93,10 @@ export default function AddPetDetails() {
       return;
     }
 
-    const newPet = { name, gender, weight, appointment, date, image: imageUri ? { uri: imageUri } : null };
+    const imageUrl = await uploadImage();
+    if (!imageUrl) return;
+
+    const newPet = { name, gender, weight, appointment, date, image: imageUrl };
     try {
       await addPet(newPet);
       router.push('/(tabs)/pet-profile');
@@ -78,18 +108,17 @@ export default function AddPetDetails() {
   return (
     <View style={styles.container}>
       {/* Header Section */}
-      <TouchableOpacity onPress={()=>router.back()}>
-          <Ionicons name="arrow-back" size={28} color="black" style={{marginTop:10}}/>
+      <TouchableOpacity onPress={() => router.back()}>
+        <Ionicons name="arrow-back" size={28} color="black" style={{ marginTop: 10 }} />
       </TouchableOpacity>
       <Text style={styles.title}>Add Pet Profile</Text>
       <View style={styles.iconContainer}>
-        {imageUri ? (
-          <Image source={{ uri: imageUri }} style={styles.profileImage} />
-        ) : (
-          <Image source={require('./../../assets/images/catProfile.png')} style={styles.profileImage} />
-        )}
-        <TouchableOpacity style={styles.editIcon} onPress={pickImage}>
-          <Ionicons name="pencil" size={16} color="white" />
+        <TouchableOpacity onPress={pickImage}>
+          <Image
+            source={imageUri ? { uri: imageUri } : require('./../../assets/images/catProfile.png')}
+            style={styles.profileImage}
+          />
+          <Ionicons name="pencil" size={16} color="white" style={styles.editIcon} />
         </TouchableOpacity>
       </View>
 
@@ -166,9 +195,9 @@ export default function AddPetDetails() {
         <Text style={styles.label}>Date</Text>
         <TouchableOpacity onPress={showDatePicker}>
           <TextInput
-            style={[styles.input, { color: date ? 'black' : 'gray' }]} // Change color to black when date is selected
+            style={[styles.input, { color: date ? 'black' : 'gray' }]}
             value={date}
-            editable={false} // Make it read-only
+            editable={false}
           />
         </TouchableOpacity>
 
@@ -181,8 +210,8 @@ export default function AddPetDetails() {
       </View>
 
       {/* Save Button */}
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Save</Text>
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave} disabled={isUploading}>
+        {isUploading ? <ActivityIndicator color="white" /> : <Text style={styles.saveButtonText}>Save</Text>}
       </TouchableOpacity>
     </View>
   );
@@ -198,7 +227,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontFamily:'outfit-bold',
+    fontFamily: 'outfit-bold',
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -209,18 +238,18 @@ const styles = StyleSheet.create({
   profileImage: {
     width: 100,
     height: 100,
-    borderWidth:1,
-    borderRadius:5,
-    borderColor:'black',
-    backgroundColor: Colors.WHITE
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'black',
+    backgroundColor: Colors.WHITE,
   },
   editIcon: {
     position: 'absolute',
-    right: 138,
+    right: 5,
     top: 70,
     backgroundColor: Colors.PRIMARY,
     padding: 4,
-    borderRadius: 10,
+    borderRadius: 5,
   },
   form: {
     backgroundColor: Colors.WHITE,
@@ -233,13 +262,13 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   label1: {
-    fontSize:18,
-    fontFamily:'outfit-bold',
+    fontSize: 18,
+    fontFamily: 'outfit-bold',
     marginBottom: 10,
   },
   label: {
     fontSize: 16,
-    fontFamily:'outfit-medium',
+    fontFamily: 'outfit-medium',
     marginBottom: 2,
   },
   input: {
@@ -250,7 +279,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    fontFamily:'outfit'
+    fontFamily: 'outfit',
   },
   inputText: {
     flex: 1,
@@ -262,7 +291,7 @@ const styles = StyleSheet.create({
   },
   dropdown1: {
     position: 'absolute',
-    bottom: 230, // Adjust according to your layout
+    bottom: 230,
     backgroundColor: 'white',
     width: '100%',
     borderRadius: 5,
@@ -271,7 +300,7 @@ const styles = StyleSheet.create({
   },
   dropdown2: {
     position: 'absolute',
-    bottom: 170, // Adjust according to your layout
+    bottom: 170,
     backgroundColor: 'white',
     width: '100%',
     borderRadius: 5,
@@ -281,11 +310,11 @@ const styles = StyleSheet.create({
   dropdownItem: {
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.LIGHTGRAY
+    borderBottomColor: Colors.LIGHTGRAY,
   },
   dropdownText: {
     fontSize: 16,
-    fontFamily:'outfit'
+    fontFamily: 'outfit',
   },
   saveButton: {
     backgroundColor: Colors.PRIMARY,
@@ -297,6 +326,6 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: 'white',
     fontSize: 22,
-    fontFamily:'outfit-bold'
+    fontFamily: 'outfit-bold',
   },
 });

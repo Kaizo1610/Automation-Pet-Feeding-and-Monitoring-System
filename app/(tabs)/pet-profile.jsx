@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import { Colors } from './../../constants/Colors';
 import { useRouter } from 'expo-router';
 import { getDocs, collection } from "firebase/firestore";
-import { firestore, getCurrentUserId } from './../../configs/FirebaseConfig';
+import { firestore, getCurrentUserId, storage } from './../../configs/FirebaseConfig';
+import { ref, getDownloadURL } from "firebase/storage";
 
 export default function PetProfile() {  
   const router = useRouter();
@@ -16,8 +17,23 @@ export default function PetProfile() {
       if (!userId) throw new Error("User not authenticated");
 
       const querySnapshot = await getDocs(collection(firestore, `users/${userId}/pets`));
-      const petsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setPets(petsData);
+      const petsData = querySnapshot.docs.map(async (doc) => {
+        const petData = doc.data();
+        const petImageRef = ref(storage, `users/${userId}/pets/${petData.name}/petProfile.jpg`);
+        try {
+          const url = await getDownloadURL(petImageRef);
+          return { id: doc.id, ...petData, image: url };
+        } catch (error) {
+          if (error.code === 'storage/object-not-found') {
+            return { id: doc.id, ...petData, image: null };
+          } else {
+            throw error;
+          }
+        }
+      });
+
+      const resolvedPetsData = await Promise.all(petsData);
+      setPets(resolvedPetsData);
     };
 
     fetchPets();
@@ -41,7 +57,11 @@ export default function PetProfile() {
               onPress={() => router.push({ pathname: '(pet-profile)/pets-info', params: { petId: pet.id } })}
             >
               <View style={styles.petBox}>
-                <Image source={{ uri: pet.image }} style={styles.petImage} />
+                {pet.image ? (
+                  <Image source={{ uri: pet.image }} style={styles.petImage} />
+                ) : (
+                  <Image source={require('./../../assets/images/placeholderProfile.png')} style={styles.petImage} />
+                )}
                 <Text style={styles.petName}>{pet.name}</Text>
                 <Text style={styles.arrowText}>🔖</Text>
               </View>
