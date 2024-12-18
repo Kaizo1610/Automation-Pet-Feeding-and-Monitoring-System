@@ -126,7 +126,7 @@ export default function myProfile() {
             source={profileImage ? { uri: profileImage } : require('./../../assets/images/placeholderProfile.png')}
             style={styles.profileImage}
           />
-          <Ionicons name="pencil" size={24} color="black" style={styles.editIcon} />
+          <Ionicons name="pencil" size={16} color="white" style={styles.editIcon} />
         </TouchableOpacity>
         <Text style={styles.profileName}>{username || "Username"}</Text>
         <Text style={styles.profileBio}>{quotes || "Your Quotes"}</Text>
@@ -213,10 +213,10 @@ const styles = StyleSheet.create({
   },
   editIcon: {
     position: 'absolute',
-    bottom: 10,
-    right: 10,
-    backgroundColor: 'white',
-    borderRadius: 12,
+    bottom: 18,
+    right: 2,
+    backgroundColor: Colors.PRIMARY,
+    borderRadius: 5,
     padding: 5,
   },
   profileName: {
