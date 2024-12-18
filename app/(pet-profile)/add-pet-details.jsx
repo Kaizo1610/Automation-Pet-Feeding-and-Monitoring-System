@@ -99,6 +99,7 @@ export default function AddPetDetails() {
     const newPet = { name, gender, weight, appointment, date, image: imageUrl };
     try {
       await addPet(newPet);
+      Alert.alert('Success', 'New pet details added successfully!');
       router.push('/(tabs)/pet-profile');
     } catch (error) {
       console.error("Error saving pet: ", error);
