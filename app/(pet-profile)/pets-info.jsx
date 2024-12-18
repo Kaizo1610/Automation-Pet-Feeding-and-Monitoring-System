@@ -5,11 +5,14 @@ import { Colors } from './../../constants/Colors';
 import { useRouter } from 'expo-router';
 import { getCurrentUserId, firestore } from '../../configs/FirebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
+import { ref, getDownloadURL } from "firebase/storage";
 
 export default function PetsInfo() {
   const router = useRouter();
+  const petId = router.query?.petId; // Ensure petId is correctly extracted
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [petImage, setPetImage] = useState(null);
 
   // Handle delete icon press (show modal)
   const handleDeletePress = () => {
@@ -42,6 +45,29 @@ export default function PetsInfo() {
       fetchPets();
     }, []);
 
+    useEffect(() => {
+      const fetchPetImage = async () => {
+        const userId = getCurrentUserId();
+        if (!userId) throw new Error("User not authenticated");
+    
+        const petImageRef = ref(storage, `users/${userId}/pets/${petId}/petProfile.jpg`);
+        try {
+          const url = await getDownloadURL(petImageRef);
+          setPetImage(url);
+        } catch (error) {
+          if (error.code === 'storage/object-not-found') {
+            setPetImage(null);
+          } else {
+            throw error;
+          }
+        }
+      };
+    
+      if (petId) {
+        fetchPetImage();
+      }
+    }, [petId]);
+
   return (
     <View style={styles.container}>
       {/* Cat Image with absolute positioned back arrow and icons */}
@@ -51,7 +77,7 @@ export default function PetsInfo() {
           <Ionicons name="arrow-back" size={28} color="white" />
         </TouchableOpacity>
         <Image
-          source={require('./../../assets/images/oyen.png')} 
+          source={petImage ? { uri: petImage } : require('./../../assets/images/placeholderProfile.png')}
           style={styles.catImage}
         />
         {/* Edit (Pencil) Icon */}

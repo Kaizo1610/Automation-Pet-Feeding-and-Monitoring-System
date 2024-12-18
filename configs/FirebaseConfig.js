@@ -62,7 +62,7 @@ export const addPet = async (pet) => {
       // Upload image to Firebase Storage
       const response = await fetch(pet.image.uri);
       const blob = await response.blob();
-      const storageRef = ref(storage, `users/${userId}/pets/${pet.name}`);
+      const storageRef = ref(storage, `users/${userId}/pets/${pet.name}/petProfile.jpg`);
       await uploadBytes(storageRef, blob);
       imageUrl = await getDownloadURL(storageRef);
     }
