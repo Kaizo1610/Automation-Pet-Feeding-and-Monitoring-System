@@ -15,10 +15,7 @@ export default function foodLevel() {
   const {
     foodLevel,
     isServoOn,
-    timerValue,
-    setTimerValue,
     toggleServo,
-    updateTimerValue,
   } = useFoodLevel();
 
   const { weeklyData } = useFoodLevel();
@@ -98,16 +95,6 @@ export default function foodLevel() {
                 ios_backgroundColor="#E0E0E0"
                 style={styles.toggleSwitch}
               />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Set Timer(minutes):</Text>
-              <TextInput
-                style={styles.textInput}
-                keyboardType="numeric"
-                value={timerValue}
-                onChangeText={setTimerValue}
-              />
-              <Button title="Set Timer" onPress={updateTimerValue} />
             </View>
           </View>
         </View>
