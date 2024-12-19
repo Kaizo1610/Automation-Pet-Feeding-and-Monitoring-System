@@ -54,7 +54,7 @@ export default function PetProfile() {
             <TouchableOpacity 
               key={pet.id} 
               style={styles.petItem} 
-              onPress={() => router.push({ pathname: '(pet-profile)/pets-info', params: { petId: pet.id } })}
+              onPress={() => router.push({ pathname: '(pet-profile)/pets-info', params: { petId: pet.id, petName: pet.name } })}
             >
               <View style={styles.petBox}>
                 {pet.image ? (

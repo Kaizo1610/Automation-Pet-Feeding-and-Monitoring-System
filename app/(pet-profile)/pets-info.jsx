@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Modal } from 'react-na
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from './../../constants/Colors';
 import { useRouter } from 'expo-router';
-import { getCurrentUserId, firestore } from '../../configs/FirebaseConfig';
+import { getCurrentUserId, firestore, storage } from '../../configs/FirebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 import { ref, getDownloadURL } from "firebase/storage";
 
@@ -13,6 +13,8 @@ export default function PetsInfo() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [petImage, setPetImage] = useState(null);
+  const [pets, setPets] = useState([]);
+  const [filteredPet, setFilteredPet] = useState(null);
 
   // Handle delete icon press (show modal)
   const handleDeletePress = () => {
@@ -27,46 +29,48 @@ export default function PetsInfo() {
   // Handle confirm delete (implement delete logic here)
   const handleConfirmDelete = () => {
     setModalVisible(false);
-
+    // Implement delete logic here
   };
 
-    const [pets, setPets] = useState([]);
-  
-    useEffect(() => {
-      const fetchPets = async () => {
-        const userId = getCurrentUserId();
-        if (!userId) throw new Error("User not authenticated");
-  
-        const querySnapshot = await getDocs(collection(firestore, `users/${userId}/pets`));
-        const petsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setPets(petsData);
-      };
-  
-      fetchPets();
-    }, []);
+  useEffect(() => {
+    const fetchPets = async () => {
+      const userId = getCurrentUserId();
+      if (!userId) throw new Error("User not authenticated");
 
-    useEffect(() => {
-      const fetchPetImage = async () => {
-        const userId = getCurrentUserId();
-        if (!userId) throw new Error("User not authenticated");
-    
-        const petImageRef = ref(storage, `users/${userId}/pets/${petId}/petProfile.jpg`);
-        try {
-          const url = await getDownloadURL(petImageRef);
-          setPetImage(url);
-        } catch (error) {
-          if (error.code === 'storage/object-not-found') {
-            setPetImage(null);
-          } else {
-            throw error;
-          }
+      const querySnapshot = await getDocs(collection(firestore, `users/${userId}/pets`));
+      const petsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setPets(petsData);
+
+      // Filter pet by name "Putehh"
+      const putehhPet = petsData.find(pet => pet.name === 'Putehh');
+      setFilteredPet(putehhPet);
+    };
+
+    fetchPets();
+  }, []);
+
+  useEffect(() => {
+    const fetchPetImage = async () => {
+      const userId = getCurrentUserId();
+      if (!userId) throw new Error("User not authenticated");
+
+      const petImageRef = ref(storage, `users/${userId}/pets/${petId}/petProfile.jpg`);
+      try {
+        const url = await getDownloadURL(petImageRef);
+        setPetImage(url);
+      } catch (error) {
+        if (error.code === 'storage/object-not-found') {
+          setPetImage(null);
+        } else {
+          throw error;
         }
-      };
-    
-      if (petId) {
-        fetchPetImage();
       }
-    }, [petId]);
+    };
+
+    if (petId) {
+      fetchPetImage();
+    }
+  }, [petId]);
 
   return (
     <View style={styles.container}>
@@ -81,7 +85,7 @@ export default function PetsInfo() {
           style={styles.catImage}
         />
         {/* Edit (Pencil) Icon */}
-        <TouchableOpacity style={styles.editIcon} onPress={()=>router.push('(pet-details)/edit-oyen')}>
+        <TouchableOpacity style={styles.editIcon} onPress={() => router.push('(pet-details)/edit-oyen')}>
           <Ionicons name="pencil" size={18} color="white" />
         </TouchableOpacity>
         {/* Trash Icon */}
@@ -91,49 +95,48 @@ export default function PetsInfo() {
       </View>
 
       {/* Pet Details Section */}
-      {pets.map((pet) => (
-      <View key={pet.id} style={styles.detailCard}>
-        <Text style={styles.petName}>{pet.name}'s Detail</Text>
-        <Text style={styles.label}>Gender</Text>
-        <Text style={styles.info}>{pet.gender}</Text>
-        <Text style={styles.label}>Weight</Text>
-        <Text style={styles.info}>{pet.weight}</Text>
+      {filteredPet && (
+        <View key={filteredPet.id} style={styles.detailCard}>
+          <Text style={styles.petName}>{filteredPet.name}'s Detail</Text>
+          <Text style={styles.label}>Gender</Text>
+          <Text style={styles.info}>{filteredPet.gender}</Text>
+          <Text style={styles.label}>Weight</Text>
+          <Text style={styles.info}>{filteredPet.weight}</Text>
 
-        {/* Health Information */}
-        <Text style={styles.healthHeader}>Health Information</Text>
-        <Text style={styles.label}>Appointment</Text>
-        <Text style={styles.info}>{pet.appointment}</Text>
-        <Text style={styles.label}>Date</Text>
-        <Text style={styles.info}>{pet.date}</Text>
-      </View>
-      ))}
+          {/* Health Information */}
+          <Text style={styles.healthHeader}>Health Information</Text>
+          <Text style={styles.label}>Appointment</Text>
+          <Text style={styles.info}>{filteredPet.appointment}</Text>
+          <Text style={styles.label}>Date</Text>
+          <Text style={styles.info}>{filteredPet.date}</Text>
+        </View>
+      )}
 
-    <View style={styles.container1}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>Delete?</Text>
-            <Text style={styles.modalMessage}>Are you sure you want to delete?</Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity style={styles.cancelButton1} onPress={handleCancelDelete}>
-                <Text style={styles.cancelText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteButton1} onPress={handleConfirmDelete}>
-                <Text style={styles.deleteText}>Delete</Text>
-              </TouchableOpacity>
+      <View style={styles.container1}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalTitle}>Delete?</Text>
+              <Text style={styles.modalMessage}>Are you sure you want to delete?</Text>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity style={styles.cancelButton1} onPress={handleCancelDelete}>
+                  <Text style={styles.cancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.deleteButton1} onPress={handleConfirmDelete}>
+                  <Text style={styles.deleteText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
       </View>
-
     </View>
   );
 }
