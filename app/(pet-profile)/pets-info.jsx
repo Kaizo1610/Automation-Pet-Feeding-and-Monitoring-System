@@ -81,7 +81,7 @@ export default function PetsInfo() {
           <Ionicons name="arrow-back" size={28} color="white" />
         </TouchableOpacity>
         <Image
-          source={petImage ? { uri: petImage } : require('./../../assets/images/placeholderProfile.png')}
+          source={petImage ? { uri: petImage } : require('./../../assets/images/oyen.png')}
           style={styles.catImage}
         />
         {/* Edit (Pencil) Icon */}
