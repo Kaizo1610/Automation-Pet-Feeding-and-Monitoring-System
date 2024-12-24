@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: Colors.SECONDARY,
+    backgroundColor: Colors.WHITE,
   },
   header: {
     fontSize: 28,
