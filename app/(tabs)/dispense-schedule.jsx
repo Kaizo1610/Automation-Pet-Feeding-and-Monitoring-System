@@ -162,6 +162,52 @@ export default function DispenseSchedule() {
     setModalVisible(false);
   };
 
+  const checkScheduledTimes = (schedules) => {
+    const currentTime = new Date();
+    const currentHours = String(currentTime.getHours()).padStart(2, '0');
+    const currentMinutes = String(currentTime.getMinutes()).padStart(2, '0');
+    const formattedCurrentTime = `${currentHours}:${currentMinutes}`;
+  
+    schedules.forEach((schedule) => {
+      if (schedule.time === formattedCurrentTime && schedule.enabled) {
+        const portions = parseInt(schedule.portions, 10);
+        const duration = portions * 2000; // Duration in milliseconds (2 seconds per portion)
+  
+        if (selectedIcon === 'fish') {
+          // Introduce a 2-second delay before turning on the servo
+          setTimeout(() => {
+            toggleServo(true); // Turn on the servo
+  
+            // Turn off the servo after the duration
+            setTimeout(() => {
+              toggleServo(false); // Turn off the servo
+            }, duration);
+          }, 2000); // Delay of 2 seconds
+        } else {
+          // Introduce a 2-second delay before turning on the pump
+          setTimeout(() => {
+            togglePump(true); // Turn on the pump
+  
+            // Turn off the pump after the duration
+            setTimeout(() => {
+              togglePump(false); // Turn off the pump
+            }, duration);
+          }, 2000); // Delay of 2 seconds
+        }
+      }
+    });
+  };
+  
+  // UseEffect for checking scheduled times
+  useEffect(() => {
+    const intervalId = setInterval(() => checkScheduledTimes(schedules), 60000); // Check every minute
+  
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [schedules, selectedIcon]); // Runs whenever schedules or selectedIcon change
+  
+
   return (
     <View style={styles.container}>
       {/* Header */}
