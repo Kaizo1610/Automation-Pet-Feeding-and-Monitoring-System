@@ -6,6 +6,10 @@ import { Colors } from './../../constants/Colors';
 import { useNavigation, useRouter } from 'expo-router';
 import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
+import { ref, set } from 'firebase/database'; 
+import { database } from '../../configs/FirebaseConfig';
+import { useFoodLevel } from '../(dashboard-logic)/foodData';
+import { useWaterLevel } from '../(dashboard-logic)/waterData';
 
 export default function DispenseSchedule() {
 
@@ -26,6 +30,9 @@ export default function DispenseSchedule() {
   const [animationVisible, setAnimationVisible] = useState(false);
   const [animationValue] = useState(new Animated.Value(0));
   const [currentPortion, setCurrentPortion] = useState(0);
+
+  const { toggleServo } = useFoodLevel();
+  const { togglePump } = useWaterLevel();
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -92,7 +99,7 @@ export default function DispenseSchedule() {
   const addScheduleRoute = selectedIcon === 'fish' ? '(dispense-food)/add-schedule' : '(dispense-water)/add-schedule';
   const editScheduleRoute = selectedIcon === 'fish' ? '(dispense-food)/edit-schedule' : '(dispense-water)/edit-schedule';
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setModalVisible(false);
     setAnimationVisible(true);
     setCurrentPortion(0);
@@ -115,6 +122,39 @@ export default function DispenseSchedule() {
         }
       });
     }, 2000);
+
+    // Dispense food or water based on selected icon
+    if (selectedIcon === 'fish') {
+      toggleServo(true);
+      setTimeout(() => {
+        toggleServo(false);
+      }, portions * 2000); // 2 seconds per portion
+
+      // Log manual food dispense
+      await logManualDispense('food', portions);
+    } else {
+      togglePump(true);
+      setTimeout(() => {
+        togglePump(false);
+      }, portions * 2000); // 2 seconds per portion
+
+      // Log manual water dispense
+      await logManualDispense('water', portions);
+    }
+  };
+
+  const logManualDispense = async (type, portions) => {
+    try {
+      const currentTime = Date.now();
+      const logRef = ref(database, `${type}Dispenses/${currentTime}`);
+      await set(logRef, {
+        dispenseTime: currentTime,
+        portions: portions,
+      });
+      console.log(`Manual ${type} dispense logged: ${portions} portions`);
+    } catch (error) {
+      console.error(`Error logging manual ${type} dispense:`, error);
+    }
   };
 
   const handleCancel = () => {
