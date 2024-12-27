@@ -144,7 +144,7 @@ export default function Homepage() {
           ))}
         </View>
 
-        {/* Food Level Container */}
+        {/* Levels Container */}
         <View style={styles.levelsContainer}>
           {/* Food Level Box */}
           <TouchableOpacity style={styles.box} onPress={() => router.push('(analytics)/food-level')}>
@@ -189,7 +189,7 @@ export default function Homepage() {
                 fill="#0a0a0a"
                 dy="16"
               >
-                approx.{Math.round(foodLevel * 20)}g
+                approx.{Math.round(foodLevel * 3000)}ml
               </SvgText>
             </Svg>
           </TouchableOpacity>
@@ -237,7 +237,7 @@ export default function Homepage() {
                 fill="#0a0a0a"
                 dy="16"
               >
-                approx.{Math.round(waterLevel * 20)}ml
+                approx.{Math.round(waterLevel * 3000)}ml
               </SvgText>
             </Svg>
           </TouchableOpacity>
@@ -322,13 +322,13 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   levelsContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     width: '90%',
     marginBottom: 20,
   },
   box: {
-    width: '48%',
+    width: '100%',
     backgroundColor: '#fff',
     padding: 10,
     paddingBottom: 20,
@@ -339,6 +339,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     alignItems: 'center',
+    marginBottom: 20,
   },
   toggleContainer: {
     flexDirection: 'row',
