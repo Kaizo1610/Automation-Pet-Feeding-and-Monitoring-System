@@ -158,7 +158,11 @@ export default function DispenseSchedule() {
       });
       console.log(`Manual ${type} dispense logged: ${portions} portions`);
     } catch (error) {
-      console.error(`Error logging manual ${type} dispense:`, error);
+      if (error.code === 'PERMISSION_DENIED') {
+        console.error(`Permission denied while logging manual ${type} dispense:`, error);
+      } else {
+        console.error(`Error logging manual ${type} dispense:`, error);
+      }
     }
   };
 

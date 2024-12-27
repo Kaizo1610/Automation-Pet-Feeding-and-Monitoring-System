@@ -14,7 +14,7 @@ export function useWaterLevel() {
       const level = parseFloat(data);
 
       if (!isNaN(level)) {
-        const maxLevel = 10; // Replace with the max level value for water setup
+        const maxLevel = 20; // Replace with the max level value for water setup
         const progress = Math.max(0, Math.min(1, level / maxLevel));
         setWaterLevel(progress);
       } else {
