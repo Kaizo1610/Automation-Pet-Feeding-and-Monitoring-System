@@ -35,6 +35,7 @@ export default function notifications() {
         const token = await requestNotificationPermission();
         if (token) {
           // Save the token to your backend or use it to send notifications
+          console.log('FCM Token:', token);
         }
       }
     }

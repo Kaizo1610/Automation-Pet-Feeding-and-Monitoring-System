@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 //import { getAnalytics } from "firebase/analytics";
 import { getAuth, initializeAuth, getReactNativePersistence, sendEmailVerification } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"; 
@@ -17,11 +17,17 @@ const firebaseConfig = {
   storageBucket: "pawtectorproject-6de91.appspot.com",
   messagingSenderId: "294364458702",
   appId: "1:294364458702:web:9dd0d3862c66ad7367aa9f",
-  measurementId: "G-X69EMNEE9V"
+  measurementId: "G-X69EMNEE9V",
+  databaseURL: "https://pawtectorproject-6de91-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
 
 // Initialize Firebase
-export const app = initializeApp(firebaseConfig);
+let app;
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApp();
+}
 //export const analytics = getAnalytics(app);
 
 let auth;
@@ -121,8 +127,16 @@ export const requestNotificationPermission = async () => {
       return null;
     }
 
-    const token = (await Notifications.getExpoPushTokenAsync({ projectId: Constants.manifest.extra.eas.projectId })).data;
+    const token = (await Notifications.getExpoPushTokenAsync()).data;
     console.log('Expo Push Token:', token);
+
+    // Log the FCM token to Firestore
+    const userId = getCurrentUserId();
+    if (userId) {
+      await setDoc(doc(firestore, 'users', userId), { fcmToken: token }, { merge: true });
+      console.log('FCM Token logged to Firestore');
+    }
+
     return token;
   } catch (error) {
     console.error('Error requesting notification permission:', error);
@@ -155,8 +169,9 @@ export const getNotificationPreferences = async (userId) => {
 
 export const sendNotification = async (title, body) => {
   try {
+    const token = (await Notifications.getExpoPushTokenAsync()).data;
     const message = {
-      to: (await Notifications.getExpoPushTokenAsync({ projectId: Constants.manifest.extra.eas.projectId })).data,
+      to: token,
       sound: 'default',
       title: title,
       body: body,
