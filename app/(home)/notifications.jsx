@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Switch } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors'
-import { requestNotificationPermission } from './../../configs/FirebaseConfig';
+import { requestNotificationPermission, getCurrentUserId, saveNotificationPreferences, getNotificationPreferences } from './../../configs/FirebaseConfig';
+import * as Notifications from 'expo-notifications';
 
 export default function notifications() {
 
@@ -13,13 +14,37 @@ export default function notifications() {
   const [deviceAlertEnabled, setDeviceAlertEnabled] = useState(false);
   const [systemNotificationEnabled, setSystemNotificationEnabled] = useState(false);
 
+  useEffect(() => {
+    const loadPreferences = async () => {
+      const userId = getCurrentUserId();
+      if (userId) {
+        const preferences = await getNotificationPreferences(userId);
+        setDeviceAlertEnabled(preferences.deviceAlertEnabled || false);
+        setSystemNotificationEnabled(preferences.systemNotificationEnabled || false);
+      }
+    };
+    loadPreferences();
+  }, []);
+
   const handleDeviceAlertToggle = async (value) => {
     setDeviceAlertEnabled(value);
-    if (value) {
-      const token = await requestNotificationPermission();
-      if (token) {
-        // Save the token to your backend or use it to send notifications
+    const userId = getCurrentUserId();
+    if (userId) {
+      await saveNotificationPreferences(userId, { deviceAlertEnabled: value, systemNotificationEnabled });
+      if (value) {
+        const token = await requestNotificationPermission();
+        if (token) {
+          // Save the token to your backend or use it to send notifications
+        }
       }
+    }
+  };
+
+  const handleSystemNotificationToggle = async (value) => {
+    setSystemNotificationEnabled(value);
+    const userId = getCurrentUserId();
+    if (userId) {
+      await saveNotificationPreferences(userId, { deviceAlertEnabled, systemNotificationEnabled: value });
     }
   };
 
@@ -54,7 +79,7 @@ export default function notifications() {
           </View>
           <Switch style={styles.switch1}
             value={systemNotificationEnabled}
-            onValueChange={setSystemNotificationEnabled}
+            onValueChange={handleSystemNotificationToggle}
             trackColor={{ false: 'GRAY', true: '#f0f0f0' }}
             thumbColor={systemNotificationEnabled ? '#F2982F' : '#FFFFFF'}
           />

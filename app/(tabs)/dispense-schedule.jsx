@@ -10,6 +10,7 @@ import { ref, set } from 'firebase/database';
 import { database } from '../../configs/FirebaseConfig';
 import { useFoodLevel } from '../(dashboard-logic)/foodData';
 import { useWaterLevel } from '../(dashboard-logic)/waterData';
+import { registerBackgroundFetch } from './../../configs/FirebaseConfig';
 
 export default function DispenseSchedule() {
 
@@ -63,6 +64,10 @@ export default function DispenseSchedule() {
   
     fetchSchedules();
   }, [selectedIcon]);
+
+  useEffect(() => {
+    registerBackgroundFetch();
+  }, []);
 
   const toggleSchedule = (id) => {
     const toggleFunc = selectedIcon === 'fish' ? setFeedingSchedules : setWateringSchedules;

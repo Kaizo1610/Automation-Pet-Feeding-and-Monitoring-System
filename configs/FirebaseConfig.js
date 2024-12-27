@@ -5,7 +5,10 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import messaging from '@react-native-firebase/messaging';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
+import * as TaskManager from 'expo-task-manager';
+import * as BackgroundFetch from 'expo-background-fetch';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCHJO1IEzlXd7hV_EXz8NCG0Hb7k8y_DFQ",
@@ -105,26 +108,111 @@ export const uploadProfileImage = async (userId, imageUri) => {
 
 export const requestNotificationPermission = async () => {
   try {
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
 
-    if (enabled) {
-      const token = await messaging().getToken();
-      console.log('FCM Token:', token);
-      return token;
-    } else {
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+
+    if (finalStatus !== 'granted') {
       console.error('Notification permission not granted');
       return null;
     }
+
+    const token = (await Notifications.getExpoPushTokenAsync({ projectId: Constants.manifest.extra.eas.projectId })).data;
+    console.log('Expo Push Token:', token);
+    return token;
   } catch (error) {
     console.error('Error requesting notification permission:', error);
     throw error;
   }
 };
 
-messaging().onMessage(async (remoteMessage) => {
-  console.log('Message received. ', remoteMessage);
-  // Customize notification here
+export const saveNotificationPreferences = async (userId, preferences) => {
+  try {
+    await setDoc(doc(firestore, 'users', userId), { notificationPreferences: preferences }, { merge: true });
+  } catch (error) {
+    console.error("Error saving notification preferences: ", error);
+    throw error;
+  }
+};
+
+export const getNotificationPreferences = async (userId) => {
+  try {
+    const userDoc = await getDoc(doc(firestore, 'users', userId));
+    if (userDoc.exists()) {
+      return userDoc.data().notificationPreferences || {};
+    } else {
+      return {};
+    }
+  } catch (error) {
+    console.error("Error getting notification preferences: ", error);
+    throw error;
+  }
+};
+
+export const sendNotification = async (title, body) => {
+  try {
+    const message = {
+      to: (await Notifications.getExpoPushTokenAsync({ projectId: Constants.manifest.extra.eas.projectId })).data,
+      sound: 'default',
+      title: title,
+      body: body,
+      data: { someData: 'goes here' },
+    };
+
+    await fetch('https://fcm.googleapis.com/fcm/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `key=${YOUR_SERVER_KEY}`, // Replace with your FCM server key
+      },
+      body: JSON.stringify(message),
+    });
+  } catch (error) {
+    console.error('Error sending notification:', error);
+  }
+};
+
+// Register background task
+TaskManager.defineTask('BACKGROUND_FETCH_TASK', async () => {
+  try {
+    const schedules = await getSchedules(); // Fetch schedules from Firestore
+    const currentTime = new Date();
+    const currentHours = String(currentTime.getHours()).padStart(2, '0');
+    const currentMinutes = String(currentTime.getMinutes()).padStart(2, '0');
+    const formattedCurrentTime = `${currentHours}:${currentMinutes}`;
+
+    schedules.forEach((schedule) => {
+      if (schedule.time === formattedCurrentTime && schedule.enabled) {
+        const portions = parseInt(schedule.portions, 10);
+        const title = 'Dispense Notification';
+        const body = `${portions} portions of ${schedule.type} have been dispensed at ${formattedCurrentTime}.`;
+        sendNotification(title, body);
+      }
+    });
+
+    return BackgroundFetch.Result.NewData;
+  } catch (error) {
+    console.error('Error in background fetch task:', error);
+    return BackgroundFetch.Result.Failed;
+  }
+});
+
+export const registerBackgroundFetch = async () => {
+  try {
+    await BackgroundFetch.registerTaskAsync('BACKGROUND_FETCH_TASK', {
+      minimumInterval: 60, // Check every minute
+      stopOnTerminate: false,
+      startOnBoot: true,
+    });
+  } catch (error) {
+    console.error('Error registering background fetch task:', error);
+  }
+};
+
+Notifications.addNotificationReceivedListener(notification => {
+  console.log('Notification received: ', notification);
 });
