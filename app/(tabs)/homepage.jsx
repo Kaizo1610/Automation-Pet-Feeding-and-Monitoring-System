@@ -237,7 +237,7 @@ export default function Homepage() {
                 fill="#0a0a0a"
                 dy="16"
               >
-                approx.{Math.round(waterLevel * 3000)}ml
+                approx.{Math.round(waterLevel * 800)}ml
               </SvgText>
             </Svg>
           </TouchableOpacity>
