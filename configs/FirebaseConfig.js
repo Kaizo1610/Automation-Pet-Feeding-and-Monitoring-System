@@ -5,6 +5,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCHJO1IEzlXd7hV_EXz8NCG0Hb7k8y_DFQ",
@@ -101,3 +102,29 @@ export const uploadProfileImage = async (userId, imageUri) => {
     throw error;
   }
 };
+
+export const requestNotificationPermission = async () => {
+  try {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      const token = await messaging().getToken();
+      console.log('FCM Token:', token);
+      return token;
+    } else {
+      console.error('Notification permission not granted');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error requesting notification permission:', error);
+    throw error;
+  }
+};
+
+messaging().onMessage(async (remoteMessage) => {
+  console.log('Message received. ', remoteMessage);
+  // Customize notification here
+});

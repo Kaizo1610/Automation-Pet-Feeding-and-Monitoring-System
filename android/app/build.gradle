@@ -64,6 +64,9 @@ dependencies {
     
     // Firebase Authentication (optional, but often used)
     implementation "com.google.firebase:firebase-auth"
+
+    // Firebase Cloud Messaging (FCM)
+    implementation "com.google.firebase:firebase-messaging"
 }
 
 // Ensure Google Services plugin is applied at the end of the file

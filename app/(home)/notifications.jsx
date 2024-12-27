@@ -4,6 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors'
+import { requestNotificationPermission } from './../../configs/FirebaseConfig';
 
 export default function notifications() {
 
@@ -11,6 +12,16 @@ export default function notifications() {
 
   const [deviceAlertEnabled, setDeviceAlertEnabled] = useState(false);
   const [systemNotificationEnabled, setSystemNotificationEnabled] = useState(false);
+
+  const handleDeviceAlertToggle = async (value) => {
+    setDeviceAlertEnabled(value);
+    if (value) {
+      const token = await requestNotificationPermission();
+      if (token) {
+        // Save the token to your backend or use it to send notifications
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -26,7 +37,7 @@ export default function notifications() {
           <Text style={styles.settingTitle1}>Device Alert</Text>
           <Switch
             value={deviceAlertEnabled}
-            onValueChange={setDeviceAlertEnabled}
+            onValueChange={handleDeviceAlertToggle}
             trackColor={{ false: 'GRAY', true: '#f0f0f0' }}
             thumbColor={deviceAlertEnabled ? '#F2982F' : '#FFFFFF'}
           />
