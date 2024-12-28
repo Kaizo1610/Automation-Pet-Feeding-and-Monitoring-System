@@ -24,10 +24,10 @@ export default function waterLevel() {
   // Validate and clean data
   const cleanedData = weeklyData && weeklyData.length
     ? weeklyData.map((item) => (isNaN(item) ? 0 : Number(item)))
-    : [3, 2, 2, 2, 1, 1, 2]; // Default data if invalid
+    : [0, 0, 0, 0, 0, 0, 0]; // Default data if invalid
 
-  // console.log('Cleaned Data:', cleanedData); // Debugging log
-  // console.log('Weekly Data:', weeklyData); // Debugging log
+   //console.log('Cleaned Data:', cleanedData); // Debugging log
+   //console.log('Weekly Data:', weeklyData); // Debugging log
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

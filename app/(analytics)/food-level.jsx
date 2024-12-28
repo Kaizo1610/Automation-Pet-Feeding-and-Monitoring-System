@@ -24,10 +24,10 @@ export default function foodLevel() {
   // Validate and clean data
   const cleanedData = weeklyData && weeklyData.length
     ? weeklyData.map((item) => (isNaN(item) ? 0 : Number(item)))
-    : [3, 3, 4, 3, 3, 5, 1]; // Default data if invalid
+    : [0, 0, 0, 0, 0, 0, 0]; // Default data if invalid
 
-  // console.log('Cleaned Data:', cleanedData); // Debugging log
-  // console.log('Weekly Data:', weeklyData); // Debugging log
+   //console.log('Cleaned Data:', cleanedData); // Debugging log
+   //console.log('Weekly Data:', weeklyData); // Debugging log
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
