@@ -10,24 +10,24 @@ export default function TabLayout() {
   return (
     <Tabs screenOptions={{
       headerShown:false,
-      tabBarActiveTintColor:Colors.PRIMARY
+      tabBarActiveTintColor:Colors.PRIMARY,
     }}>
       <Tabs.Screen name="homepage"
         options={{
           tabBarLabel:'',
-          tabBarIcon:({color})=><Ionicons name="home-sharp" size={32} color={color} />
+          tabBarIcon:({color})=><Ionicons name="home-sharp" size={34} color={color} />
         }}
       />
       <Tabs.Screen name="pet-profile"
        options={{
           tabBarLabel:'',
-          tabBarIcon:({color})=><Ionicons name="paw-sharp" size={32} color={color} />
+          tabBarIcon:({color})=><Ionicons name="paw-sharp" size={34} color={color} />
         }}
       />
       <Tabs.Screen name="dispense-schedule"
        options={{
         tabBarLabel:'',
-        tabBarIcon:({color})=><FontAwesome5 name="equals" size={32} color={color} />
+        tabBarIcon:({color})=><FontAwesome5 name="equals" size={34} color={color} />
         }}
       />
     </Tabs>
