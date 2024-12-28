@@ -8,7 +8,7 @@ export function useFoodLevel() {
   const [isServoOn, setIsServoOn] = useState(false);
   const [timerValue, setTimerValue] = useState('');
   const [foodDispenseCount, setFoodDispenseCount] = useState(0);
-  const [weeklyData, setWeeklyData] = useState<number[]>([]);
+  const [weeklyData, setWeeklyData] = useState<number[]>(Array(7).fill(0));
 
   const fetchFoodLevel = async () => {
     try {
@@ -89,7 +89,7 @@ export function useFoodLevel() {
             dailyCounts[6 - dayIndex] += 1;
           }
         });
-        setWeeklyData(dailyCounts);
+        setWeeklyData(dailyCounts.map((count) => Math.min(count, 20)));
       });
     } catch (error) {
       console.error('Error fetching weekly food dispenses:', error);

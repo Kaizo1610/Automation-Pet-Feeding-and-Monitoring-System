@@ -6,7 +6,7 @@ export function useWaterLevel() {
   const [waterLevel, setWaterLevel] = useState(0);
   const [isPumpOn, setIsPumpOn] = useState(false);
   const [waterDispenseCount, setWaterDispenseCount] = useState(0);
-  const [weeklyData, setWeeklyData] = useState<number[]>([]);
+  const [weeklyData, setWeeklyData] = useState<number[]>(Array(7).fill(0));
 
   const fetchWaterLevel = async () => {
     try {
@@ -73,7 +73,7 @@ export function useWaterLevel() {
             dailyCounts[6 - dayIndex] += 1;
           }
         });
-        setWeeklyData(dailyCounts);
+        setWeeklyData(dailyCounts.map((count) => Math.min(count, 20)));
       });
     } catch (error) {
       console.error('Error fetching weekly water dispenses:', error);
