@@ -84,13 +84,18 @@ export default function Homepage() {
     setTimerValue,
     toggleServo,
     updateTimerValue,
+    weeklyData: foodWeeklyData,
   } = useFoodLevel();
 
   const {
     waterLevel,
     isPumpOn,
     togglePump,
+    weeklyData: waterWeeklyData,
   } = useWaterLevel();
+
+  const todayFoodDispenses = foodWeeklyData[6]; // Assuming the last element is for today
+  const todayWaterDispenses = waterWeeklyData[6]; // Assuming the last element is for today
 
   return (
     <View style={styles.container}>
@@ -247,13 +252,16 @@ export default function Homepage() {
         <View style={styles.dashboardBox}>
           <View style={styles.dashboardContent}>
             <View style={styles.dashboardItem}>
-              <FontAwesome name="paw" size={28} color="black" />
-              <Text style={styles.dashboardNumber}>{petsCount}</Text>
+              <FontAwesome name="paw" size={32} color="black" />
+              <Text style={styles.dashboardNumber}>You own {petsCount} pets for now!😎</Text>
             </View>
-            <View style={styles.dashboardGap} />
             <View style={styles.dashboardItem}>
-              <AntDesign name="clockcircle" size={28} color="black" />
-              <Text style={styles.dashboardNumber}>{currentTime.toLocaleTimeString()}</Text>
+              <Ionicons name="fish" size={32} color="black" />
+              <Text style={styles.dashboardNumber}>You managed to dispense food {todayFoodDispenses} times for today!😻</Text>
+            </View>
+            <View style={styles.dashboardItem}>
+              <FontAwesome name="tint" size={38} color="black" />
+              <Text style={styles.dashboardNumber}>You managed to dispense water {todayWaterDispenses} times for today!😽</Text>
             </View>
           </View>
         </View>
@@ -398,18 +406,17 @@ const styles = StyleSheet.create({
     elevation: 5,
     alignItems: 'center',
     marginBottom: 20,
-    marginTop: 10,
     alignSelf: 'center', // Center the box
   },
   dashboardContent: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center', // Center the content
     width: '100%',
   },
   dashboardItem: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 10, // Add margin to space out items
+    alignItems: 'left', 
+    marginBottom: 15,
   },
   dashboardGap: {
     width: 30, // Add a gap between items
@@ -419,6 +426,7 @@ const styles = StyleSheet.create({
     fontFamily: 'outfit-medium',
     color: Colors.BLACK,
     marginLeft: 10,
+    textAlign: 'left',
   },
   dashboardText: {
     fontSize: 18,
@@ -432,14 +440,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 5,
-    backgroundColor: Colors.PRIMARY,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    backgroundColor: 'black',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 10,
   },
   exploreButtonText: {
-    color: Colors.BLACK,
-    fontSize: 20,
+    color: Colors.WHITE,
+    fontSize: 22,
     fontFamily: 'outfit-bold',
   },
 });
