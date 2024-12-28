@@ -20,6 +20,7 @@ export default function foodLevel() {
 
   const { weeklyData } = useFoodLevel();
   const screenWidth = Dimensions.get('window').width;
+  const todayDispenses = weeklyData[6]; // Assuming the last element is for today
 
   // Validate and clean data
   const cleanedData = weeklyData && weeklyData.length
@@ -99,7 +100,7 @@ export default function foodLevel() {
           </View>
         </View>
         <View style={styles.horizontalLine} />
-        <Text style={styles.summaryText}>Graph Summary</Text>
+
         </View>
     
       <View style={styles.containerchart}>
@@ -124,6 +125,9 @@ export default function foodLevel() {
           style={styles.chartStyle}
         />
       </View>
+      <Text style={styles.totalDispensesText}>
+        Total food dispenses for today is {todayDispenses}.
+      </Text>
       </View>
     </ScrollView>
   )
@@ -222,23 +226,17 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     width: '100%', // Ensure it spans the full width
   },
-  summaryText: {
-    fontFamily: 'outfit-bold',
-    fontSize: 22,
-    textAlign: 'center',
-    marginTop: 5,
-  },
   containerchart: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5', // Light background
+    padding: 5,
+    backgroundColor: 'white', // Light background
   },
   titlechart: {
     textAlign: 'center',
     fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 12,
-    color: '#333',
+    fontFamily: 'outfit-bold',
+    marginVertical: 14,
+    color: 'black',
   },
   graphBox: {
     backgroundColor: '#ffffff', // White box
@@ -254,5 +252,12 @@ const styles = StyleSheet.create({
   },
   chartStyle: {
     borderRadius: 8,
+  },
+  totalDispensesText: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontFamily: 'outfit-medium',
+    color: 'blue',
+    marginTop: 20,
   },
 });

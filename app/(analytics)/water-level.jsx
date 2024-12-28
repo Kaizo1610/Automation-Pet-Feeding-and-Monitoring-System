@@ -20,6 +20,7 @@ export default function waterLevel() {
 
   const { weeklyData } = useWaterLevel();
   const screenWidth = Dimensions.get('window').width;
+  const todayDispenses = weeklyData[6]; // Assuming the last element is for today
 
   // Validate and clean data
   const cleanedData = weeklyData && weeklyData.length
@@ -99,7 +100,6 @@ export default function waterLevel() {
           </View>
         </View>
         <View style={styles.horizontalLine} />
-        <Text style={styles.summaryText}>Graph Summary</Text>
       </View>
             <View style={styles.containerchart}>
               <Text style={styles.titlechart}>Water Dispenses Over the Past Week</Text>
@@ -123,6 +123,9 @@ export default function waterLevel() {
                 style={styles.chartStyle}
               />
             </View>
+            <Text style={styles.totalDispensesText}>
+              Total water dispenses for today is {todayDispenses}.
+            </Text>
             </View>
     </ScrollView>
   )
@@ -201,23 +204,17 @@ const styles = StyleSheet.create({
     width: '100%', // Ensure it spans the full width
     borderStyle: 'dashed', // Make the line dashed
   },
-  summaryText: {
-    fontFamily: 'outfit-bold',
-    fontSize: 22,
-    textAlign: 'center',
-    marginTop: 5,
-  },
   containerchart: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5', // Light background
+    padding: 5,
+    backgroundColor: 'white', // Light background
   },
   titlechart: {
     textAlign: 'center',
     fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 12,
-    color: '#333',
+    fontFamily: 'outfit-bold',
+    marginVertical: 14,
+    color: 'black',
   },
   graphBox: {
     backgroundColor: '#ffffff', // White box
@@ -233,5 +230,12 @@ const styles = StyleSheet.create({
   },
   chartStyle: {
     borderRadius: 8,
+  },
+  totalDispensesText: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontFamily: 'outfit-medium',
+    color: 'green',
+    marginTop: 20,
   },
 });
