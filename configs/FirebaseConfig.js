@@ -191,6 +191,44 @@ export const sendNotification = async (title, body) => {
   }
 };
 
+export const getWeeklyWaterDispenses = async () => {
+  const userId = getCurrentUserId();
+  if (!userId) throw new Error("User not authenticated");
+
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const querySnapshot = await getDocs(collection(firestore, `users/${userId}/waterDispenses`));
+  const dispenses = querySnapshot.docs
+    .map(doc => doc.data())
+    .filter(dispense => dispense.dispenseTime >= weekAgo);
+
+  const dailyCounts = Array(7).fill(0);
+  dispenses.forEach(dispense => {
+    const dayIndex = Math.floor((Date.now() - dispense.dispenseTime) / (24 * 60 * 60 * 1000));
+    dailyCounts[6 - dayIndex] += 1;
+  });
+
+  return dailyCounts;
+};
+
+export const getWeeklyFoodDispenses = async () => {
+  const userId = getCurrentUserId();
+  if (!userId) throw new Error("User not authenticated");
+
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const querySnapshot = await getDocs(collection(firestore, `users/${userId}/foodDispenses`));
+  const dispenses = querySnapshot.docs
+    .map(doc => doc.data())
+    .filter(dispense => dispense.dispenseTime >= weekAgo);
+
+  const dailyCounts = Array(7).fill(0);
+  dispenses.forEach(dispense => {
+    const dayIndex = Math.floor((Date.now() - dispense.dispenseTime) / (24 * 60 * 60 * 1000));
+    dailyCounts[6 - dayIndex] += 1;
+  });
+
+  return dailyCounts;
+};
+
 // Register background task
 TaskManager.defineTask('BACKGROUND_FETCH_TASK', async () => {
   try {

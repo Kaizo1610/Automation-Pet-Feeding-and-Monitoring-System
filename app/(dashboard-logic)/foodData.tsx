@@ -1,13 +1,14 @@
 // FoodLevelLogic.ts
 import { useState, useEffect } from 'react';
-import { ref, set } from 'firebase/database';
-import { database } from '../../configs/FirebaseConfig';
+import { ref, set, onValue } from 'firebase/database';
+import { database, getCurrentUserId } from '../../configs/FirebaseConfig';
 
 export function useFoodLevel() {
   const [foodLevel, setFoodLevel] = useState(0);
   const [isServoOn, setIsServoOn] = useState(false);
   const [timerValue, setTimerValue] = useState('');
   const [foodDispenseCount, setFoodDispenseCount] = useState(0);
+  const [weeklyData, setWeeklyData] = useState<number[]>([]);
 
   const fetchFoodLevel = async () => {
     try {
@@ -44,7 +45,10 @@ export function useFoodLevel() {
 
   const recordFoodDispense = async () => {
     try {
-      const dispenseRef = ref(database, 'foodDispenses/' + Date.now());
+      const userId = getCurrentUserId();
+      if (!userId) throw new Error("User not authenticated");
+
+      const dispenseRef = ref(database, `users/${userId}/foodDispenses/${Date.now()}`);
       await set(dispenseRef, {
         dispenseTime: Date.now(),
         foodCount: foodDispenseCount,
@@ -69,9 +73,36 @@ export function useFoodLevel() {
     }
   };
 
+  const fetchWeeklyData = async () => {
+    try {
+      const userId = getCurrentUserId();
+      if (!userId) throw new Error("User not authenticated");
+
+      const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const dispensesRef = ref(database, `users/${userId}/foodDispenses`);
+      onValue(dispensesRef, (snapshot) => {
+        const dispenses = snapshot.val() || {};
+        const dailyCounts = Array(7).fill(0);
+        Object.values(dispenses).forEach((dispense: any) => {
+          if (dispense.dispenseTime >= weekAgo) {
+            const dayIndex = Math.floor((Date.now() - dispense.dispenseTime) / (24 * 60 * 60 * 1000));
+            dailyCounts[6 - dayIndex] += 1;
+          }
+        });
+        setWeeklyData(dailyCounts);
+      });
+    } catch (error) {
+      console.error('Error fetching weekly food dispenses:', error);
+    }
+  };
+
   useEffect(() => {
     const interval = setInterval(fetchFoodLevel, 5000); // Fetch every 5 seconds
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    fetchWeeklyData();
   }, []);
 
   return {
@@ -81,5 +112,6 @@ export function useFoodLevel() {
     setTimerValue,
     toggleServo,
     updateTimerValue,
+    weeklyData,
   };
 }

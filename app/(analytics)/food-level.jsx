@@ -108,7 +108,7 @@ export default function foodLevel() {
         <LineChart
           data={{
             labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-            datasets: [{ data: cleanedData }],
+            datasets: [{ data: weeklyData }],
           }}
           width={screenWidth - 75} // Adjust width for padding
           height={220}
