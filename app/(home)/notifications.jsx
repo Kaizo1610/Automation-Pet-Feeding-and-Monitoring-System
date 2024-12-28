@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors'
 import { requestNotificationPermission, getCurrentUserId, saveNotificationPreferences, getNotificationPreferences } from './../../configs/FirebaseConfig';
 import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 export default function notifications() {
 
@@ -32,7 +33,7 @@ export default function notifications() {
     if (userId) {
       await saveNotificationPreferences(userId, { deviceAlertEnabled: value, systemNotificationEnabled });
       if (value) {
-        const token = await requestNotificationPermission();
+        const token = await requestNotificationPermission(Constants.manifest.extra.eas.projectId);
         if (token) {
           // Save the token to your backend or use it to send notifications
           console.log('FCM Token:', token);

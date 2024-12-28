@@ -11,7 +11,7 @@ import * as TaskManager from 'expo-task-manager';
 import * as BackgroundFetch from 'expo-background-fetch';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCHJO1IEzlXd7hV_EXz8NCG0Hb7k8y_DFQ",
+  apiKey: "AIzaSyCHJO1IEzlXd7kV_EXz8NCG0Hb7k8y_DFQ",
   authDomain: "pawtectorproject-6de91.firebaseapp.com",
   projectId: "pawtectorproject-6de91",
   storageBucket: "pawtectorproject-6de91.appspot.com",
@@ -112,7 +112,7 @@ export const uploadProfileImage = async (userId, imageUri) => {
   }
 };
 
-export const requestNotificationPermission = async () => {
+export const requestNotificationPermission = async (projectId) => {
   try {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
@@ -127,7 +127,15 @@ export const requestNotificationPermission = async () => {
       return null;
     }
 
-    const token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log('Project ID:', projectId); // Log the project ID for debugging
+    if (!projectId) {
+      console.error('Project ID is not set in app configuration');
+      return null;
+    }
+
+    const token = (await Notifications.getExpoPushTokenAsync({
+      projectId: projectId, // Ensure projectId is correctly set
+    })).data;
     console.log('Expo Push Token:', token);
 
     // Log the FCM token to Firestore

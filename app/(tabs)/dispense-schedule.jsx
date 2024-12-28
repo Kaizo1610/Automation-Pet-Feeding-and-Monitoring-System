@@ -11,6 +11,7 @@ import { database } from '../../configs/FirebaseConfig';
 import { useFoodLevel } from '../(dashboard-logic)/foodData';
 import { useWaterLevel } from '../(dashboard-logic)/waterData';
 import { registerBackgroundFetch } from './../../configs/FirebaseConfig';
+import * as Notifications from 'expo-notifications';
 
 export default function DispenseSchedule() {
 
@@ -171,6 +172,18 @@ export default function DispenseSchedule() {
     setModalVisible(false);
   };
 
+  const scheduleNotification = async (title, body, trigger) => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: title,
+        body: body,
+        sound: 'default', // Add sound for the notification
+        data: { screen: 'DispenseSchedule' }, // Add data to navigate to the specific screen
+      },
+      trigger: trigger,
+    });
+  };
+
   const checkScheduledTimes = (schedules) => {
     const currentTime = new Date();
     const currentHours = String(currentTime.getHours()).padStart(2, '0');
@@ -203,6 +216,13 @@ export default function DispenseSchedule() {
             }, duration);
           }, 2000); // Delay of 2 seconds
         }
+
+        // Schedule notification
+        scheduleNotification(
+          'Dispense Notification',
+          `${portions} portions successfully been dispensed for ${selectedIcon === 'fish' ? 'food' : 'water'} schedule.`,
+          { seconds: 2 } // Trigger notification after 2 seconds
+        );
       }
     });
   };
@@ -216,6 +236,16 @@ export default function DispenseSchedule() {
     };
   }, [schedules, selectedIcon]); // Runs whenever schedules or selectedIcon change
   
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      const screen = response.notification.request.content.data.screen;
+      if (screen) {
+        router.push(screen);
+      }
+    });
+  
+    return () => subscription.remove();
+  }, []);
 
   return (
     <View style={styles.container}>
