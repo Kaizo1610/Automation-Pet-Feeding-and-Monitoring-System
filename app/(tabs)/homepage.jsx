@@ -94,8 +94,10 @@ export default function Homepage() {
     weeklyData: waterWeeklyData,
   } = useWaterLevel();
 
-  const todayFoodDispenses = foodWeeklyData[6]; // Assuming the last element is for today
-  const todayWaterDispenses = waterWeeklyData[6]; // Assuming the last element is for today
+  // Calculate total dispenses for today
+  const today = new Date().getDay();
+  const todayFoodDispenses = foodWeeklyData[today]; // Only count for the current day
+  const todayWaterDispenses = waterWeeklyData[today]; // Only count for the current day
 
   return (
     <View style={styles.container}>
@@ -257,11 +259,11 @@ export default function Homepage() {
             </View>
             <View style={styles.dashboardItem}>
               <Ionicons name="fish" size={32} color="black" />
-              <Text style={styles.dashboardNumber}>You managed to dispense food   {todayFoodDispenses} times for today!😻</Text>
+              <Text style={styles.dashboardNumber}>You managed to dispense food {todayFoodDispenses} times for today!😻</Text>
             </View>
             <View style={styles.dashboardItem}>
               <FontAwesome name="tint" size={38} color="black" />
-              <Text style={styles.dashboardNumber}>You managed to dispense water   {todayWaterDispenses} times for today!😽</Text>
+              <Text style={styles.dashboardNumber}>You managed to dispense water {todayWaterDispenses} times for today!😽</Text>
             </View>
           </View>
         </View>
