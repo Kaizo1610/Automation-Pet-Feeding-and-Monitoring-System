@@ -27,8 +27,10 @@ export default function foodLevel() {
     ? weeklyData.map((item) => (isNaN(item) ? 0 : Number(item)))
     : [0, 0, 0, 0, 0, 0, 0]; // Default data if invalid
 
-   //console.log('Cleaned Data:', cleanedData); // Debugging log
-   //console.log('Weekly Data:', weeklyData); // Debugging log
+  const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const today = new Date().getDay();
+  const orderedLabels = dayLabels.slice(today + 1).concat(dayLabels.slice(0, today + 1));
+  const orderedData = cleanedData.slice(today + 1).concat(cleanedData.slice(0, today + 1));
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -108,8 +110,8 @@ export default function foodLevel() {
         <View style={styles.graphBox}>
         <LineChart
           data={{
-            labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-            datasets: [{ data: weeklyData }],
+            labels: orderedLabels,
+            datasets: [{ data: orderedData }],
           }}
           width={screenWidth - 75} // Adjust width for padding
           height={220}
@@ -126,7 +128,7 @@ export default function foodLevel() {
         />
       </View>
       <Text style={styles.totalDispensesText}>
-        Total food dispenses for today is {todayDispenses}.
+        Total food dispenses for today is {orderedData[6]}.
       </Text>
       </View>
     </ScrollView>
@@ -165,12 +167,12 @@ const styles = StyleSheet.create({
   },
   levelsContainer: {
     flexDirection: 'row',
-    justifyContent: 'center', // Center the container
+    justifyContent: 'center', 
     width: '100%',
     marginBottom: 20,
   },
   box: {
-    width: '90%', // Adjust width to center the box
+    width: '90%', 
     backgroundColor: '#fff',
     padding: 10,
     paddingBottom: 20,
@@ -222,14 +224,14 @@ const styles = StyleSheet.create({
   horizontalLine: {
     borderBottomColor: 'black',
     borderBottomWidth: 1, 
-    borderStyle: 'dashed', // Make the line dashed
+    borderStyle: 'dashed', 
     marginVertical: 20,
-    width: '100%', // Ensure it spans the full width
+    width: '100%', 
   },
   containerchart: {
     flex: 1,
     padding: 5,
-    backgroundColor: 'white', // Light background
+    backgroundColor: 'white', 
   },
   titlechart: {
     textAlign: 'center',
@@ -239,15 +241,15 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   graphBox: {
-    backgroundColor: '#ffffff', // White box
+    backgroundColor: '#ffffff', 
     borderRadius: 12,
     padding: 10,
-    shadowColor: '#000', // Shadow for elevation
+    shadowColor: '#000', 
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 5, // Android shadow
-    alignItems: 'center', // Center the graph
+    elevation: 5, 
+    alignItems: 'center', 
     justifyContent: 'center',
   },
   chartStyle: {

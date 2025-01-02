@@ -85,8 +85,8 @@ export function useFoodLevel() {
         const dailyCounts = Array(7).fill(0);
         Object.values(dispenses).forEach((dispense: any) => {
           if (dispense.dispenseTime >= weekAgo) {
-            const dayIndex = Math.floor((Date.now() - dispense.dispenseTime) / (24 * 60 * 60 * 1000));
-            dailyCounts[6 - dayIndex] += 1;
+            const dayIndex = new Date(dispense.dispenseTime).getDay();
+            dailyCounts[dayIndex] += 1;
           }
         });
         setWeeklyData(dailyCounts.map((count) => Math.min(count, 20)));
