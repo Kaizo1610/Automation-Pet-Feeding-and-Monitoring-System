@@ -1,50 +1,35 @@
-# Welcome to your Expo app 👋
+PawTector - Smart Pet Feeder and Monitoring System
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Welcome to PawTector, the ultimate IoT-based smart pet feeding and monitoring system designed to simplify pet care! 🐾
 
-## Get started
+📖 About PawTector
 
-1. Install dependencies
+PawTector is an innovative solution that combines IoT technology and mobile app integration to revolutionize pet feeding and monitoring. It ensures that your pets are fed on time and their water and food levels are always optimal, even when you're away.
 
-   ```bash
-   npm install
-   ```
+✨ Key Features
 
-2. Start the app
+Smart Monitoring: Tracks food and water levels in real time via mobile app.
 
-   ```bash
-    npx expo start
-   ```
+Automated Feeding System: Dispenses food at scheduled times to keep pets healthy.
 
-In the output, you'll find options to open the app in a
+IoT Integration: Sensors detect low levels and send alerts to your smartphone.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Mobile App Control: Monitor and control feeding schedules remotely using the intuitive PawTector app.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Multi-Pet Management: Supports multiple pet profiles for personalized feeding.
 
-## Get a fresh project
+User-Friendly Interface: Easy setup and seamless user experience.
 
-When you're ready, run:
+Notifications & Alerts: Push notifications to ensure you never miss a refill.
 
-```bash
-npm run reset-project
-```
+🚀 Why Choose PawTector?
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+🐕 Convenience: Manage your pet’s diet from anywhere, anytime.
 
-## Learn more
+📊 Data Insights: Monitor consumption patterns to keep pets healthy.
 
-To learn more about developing your project with Expo, look at the following resources:
+🌿 Eco-Friendly Design: Built with sustainable materials and low energy consumption.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+🔒 Secure System: Data encryption ensures privacy and security.
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+📱 Cross-Platform Compatibility: Available for both Android and iOS devices.
