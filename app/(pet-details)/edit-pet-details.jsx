@@ -4,22 +4,22 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from '../../constants/Colors'
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
-import * as ImagePicker from 'expo-image-picker'; // Import image picker
+import * as ImagePicker from 'expo-image-picker'; 
 import { useRouter } from 'expo-router';
 
 export default function EditOyen() {
 
   const router=useRouter();
 
-  const [name, setName] = useState('Kiko');
+  const [name, setName] = useState('Oyen');
   const [gender, setGender] = useState('Male');
-  const [weight, setWeight] = useState('3.6');
-  const [appointment, setAppointment] = useState('Dermatology');
-  const [date, setDate] = useState('25 July 2024');
+  const [weight, setWeight] = useState('4.6');
+  const [appointment, setAppointment] = useState('Rabbies Vaccination');
+  const [date, setDate] = useState('24 June 2024');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [imageUri, setImageUri] = useState(null); // State to store the selected image
-  const [isGenderDropdownVisible, setIsGenderDropdownVisible] = useState(false); // Track gender dropdown visibility
-  const [isAppointmentDropdownVisible, setIsAppointmentDropdownVisible] = useState(false); // Track appointment dropdown visibility
+  const [imageUri, setImageUri] = useState(null); 
+  const [isGenderDropdownVisible, setIsGenderDropdownVisible] = useState(false); 
+  const [isAppointmentDropdownVisible, setIsAppointmentDropdownVisible] = useState(false); 
 
   // Open the image picker to select a picture
   const pickImage = async () => {
@@ -51,12 +51,12 @@ export default function EditOyen() {
 
   const handleGenderSelect = (selectedGender) => {
     setGender(selectedGender);
-    setIsGenderDropdownVisible(false); // Close the dropdown
+    setIsGenderDropdownVisible(false); 
   };
 
   const handleAppointmentSelect = (selectedAppointment) => {
     setAppointment(selectedAppointment);
-    setIsAppointmentDropdownVisible(false); // Close the dropdown
+    setIsAppointmentDropdownVisible(false); 
   };
 
   return (
@@ -70,7 +70,7 @@ export default function EditOyen() {
         {imageUri ? (
           <Image source={{ uri: imageUri }} style={styles.profileImage} />
         ) : (
-          <Image source={require('./../../assets/images/kiko.jpeg')} style={styles.profileImage} />
+          <Image source={require('./../../assets/images/oyen.png')} style={styles.profileImage} />
         )}
         <TouchableOpacity style={styles.editIcon} onPress={pickImage}>
           <Ionicons name="pencil" size={16} color="white" />
@@ -150,9 +150,9 @@ export default function EditOyen() {
         <Text style={styles.label}>Date</Text>
         <TouchableOpacity onPress={showDatePicker}>
           <TextInput
-            style={[styles.input, { color: date ? 'black' : 'gray' }]} // Change color to black when date is selected
+            style={[styles.input, { color: date ? 'black' : 'gray' }]} 
             value={date}
-            editable={false} // Make it read-only
+            editable={false} 
           />
         </TouchableOpacity>
 

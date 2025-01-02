@@ -85,7 +85,7 @@ export default function PetsInfo() {
           style={styles.catImage}
         />
         {/* Edit (Pencil) Icon */}
-        <TouchableOpacity style={styles.editIcon} onPress={() => router.push('(pet-details)/edit-oyen')}>
+        <TouchableOpacity style={styles.editIcon} onPress={() => router.push('(pet-details)/edit-pet-details')}>
           <Ionicons name="pencil" size={18} color="white" />
         </TouchableOpacity>
         {/* Trash Icon */}
