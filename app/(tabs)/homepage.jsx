@@ -96,8 +96,8 @@ export default function Homepage() {
 
   // Calculate total dispenses for today
   const today = new Date().getDay();
-  const todayFoodDispenses = foodWeeklyData[today]; // Only count for the current day
-  const todayWaterDispenses = waterWeeklyData[today]; // Only count for the current day
+  const todayFoodDispenses = foodWeeklyData[today]; 
+  const todayWaterDispenses = waterWeeklyData[today];
 
   return (
     <View style={styles.container}>
