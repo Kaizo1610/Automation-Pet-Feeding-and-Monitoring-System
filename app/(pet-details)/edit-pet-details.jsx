@@ -65,12 +65,12 @@ export default function EditOyen() {
       <TouchableOpacity onPress={()=>router.back()}>
           <Ionicons name="arrow-back" size={28} color="black" style={{marginTop:10}}/>
       </TouchableOpacity>
-      <Text style={styles.title}>Add Pet Profile</Text>
+      <Text style={styles.title}>Edit Pet Profile</Text>
       <View style={styles.iconContainer}>
         {imageUri ? (
           <Image source={{ uri: imageUri }} style={styles.profileImage} />
         ) : (
-          <Image source={require('./../../assets/images/oyen.png')} style={styles.profileImage} />
+          <Image source={require('./../../assets/images/putehh.jpg')} style={styles.profileImage} />
         )}
         <TouchableOpacity style={styles.editIcon} onPress={pickImage}>
           <Ionicons name="pencil" size={16} color="white" />
