@@ -259,11 +259,11 @@ export default function Homepage() {
             </View>
             <View style={styles.dashboardItem}>
               <Ionicons name="fish" size={32} color="black" />
-              <Text style={styles.dashboardNumber}>You managed to dispense food {todayFoodDispenses} times for today!😻</Text>
+              <Text style={styles.dashboardNumber}>You managed to dispense food    {todayFoodDispenses} times for today!😻</Text>
             </View>
             <View style={styles.dashboardItem}>
               <FontAwesome name="tint" size={38} color="black" />
-              <Text style={styles.dashboardNumber}>You managed to dispense water {todayWaterDispenses} times for today!😽</Text>
+              <Text style={styles.dashboardNumber}>You managed to dispense water    {todayWaterDispenses} times for today!😽</Text>
             </View>
           </View>
         </View>
