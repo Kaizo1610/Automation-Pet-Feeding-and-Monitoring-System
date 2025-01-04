@@ -121,17 +121,6 @@ export default function SignIn() {
           <Text style={styles.loginText2}>Register</Text>
         </TouchableOpacity>
       </View>
-  
-      <View>
-        <Text style={styles.loginText3}>--------------     Or Connect With     -------------</Text>
-      </View>
-  
-      <View style={styles.footer2}>
-        <TouchableOpacity style={styles.guestButton} onPress={onGuestLogin}>
-          <MaterialIcons name="person-outline" size={26} color="white" />
-          <Text style={styles.guestButtonText}>Login as Guest</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   )};
 
