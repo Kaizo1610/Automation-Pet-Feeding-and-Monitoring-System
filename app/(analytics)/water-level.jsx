@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Switch, ScrollView, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Switch, ScrollView, Dimensions, Alert } from 'react-native'
 import React from 'react'
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
@@ -31,6 +31,15 @@ export default function waterLevel() {
   const today = new Date().getDay();
   const orderedLabels = dayLabels.slice(today + 1).concat(dayLabels.slice(0, today + 1));
   const orderedData = cleanedData.slice(today + 1).concat(cleanedData.slice(0, today + 1));
+
+  React.useEffect(() => {
+    if (waterLevel <= 0.2) {
+      const timer = setTimeout(() => {
+        Alert.alert("Low Water Level", "Please add some water into your container!!");
+      }, 5500);
+      return () => clearTimeout(timer);
+    }
+  }, [waterLevel]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

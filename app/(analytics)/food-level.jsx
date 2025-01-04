@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Switch, TextInput, Button, ScrollView, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Switch, TextInput, Button, ScrollView, Dimensions, Alert } from 'react-native'
 import React from 'react'
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
@@ -31,6 +31,15 @@ export default function foodLevel() {
   const today = new Date().getDay();
   const orderedLabels = dayLabels.slice(today + 1).concat(dayLabels.slice(0, today + 1));
   const orderedData = cleanedData.slice(today + 1).concat(cleanedData.slice(0, today + 1));
+
+  React.useEffect(() => {
+    if (foodLevel <= 0.2) {
+      const timer = setTimeout(() => {
+        Alert.alert("Low Food Level", "Please add some food into your container!!");
+      }, 5500);
+      return () => clearTimeout(timer);
+    }
+  }, [foodLevel]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
