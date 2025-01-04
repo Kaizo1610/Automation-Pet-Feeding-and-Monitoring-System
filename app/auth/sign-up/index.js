@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ToastAndroid } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ToastAndroid, Vibration } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from './../../../constants/Colors'
 import { useRouter } from 'expo-router';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth'
 import { auth } from './../../../configs/FirebaseConfig'
 import { saveUsername } from './../../../configs/FirebaseConfig'
+import { Audio } from 'expo-av';
 
 export default function SignUp() {
 
@@ -30,19 +31,39 @@ export default function SignUp() {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('error'); // 'error' or 'success'
 
-  const showAlert = (message) => {
+  const showAlert = async (message) => {
     setAlertMessage(message);
     setAlertVisible(true);
     setAlertType('error');
+    Vibration.vibrate(500); // Vibrate for 500 milliseconds
+
+    const soundObject = new Audio.Sound();
+    try {
+      await soundObject.loadAsync(require('./../../../assets/sounds/error.mp3'));
+      await soundObject.playAsync();
+    } catch (error) {
+      console.log(error);
+    }
+
     setTimeout(() => {
       setAlertVisible(false);
     }, 4000); // Hide the alert after 4 seconds
   };
 
-  const showSuccess = (message) => {
+  const showSuccess = async (message) => {
     setAlertMessage(message);
     setAlertVisible(true);
     setAlertType('success');
+    Vibration.vibrate(500); // Vibrate for 500 milliseconds
+
+    const soundObject = new Audio.Sound();
+    try {
+      await soundObject.loadAsync(require('./../../../assets/sounds/success.mp3'));
+      await soundObject.playAsync();
+    } catch (error) {
+      console.log(error);
+    }
+
     setTimeout(() => {
       setAlertVisible(false);
     }, 4000); // Hide the alert after 4 seconds

@@ -69,7 +69,8 @@
     "react-native-toast-message": "^2.2.1",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "^0.19.13",
-    "react-native-wifi-reborn": "^4.13.0"
+    "react-native-wifi-reborn": "^4.13.0",
+    "expo-av": "~14.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

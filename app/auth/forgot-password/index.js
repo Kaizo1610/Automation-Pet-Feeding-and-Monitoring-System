@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Vibration } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from './../../../constants/Colors';
 import { useRouter } from 'expo-router';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from './../../../configs/FirebaseConfig';
+import { Audio } from 'expo-av';
 
 export default function ForgotPassword() {
   const router = useRouter();
@@ -36,10 +37,23 @@ export default function ForgotPassword() {
       });
   };
 
-  const showAlert = (message, type) => {
+  const showAlert = async (message, type) => {
     setAlertMessage(message);
     setAlertType(type);
     setAlertVisible(true);
+    Vibration.vibrate(500); // Vibrate for 500 milliseconds
+
+    const soundObject = new Audio.Sound();
+    try {
+      const soundFile = type === 'success' 
+        ? require('./../../../assets/sounds/success.mp3') 
+        : require('./../../../assets/sounds/error.mp3');
+      await soundObject.loadAsync(soundFile);
+      await soundObject.playAsync();
+    } catch (error) {
+      console.log(error);
+    }
+
     setTimeout(() => {
       setAlertVisible(false);
     }, 4000); // Hide the alert after 4 seconds

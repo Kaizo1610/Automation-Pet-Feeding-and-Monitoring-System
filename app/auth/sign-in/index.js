@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ToastAndroid } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ToastAndroid, Vibration } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Colors } from './../../../constants/Colors'
@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './../../../configs/FirebaseConfig'
 import { MaterialIcons } from '@expo/vector-icons';
+import { Audio } from 'expo-av';
 
 export default function SignIn() {
 
@@ -23,9 +24,19 @@ export default function SignIn() {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
-  const showAlert = (message) => {
+  const showAlert = async (message) => {
     setAlertMessage(message);
     setAlertVisible(true);
+    Vibration.vibrate(500); // Vibrate for 500 milliseconds
+
+    const soundObject = new Audio.Sound();
+    try {
+      await soundObject.loadAsync(require('./../../../assets/sounds/error.mp3'));
+      await soundObject.playAsync();
+    } catch (error) {
+      console.log(error);
+    }
+
     setTimeout(() => {
       setAlertVisible(false);
     }, 4000); // Hide the alert after 4 seconds
