@@ -33,10 +33,13 @@ export default function notifications() {
     if (userId) {
       await saveNotificationPreferences(userId, { deviceAlertEnabled: value, systemNotificationEnabled });
       if (value) {
-        const token = await requestNotificationPermission(Constants.manifest.extra.eas.projectId);
-        if (token) {
+        const { status } = await Notifications.requestPermissionsAsync();
+        if (status === 'granted') {
+          const token = (await Notifications.getExpoPushTokenAsync()).data;
+          console.log('Expo Push Token:', token);
           // Save the token to your backend or use it to send notifications
-          console.log('FCM Token:', token);
+        } else {
+          console.error('Notification permissions not granted.');
         }
       }
     }
