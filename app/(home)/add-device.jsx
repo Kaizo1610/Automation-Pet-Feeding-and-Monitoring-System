@@ -42,7 +42,7 @@ export default function AddDevice() {
       </View>
 
       {/* Manual Add Section */}
-      <Text style={styles.addManuallyText}>Add Manually and connect with the pawtector smart pet feeder below.    Then configure it with your hotspot/WiFi SSID and Password.</Text>
+      <Text style={styles.addManuallyText}>Add Manually and connect with the pawtector smart pet feeder below.      Then configure it with your hotspot/WiFi SSID and Password.</Text>
       <View style={styles.manualAdd}>
         <Image
           source={require('./../../assets/images/smartPetIcon.png')} 
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   addManuallyText: {
     fontSize: 18,
-    fontFamily:'outfit-bold',
+    fontFamily:'outfit-medium',
     marginBottom: 40,
     marginTop: 10
   },
