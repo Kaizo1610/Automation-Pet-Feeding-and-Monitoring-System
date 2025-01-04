@@ -19,10 +19,8 @@ export default function DispenseSchedule() {
 
   const navigation = useNavigation();
 
-  // State to track which section is selected
   const [selectedIcon, setSelectedIcon] = useState('fish');
 
-  // State to handle different schedules for feeding and watering
   const [feedingSchedules, setFeedingSchedules] = useState([]);
 
   const [wateringSchedules, setWateringSchedules] = useState([]);
@@ -52,7 +50,7 @@ export default function DispenseSchedule() {
           const [aHours, aMinutes] = a.time.split(':').map(Number);
           const [bHours, bMinutes] = b.time.split(':').map(Number);
           return aHours - bHours || aMinutes - bMinutes;
-        }); // Sort schedules by time in 24-hour format
+        }); 
         if (selectedIcon === 'fish') {
           setFeedingSchedules(fetchedSchedules);
         } else {
@@ -129,7 +127,6 @@ export default function DispenseSchedule() {
       });
     }, 2000);
 
-    // Dispense food or water based on selected icon
     if (selectedIcon === 'fish') {
       toggleServo(true);
       setTimeout(() => {
@@ -196,27 +193,25 @@ export default function DispenseSchedule() {
         const duration = portions * 2000; // Duration in milliseconds (2 seconds per portion)
   
         if (selectedIcon === 'fish') {
-          // Introduce a 2-second delay before turning on the servo
           setTimeout(() => {
             toggleServo(true); // Turn on the servo
   
-            // Turn off the servo after the duration
             setTimeout(() => {
               toggleServo(false); // Turn off the servo
+              alert(`Successfully dispensed ${portions} portions of food at ${formattedCurrentTime}`);
             }, duration);
           }, 2000); // Delay of 2 seconds
         } else {
-          // Introduce a 2-second delay before turning on the pump
           setTimeout(() => {
             togglePump(true); // Turn on the pump
   
-            // Turn off the pump after the duration
             setTimeout(() => {
               togglePump(false); // Turn off the pump
+              alert(`Successfully dispensed ${portions} portions of water at ${formattedCurrentTime}`);
             }, duration);
           }, 2000); // Delay of 2 seconds
         }
-
+  
         // Schedule notification
         scheduleNotification(
           'Dispense Notification',
