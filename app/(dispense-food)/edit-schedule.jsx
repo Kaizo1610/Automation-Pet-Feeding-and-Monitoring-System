@@ -61,11 +61,11 @@ export default function EditSchedule() {
       <TouchableOpacity onPress={()=>router.back()} style={{marginTop:10}}>
       <Ionicons name="arrow-back" size={28} color="black" />    
       </TouchableOpacity>
-        <Text style={styles.headerText}>Set Feeding Schedule</Text>
+        <Text style={styles.headerText}>Edit Feeding Schedule</Text>
       </View>
 
       <View style={styles.container1}>
-      <Text style={styles.label1}>Set Dispense Time:</Text>
+      <Text style={styles.label1}>Edit Dispense Time:</Text>
       <View style={styles.row1}>
         <TextInput
           style={styles.inputHour}

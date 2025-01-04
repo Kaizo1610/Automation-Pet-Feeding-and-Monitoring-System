@@ -25,6 +25,10 @@ buildscript {
 apply plugin: "com.android.application"
 apply plugin: "com.google.gms.google-services"
 
+project.ext.react = [
+    enableHermes: true,  
+]
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     
