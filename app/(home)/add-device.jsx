@@ -36,20 +36,20 @@ export default function AddDevice() {
       </View>
 
       {/* Wi-Fi Toggle */}
-      <TouchableOpacity style={styles.wifiButton} onPress={handleWifiToggle}>
-        <Text style={styles.wifiText}>Turn on Wi-Fi</Text>
+      <View style={styles.wifiButton} onPress={handleWifiToggle}>
+        <Text style={styles.wifiText}>Turn on Wi-Fi at your own device</Text>
         <Ionicons name="wifi-outline" size={24} color="#000" />
-      </TouchableOpacity>
+      </View>
 
       {/* Manual Add Section */}
-      <Text style={styles.addManuallyText}>Add Manually</Text>
-      <TouchableOpacity style={styles.manualAdd}>
+      <Text style={styles.addManuallyText}>Add Manually and connect with the pawtector smart pet feeder below.    Then configure it with your hotspot/WiFi SSID and Password.</Text>
+      <View style={styles.manualAdd}>
         <Image
           source={require('./../../assets/images/smartPetIcon.png')} 
           style={styles.deviceImage}
         />
-        <Text style={styles.deviceName}>Smart Pet Feeder</Text>
-      </TouchableOpacity>
+        <Text style={styles.deviceName}>Pawtector</Text>
+      </View>
     </View>
   );
 }
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily:'outfit-bold',
     marginBottom: 40,
-    marginTop: 50
+    marginTop: 10
   },
   manualAdd: {
     alignItems: 'center',
@@ -118,6 +118,6 @@ const styles = StyleSheet.create({
   deviceName: {
     fontSize: 16,
     fontFamily:'outfit-medium',
-    marginRight: 225
+    marginRight: 235
   },
 });
