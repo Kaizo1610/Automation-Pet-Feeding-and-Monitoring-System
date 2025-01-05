@@ -42,36 +42,38 @@ export default function SignIn() {
     }, 4000); // Hide the alert after 4 seconds
   };
 
-  const onSignIn = () => {
+  const onSignIn = async () => {
     if (!email && !password) {
       showAlert('Please Enter The Correct Email and Password!');
       return;
     }
   
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        if (user.emailVerified) {
-          router.replace('(tabs)/homepage'); // Navigate to the homepage
-        } else {
-          showAlert('Please verify your email before signing in.');
-        }
-        console.log(user);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-        if (errorCode == 'auth/invalid-credential') {
-          showAlert('Invalid Credentials');
-        }
-        if (errorCode == 'auth/missing-password') {
-          showAlert('Password is Missing');
-        }
-        if (errorCode == 'auth/invalid-email') {
-          showAlert('Invalid Email Address');
-        }
-      });
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      if (user.emailVerified) {
+        Vibration.vibrate();
+        const { sound } = await Audio.Sound.createAsync(require('./../../../assets/sounds/success.mp3'));
+        await sound.playAsync();
+        router.replace('(tabs)/homepage'); // Navigate to the homepage
+      } else {
+        showAlert('Please verify your email before signing in.');
+      }
+      console.log(user);
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode, errorMessage);
+      if (errorCode == 'auth/invalid-credential') {
+        showAlert('Invalid Credentials');
+      }
+      if (errorCode == 'auth/missing-password') {
+        showAlert('Password is Missing');
+      }
+      if (errorCode == 'auth/invalid-email') {
+        showAlert('Invalid Email Address');
+      }
+    }
   }
 
   const onGuestLogin = () => {

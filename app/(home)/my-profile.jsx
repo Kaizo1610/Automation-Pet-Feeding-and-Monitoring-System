@@ -105,6 +105,10 @@ export default function myProfile() {
 
       await setDoc(doc(firestore, 'users', userId), { profileImage: downloadUrl }, { merge: true });
 
+      Vibration.vibrate();
+      const { sound } = await Audio.Sound.createAsync(require('./../../assets/sounds/success.mp3'));
+      await sound.playAsync();
+
       Alert.alert('Success', 'Profile image updated successfully!');
     } catch (error) {
       console.error('Error saving profile image:', error);
