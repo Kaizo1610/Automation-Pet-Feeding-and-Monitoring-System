@@ -49,6 +49,11 @@ export default function AddSchedule() {
   };
 
   const handleSave = async () => {
+    if (hours === '' || minutes === '' || portion === '') {
+      Alert.alert("Incomplete Data", "Please fill in all fields before saving.");
+      return;
+    }
+
     const userId = getCurrentUserId();
     if (!userId) {
       console.error("User not authenticated");

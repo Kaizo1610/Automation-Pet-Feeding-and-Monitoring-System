@@ -106,7 +106,7 @@ export default function DispenseSchedule() {
       />
       <Text style={styles.scheduleText}>{item.time}</Text>
       <Text style={styles.portionText}>{item.portions}</Text>
-      <TouchableOpacity 
+      <View
         style={styles.arrow}
         onPress={() => router.push({
           pathname: editScheduleRoute,
@@ -118,7 +118,7 @@ export default function DispenseSchedule() {
         })}
       >
         <Text style={styles.arrowText}>&gt;</Text>
-      </TouchableOpacity>
+      </View>
     </View>
   );
 
