@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Animated, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, TextInput, Animated, Image, Vibration } from 'react-native';
 import { Checkbox } from 'expo-checkbox';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from './../../constants/Colors';
@@ -12,6 +12,7 @@ import { useFoodLevel } from '../(dashboard-logic)/foodData';
 import { useWaterLevel } from '../(dashboard-logic)/waterData';
 import { registerBackgroundFetch } from './../../configs/FirebaseConfig';
 import * as Notifications from 'expo-notifications';
+import { Audio } from 'expo-av';
 
 export default function DispenseSchedule() {
 
@@ -154,6 +155,10 @@ export default function DispenseSchedule() {
         }
       });
     }, 2000);
+
+    Vibration.vibrate();
+    const { sound } = await Audio.Sound.createAsync(require('./../../assets/sounds/success.mp3'));
+    await sound.playAsync();
 
     if (selectedIcon === 'fish') {
       toggleServo(true);
