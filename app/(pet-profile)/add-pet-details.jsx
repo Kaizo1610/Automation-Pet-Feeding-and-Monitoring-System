@@ -88,7 +88,7 @@ export default function AddPetDetails() {
   };
 
   const handleSave = async () => {
-    if (!name || !gender || !weight || !appointment || !date) {
+    if (!name || !gender || !weight || !imageUri) {
       alert("Please fill in all the mandatory fields.");
       return;
     }
