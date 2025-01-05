@@ -11,11 +11,11 @@ export default function EditOyen() {
 
   const router=useRouter();
 
-  const [name, setName] = useState('Oyen');
-  const [gender, setGender] = useState('Male');
-  const [weight, setWeight] = useState('4.6');
-  const [appointment, setAppointment] = useState('Rabbies Vaccination');
-  const [date, setDate] = useState('24 June 2024');
+  const [name, setName] = useState('Putehh');
+  const [gender, setGender] = useState('Female');
+  const [weight, setWeight] = useState('3.4');
+  const [appointment, setAppointment] = useState('Diagnosis');
+  const [date, setDate] = useState('25 January 2025');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [imageUri, setImageUri] = useState(null); 
   const [isGenderDropdownVisible, setIsGenderDropdownVisible] = useState(false); 
