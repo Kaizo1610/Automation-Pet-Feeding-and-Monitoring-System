@@ -233,7 +233,7 @@ export default function DispenseSchedule() {
               toggleServo(false); // Turn off the servo
               alert(`Successfully dispensed ${portions} portions of food at ${formattedCurrentTime}`);
             }, duration);
-          }, 2000); // Delay of 2 seconds
+          }, 100); // Delay of 0.1 seconds
         } else {
           setTimeout(() => {
             togglePump(true); // Turn on the pump
@@ -242,14 +242,14 @@ export default function DispenseSchedule() {
               togglePump(false); // Turn off the pump
               alert(`Successfully dispensed ${portions} portions of water at ${formattedCurrentTime}`);
             }, duration);
-          }, 2000); // Delay of 2 seconds
+          }, 100); // Delay of 0.1 seconds
         }
   
         // Schedule notification
         scheduleNotification(
           'Dispense Notification',
           `${portions} portions successfully been dispensed for ${selectedIcon === 'fish' ? 'food' : 'water'} schedule.`,
-          { seconds: 2 } // Trigger notification after 2 seconds
+          { seconds: 1 } // Trigger notification after 1 seconds
         );
       }
     });
