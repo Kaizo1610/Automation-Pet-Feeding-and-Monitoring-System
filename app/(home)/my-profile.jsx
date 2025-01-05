@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, Alert, ActivityIndicator, Vibration } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors';
@@ -8,6 +8,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { Audio } from 'expo-av';
 
 export default function myProfile() {
   const router = useRouter();
@@ -62,6 +63,9 @@ export default function myProfile() {
     try {
       await signOut(auth);
       setModalVisible(false);
+      Vibration.vibrate();
+      const { sound } = await Audio.Sound.createAsync(require('./../../assets/sounds/success.mp3'));
+      await sound.playAsync();
       router.replace('auth/sign-in'); // Navigate to the sign-in screen
     } catch (error) {
       console.error("Error logging out: ", error);

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Vibration } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { Colors } from './../../constants/Colors';
 import { getCurrentUserId, firestore, uploadProfileImage } from './../../configs/FirebaseConfig';
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { Audio } from 'expo-av';
 
 export default function EditProfile() {
   const router = useRouter();
@@ -64,17 +65,23 @@ export default function EditProfile() {
   }, []);
 
   // Show alert function
-  const showAlert = (message) => {
+  const showAlert = async (message) => {
     setAlertMessage(message);
     setAlertVisible(true);
+    Vibration.vibrate();
+    const { sound } = await Audio.Sound.createAsync(require('./../../assets/sounds/error.mp3'));
+    await sound.playAsync();
     setTimeout(() => {
       setAlertVisible(false);
     }, 4000); // Hide the alert after 4 seconds
   };
 
-  const showSuccessAlert = (message) => {
+  const showSuccessAlert = async (message) => {
     setSuccessAlertMessage(message);
     setSuccessAlertVisible(true);
+    Vibration.vibrate();
+    const { sound } = await Audio.Sound.createAsync(require('./../../assets/sounds/success.mp3'));
+    await sound.playAsync();
     setTimeout(() => {
       setSuccessAlertVisible(false);
       router.back(); // Navigate back after the alert is hidden
