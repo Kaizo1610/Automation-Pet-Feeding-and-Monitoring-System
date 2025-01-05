@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
-import { Colors } from './../../constants/Colors'
+import { Colors } from './../../constants/Colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { getCurrentUserId, database } from './../../configs/FirebaseConfig';
+import { ref, set } from 'firebase/database';
 
 export default function EditSchedule() {
+  const router = useRouter();
+  const { id, time, portions } = useLocalSearchParams(); // Get passed parameters
 
-  const router=useRouter();
-
-  const [hours, setHours] = useState('');
-  const [minutes, setMinutes] = useState('');
-  const [portion, setPortion] = useState('');
+  const [hours, setHours] = useState(time ? time.split(':')[0] : '');
+  const [minutes, setMinutes] = useState(time ? time.split(':')[1] : '');
+  const [portion, setPortion] = useState(portions || '');
 
   const handleHoursChange = (input) => {
     // Allow only digits
@@ -46,11 +48,26 @@ export default function EditSchedule() {
     }
   };
 
-  const handleSave = () => {
-    // Implement save logic here
+  const handleSave = async () => {
     const dispenseTime = `${hours}:${minutes}`;
     console.log('Dispense Time:', dispenseTime);
     console.log('Portion:', portion);
+
+    try {
+      const userId = getCurrentUserId(); // Replace with actual user ID logic
+      const scheduleRef = ref(database, `users/${userId}/wateringSchedules/${id}`);
+      await set(scheduleRef, {
+        time: dispenseTime,
+        portions: portion,
+        enabled: true // Ensure the schedule is enabled
+      });
+      alert('Schedule updated successfully!');
+      router.back(); // Navigate back to the previous screen
+      router.push('/(tabs)/dispense-schedule'); // Refresh the schedule list
+    } catch (error) {
+      console.error('Error updating schedule:', error);
+      alert('Failed to update schedule.');
+    }
   };
 
   return (

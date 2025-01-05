@@ -62,10 +62,29 @@ export default function DispenseSchedule() {
     };
   
     fetchSchedules();
-  }, [selectedIcon]);
+  }, [selectedIcon, router]);
 
   useEffect(() => {
     registerBackgroundFetch();
+  }, []);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => checkScheduledTimes(schedules), 60000); // Check every minute
+  
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [schedules, selectedIcon]); // Runs whenever schedules or selectedIcon change
+  
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      const screen = response.notification.request.content.data.screen;
+      if (screen) {
+        router.push(screen);
+      }
+    });
+  
+    return () => subscription.remove();
   }, []);
 
   const toggleSchedule = (id) => {
@@ -87,8 +106,17 @@ export default function DispenseSchedule() {
       />
       <Text style={styles.scheduleText}>{item.time}</Text>
       <Text style={styles.portionText}>{item.portions}</Text>
-      <TouchableOpacity style={styles.arrow}
-        onPress={() => navigation.navigate(editScheduleRoute, { scheduleId: item.id })}>
+      <TouchableOpacity 
+        style={styles.arrow}
+        onPress={() => router.push({
+          pathname: editScheduleRoute,
+          params: { 
+            id: item.id, 
+            time: item.time, 
+            portions: item.portions 
+          }
+        })}
+      >
         <Text style={styles.arrowText}>&gt;</Text>
       </TouchableOpacity>
     </View>
