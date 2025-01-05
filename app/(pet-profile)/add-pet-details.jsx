@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, FlatList, Alert, ActivityIndicator, Vibration } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Colors } from './../../constants/Colors';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -8,6 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { addPet, storage, getCurrentUserId } from './../../configs/FirebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { Audio } from 'expo-av';
 
 export default function AddPetDetails() {
 
@@ -89,6 +90,9 @@ export default function AddPetDetails() {
 
   const handleSave = async () => {
     if (!name || !gender || !weight || !imageUri) {
+      Vibration.vibrate();
+      const { sound } = await Audio.Sound.createAsync(require('./../../assets/sounds/error.mp3'));
+      await sound.playAsync();
       alert("Please fill in all the mandatory fields.");
       return;
     }
@@ -99,6 +103,9 @@ export default function AddPetDetails() {
     const newPet = { name, gender, weight, appointment, date, image: imageUrl };
     try {
       await addPet(newPet);
+      Vibration.vibrate();
+      const { sound } = await Audio.Sound.createAsync(require('./../../assets/sounds/success.mp3'));
+      await sound.playAsync();
       Alert.alert('Success', 'New pet details added successfully!');
       router.push('/(tabs)/pet-profile');
     } catch (error) {

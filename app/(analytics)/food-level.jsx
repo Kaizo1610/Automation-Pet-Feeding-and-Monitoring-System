@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Switch, TextInput, Button, ScrollView, Dimensions, Alert } from 'react-native'
+import { View, Text, StyleSheet, Switch, TextInput, Button, ScrollView, Dimensions, Alert, Vibration } from 'react-native'
 import React from 'react'
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
@@ -7,6 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Svg, { Circle, G, Text as SvgText } from 'react-native-svg';
 import { useFoodLevel } from '../(dashboard-logic)/foodData';
 import { LineChart } from 'react-native-chart-kit';
+import { Audio } from 'expo-av';
 
 export default function foodLevel() {
 
@@ -34,7 +35,10 @@ export default function foodLevel() {
 
   React.useEffect(() => {
     if (foodLevel <= 0.2) {
-      const timer = setTimeout(() => {
+      const timer = setTimeout(async () => {
+        Vibration.vibrate();
+        const { sound } = await Audio.Sound.createAsync(require('./../../assets/sounds/error.mp3'));
+        await sound.playAsync();
         Alert.alert("Low Food Level", "Please add some food into your container!!");
       }, 5500);
       return () => clearTimeout(timer);

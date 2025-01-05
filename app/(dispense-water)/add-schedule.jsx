@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, Alert, Vibration } from 'react-native';
 import { Colors } from './../../constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { getCurrentUserId, firestore } from './../../configs/FirebaseConfig';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { Audio } from 'expo-av';
 
 export default function AddSchedule() {
 
@@ -50,6 +51,9 @@ export default function AddSchedule() {
 
   const handleSave = async () => {
     if (hours === '' || minutes === '' || portion === '') {
+      Vibration.vibrate();
+      const { sound } = await Audio.Sound.createAsync(require('./../../assets/sounds/error.mp3'));
+      await sound.playAsync();
       Alert.alert("Incomplete Data", "Please fill in all fields before saving.");
       return;
     }
@@ -78,6 +82,9 @@ export default function AddSchedule() {
 
       await addDoc(collection(firestore, `users/${userId}/wateringSchedules`), newSchedule);
       console.log('Schedule added:', newSchedule);
+      Vibration.vibrate();
+      const { sound } = await Audio.Sound.createAsync(require('./../../assets/sounds/success.mp3'));
+      await sound.playAsync();
       Alert.alert("Success", "New watering schedule has been added");
       router.back(); // Navigate back to the previous screen
     } catch (error) {

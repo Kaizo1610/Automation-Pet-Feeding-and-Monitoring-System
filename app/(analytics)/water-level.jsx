@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Switch, ScrollView, Dimensions, Alert } from 'react-native'
+import { View, Text, StyleSheet, Switch, ScrollView, Dimensions, Alert, Vibration } from 'react-native'
 import React from 'react'
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/Colors';
@@ -7,6 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Svg, { Circle, G, Text as SvgText } from 'react-native-svg';
 import { useWaterLevel } from '../(dashboard-logic)/waterData';
 import { LineChart } from 'react-native-chart-kit';
+import { Audio } from 'expo-av';
 
 export default function waterLevel() {
 
@@ -34,7 +35,10 @@ export default function waterLevel() {
 
   React.useEffect(() => {
     if (waterLevel <= 0.2) {
-      const timer = setTimeout(() => {
+      const timer = setTimeout(async () => {
+        Vibration.vibrate();
+        const { sound } = await Audio.Sound.createAsync(require('./../../assets/sounds/error.mp3'));
+        await sound.playAsync();
         Alert.alert("Low Water Level", "Please add some water into your container!!");
       }, 5500);
       return () => clearTimeout(timer);
