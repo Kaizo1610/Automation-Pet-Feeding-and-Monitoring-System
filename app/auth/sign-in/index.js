@@ -138,7 +138,7 @@ export default function SignIn() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   container2: {
     backgroundColor:Colors.PRIMARY,
