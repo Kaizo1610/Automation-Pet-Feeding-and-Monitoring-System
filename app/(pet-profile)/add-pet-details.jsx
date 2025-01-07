@@ -132,7 +132,7 @@ export default function AddPetDetails() {
 
       {/* Form Section */}
       <View style={styles.form}>
-        <Text style={styles.label}>Name</Text>
+        <Text style={styles.label}>Name*</Text>
         <TextInput
           style={styles.input}
           value={name}
@@ -140,7 +140,7 @@ export default function AddPetDetails() {
         />
 
         {/* Gender Input */}
-        <Text style={styles.label}>Gender</Text>
+        <Text style={styles.label}>Gender*</Text>
         <TouchableOpacity
           style={styles.input}
           onPress={() => setIsGenderDropdownVisible(!isGenderDropdownVisible)}
@@ -164,7 +164,7 @@ export default function AddPetDetails() {
           />
         )}
 
-        <Text style={styles.label}>Weight (Kg)</Text>
+        <Text style={styles.label}>Weight (Kg)*</Text>
         <TextInput
           style={styles.input}
           value={weight}
