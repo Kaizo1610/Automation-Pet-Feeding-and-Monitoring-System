@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   addPetButton: {
-    backgroundColor: Colors.PRIMARY, // Orange color
+    backgroundColor: Colors.PRIMARY, 
     padding: 15,
     borderRadius: 10,
     marginTop: 10,
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     fontFamily: 'outfit-bold',
   },
   scrollView: {
-    maxHeight: 480, // Adjust the height as needed
+    maxHeight: 480, 
     marginBottom: 10,
   },
 });
